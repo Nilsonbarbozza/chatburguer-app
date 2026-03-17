@@ -15,7 +15,7 @@ import requests
 
 # ── Configuração ──────────────────────────────────────────
 # Troque pela URL do seu servidor quando for ao ar
-API_BASE_URL  = os.getenv('CLONER_API_URL', 'https://chatburguer.com')
+API_BASE_URL  = os.getenv('CLONER_API_URL', 'https://chatburguer-server.onrender.com')
 CONFIG_DIR    = Path.home() / '.process-cloner'
 CONFIG_FILE   = CONFIG_DIR / 'config.json'
 REQUEST_TIMEOUT = 8   # segundos
