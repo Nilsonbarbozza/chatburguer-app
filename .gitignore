@@ -1,0 +1,30 @@
+# Chatburguer App — .gitignore
+
+# Ambiente
+.env
+.env.*
+!.env.example
+
+# Saída do processador
+output/
+dist/
+build/
+
+# Logs
+logs/
+*.log
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.venv/
+
+# PyInstaller
+*.spec
+dist/
+
+# Sistema
+.DS_Store
+Thumbs.db
