@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 CONFIG = {
-    'MAX_FILE_SIZE_MB':  int(os.getenv('MAX_FILE_SIZE_MB', 10)),
+    'MAX_FILE_SIZE_MB':  int(os.getenv('MAX_FILE_SIZE_MB', 30)),
     'MAX_IMAGE_SIZE_MB': int(os.getenv('MAX_IMAGE_SIZE_MB', 5)),
     'REQUEST_TIMEOUT':   int(os.getenv('REQUEST_TIMEOUT', 10)),
     'OUTPUT_DIR':        os.getenv('OUTPUT_DIR', 'output'),
