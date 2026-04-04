@@ -1,11 +1,13 @@
 """
 core/stages/optimization.py
-Stage 7 + Stage 10 — Otimização CSS (LightningCSS / fallback regex + PostCSS pipeline)
+Stage 7 + Stage 10 — Otimização CSS (LightningCSS / fallback regex + PostCSS Shadow Build)
 """
 import os
 import re
+import shutil
 import tempfile
 import logging
+from glob import glob
 from typing import Dict, Any
 
 from core.pipeline import ProcessorStage
@@ -38,20 +40,19 @@ class OptimizationStage(ProcessorStage):
 
 class PostCssOptimizationStage(ProcessorStage):
     def process(self, context: Dict[str, Any]) -> Dict[str, Any]:
-        logger.info("=== ETAPA 10: Otimização Final CSS ===")
-        paths    = get_paths()
-        out      = context.get('output', {})
-        html_f   = out.get('html_file')
-        css_f    = out.get('css_file')
+        logger.info("=== ETAPA 10: Shadow Build + Otimização Final CSS ===")
+        out    = context.get('output', {})
+        html_f = out.get('html_file')
+        css_f  = out.get('css_file')
 
         if not (html_f and css_f and os.path.exists(html_f) and os.path.exists(css_f)):
             return context
 
+        # --- Shadow Build (PurgeCSS com Safelist Couraçada — sempre ativo) ---
         if tool_available(CONFIG['PURGECSS_BIN']) and CONFIG['USE_PURGECSS']:
-            logger.info("  PurgeCSS: removendo classes não utilizadas...")
-            out_dir = os.path.dirname(css_f)
-            run_command([CONFIG['PURGECSS_BIN'], '--css', css_f, '--content', html_f, '-o', out_dir])
+            _run_shadow_build(html_f, css_f)
 
+        # --- LightningCSS: minifica o styles.css já substituído ---
         if tool_available(CONFIG['LIGHTNINGCSS_BIN']) and CONFIG['USE_LIGHTNINGCSS']:
             logger.info("  LightningCSS: minificando CSS final...")
             run_command([
@@ -70,6 +71,88 @@ class PostCssOptimizationStage(ProcessorStage):
 # ──────────────────────────────────────────────
 # Helpers
 # ──────────────────────────────────────────────
+
+
+def _run_shadow_build(html_f: str, css_f: str):
+    """
+    Estratégia Shadow Build:
+      1. Coleta sources: index.html + todos os .js em scripts/
+      2. Gera um purgecss.config.cjs temporário com safelist couraçada
+      3. Roda PurgeCSS → gera styles.safe.css (shadow isolado)
+      4. Loga a % de redução
+      5. Substitui styles.css pelo shadow (mantendo o nome original)
+    """
+    out_dir      = os.path.dirname(css_f)        # output/styles/
+    out_dir_root = os.path.dirname(out_dir)      # output/
+    safe_css     = os.path.join(out_dir, 'styles.safe.css')
+
+    # Caminhos absolutos com forward-slashes (compatível Node.js no Windows)
+    abs_html = os.path.abspath(html_f).replace('\\', '/')
+    abs_css  = os.path.abspath(css_f).replace('\\', '/')
+    abs_safe = os.path.abspath(safe_css).replace('\\', '/')
+
+    # Sources adicionais: todos os .js em scripts/
+    content_entries = [f'"{abs_html}"']
+    scripts_dir = os.path.join(out_dir_root, 'scripts')
+    if os.path.isdir(scripts_dir):
+        js_files = glob(os.path.join(scripts_dir, '**', '*.js'), recursive=True)
+        for js in js_files:
+            content_entries.append(f'"{os.path.abspath(js).replace(chr(92), "/")}"')
+
+    content_str = ', '.join(content_entries)
+
+    # Config JS com safelist couraçada (regex literals nativos do JS)
+    config_js = f"""module.exports = {{
+  content: [{content_str}],
+  css: ["{abs_css}"],
+  output: "{abs_safe}",
+  safelist: {{
+    standard: [
+      /^tw-/, /^view-/, /^-tw-/, /^inline_/,
+      /^btn-/, /^uploader-/, /^preview-/, /^mask-/,
+      /^tool-/, /^brush-/, /^zoom-/, /^editor-/,
+      /^text-/, /^bg-/, /^font-/, /^rounded-/,
+      /^border-/, /^p-/, /^m-/, /^flex-/, /^grid-/,
+      /^w-/, /^h-/, /^max-/, /^min-/, /^z-/,
+      /^opacity-/, /^transition-/, /^duration-/, /^ease-/,
+      /^hover:/, /^focus:/, /^disabled:/, /^md:/, /^lg:/, /^sm:/,
+      'active', 'selected', 'loading', 'open', 'closed', 'hidden', 'visible'
+    ],
+    deep:   [/data-state/, /data-active/, /data-orientation/, /aria-/, /radix/],
+    greedy: [/inline_/]
+  }},
+  defaultExtractor: content => content.match(/[\\w-/:]+(?<!:)/g) || []
+}};
+"""
+
+    # Grava config temporário
+    tmp_config = os.path.join(out_dir_root, '_shadow_build.config.cjs')
+    with open(tmp_config, 'w', encoding='utf-8') as f:
+        f.write(config_js)
+
+    original_size = os.path.getsize(css_f)
+    logger.info("  Shadow Build: rodando PurgeCSS com safelist couraçada...")
+
+    try:
+        run_command([CONFIG['PURGECSS_BIN'], '--config', tmp_config], timeout=60)
+    finally:
+        if os.path.exists(tmp_config):
+            os.remove(tmp_config)
+
+    if not os.path.exists(safe_css):
+        logger.warning("  Shadow Build: styles.safe.css não foi gerado — mantendo CSS original")
+        return
+
+    # Relatório de redução
+    shadow_size = os.path.getsize(safe_css)
+    reduction   = (1 - shadow_size / original_size) * 100 if original_size > 0 else 0
+    logger.info(f"  CSS original:  {original_size / 1024:.2f} KB")
+    logger.info(f"  CSS shadow:    {shadow_size   / 1024:.2f} KB  (-{reduction:.1f}%)")
+
+    # Substitui styles.css pelo shadow — mantendo o nome original
+    shutil.move(safe_css, css_f)
+    logger.info(f"  ✅ styles.css substituído com versão otimizada ({reduction:.1f}% menor)")
+
 
 def _sanitize_css(css: str) -> str:
     if not css:

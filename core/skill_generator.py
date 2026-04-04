@@ -16,10 +16,14 @@ from pathlib import Path
 from typing  import Dict, Any, List, Optional, Tuple
 from datetime import datetime
 
+import cssutils
 from bs4 import BeautifulSoup
 from core.pipeline import ProcessorStage
 from core.config   import get_paths
 from core.utils    import save_file, setup_logging
+
+# Silencia logs verbosos do cssutils
+cssutils.log.setLevel(logging.CRITICAL)
 
 setup_logging()
 logger = logging.getLogger('html_processor')
@@ -73,10 +77,111 @@ class SkillGeneratorStage(ProcessorStage):
 class DesignAnalyzer:
     def __init__(self, soup, css, html, images_dir, js_bundle=''):
         self.soup       = soup
-        self.css        = css or ''
+        self.css_text   = css or ''
         self.html       = html or ''
         self.images_dir = images_dir
         self.js         = js_bundle or ''
+        
+        # Estado de análise (Cache e Pré-Parsing)
+        self._sheet     = None
+        self._css_vars  = {}
+        self._all_rules = []
+        self._color_freq = {}
+        
+        # Inicializa o parser estruturado
+        self._parse_css()
+
+    def _parse_css(self):
+        """Parsing estruturado com cssutils e resolução inicial de variáveis."""
+        try:
+            self._sheet = cssutils.parseString(self.css_text)
+            
+            # 1. Primeiro passo: Extrair variáveis CSS e listar todas as regras
+            for rule in self._sheet:
+                if rule.type == cssutils.css.CSSRule.STYLE_RULE:
+                    self._all_rules.append(rule)
+                    for prop in rule.style:
+                        if prop.name.startswith('--'):
+                            self._css_vars[prop.name] = prop.value
+                elif rule.type == cssutils.css.CSSRule.IMPORT_RULE:
+                    pass # Poderíamos processar imports aqui no futuro
+            
+            # 2. Segundo passo: Resolver cores
+            self._analyze_all_colors()
+            
+        except Exception as e:
+            logger.warning(f"Falha no parsing estruturado do CSS: {e}. Fallback para regex ativado.")
+
+    def _analyze_all_colors(self):
+        """Varredura unificada para extrair cores de todas as propriedades e formatos."""
+        # Todos os caminhos que podem conter cores
+        color_props = [
+            'color', 'background', 'background-color', 'border', 'border-color', 
+            'box-shadow', 'outline', 'fill', 'stroke', 'text-shadow'
+        ]
+        
+        # Regex unificada para HEX, RGB, RGBA, HSL, HSLA
+        color_regex = re.compile(
+            r'#(?:[0-9a-fA-F]{3,4}){1,2}\b|'                             # HEX
+            r'(?:rgb|hsl)a?\(\s*[\d\%\.\,\s]+\s*\)|'                     # RGB, HSL
+            r'\b(?:black|white|transparent|red|blue|green|yellow|gray|grey|orange|purple|pink|brown|cyan|magenta)\b', # Básicas
+            re.I
+        )
+        
+        for rule in self._all_rules:
+            for prop in rule.style:
+                val = prop.value
+                
+                # Resolve variáveis recursivamente antes da extração
+                val = self._resolve_vars(val)
+                
+                matches = color_regex.findall(val)
+                for color in matches:
+                    norm = self._normalize_color(color)
+                    if norm:
+                        self._color_freq[norm] = self._color_freq.get(norm, 0) + 1
+
+    def _resolve_vars(self, value: str) -> str:
+        """Substitui var(--nome) pelo valor real se conhecido."""
+        if 'var(' not in value:
+            return value
+        
+        for _ in range(3): # Profundidade máxima de 3 para variáveis aninhadas
+            matches = re.findall(r'var\((--[\w-]+)(?:,\s*([^)]+))?\)', value)
+            if not matches: break
+            for var_name, fallback in matches:
+                real_val = self._css_vars.get(var_name, fallback or '')
+                if real_val:
+                    value = value.replace(f"var({var_name})", real_val)
+                    if fallback: value = value.replace(f"var({var_name},{fallback})", real_val)
+        return value
+
+    def _normalize_color(self, color: str) -> Optional[str]:
+        """Normaliza qualquer formato para Hexadecimal Maiúsculo."""
+        c = color.strip().lower()
+        if c.startswith('#'):
+            if len(c) == 4: return ('#' + ''.join(x*2 for x in c[1:])).upper()
+            if len(c) == 5: return ('#' + ''.join(x*2 for x in c[1:4])).upper() # Ignora Alpha em Hex 4-char
+            return c[:7].upper()
+        
+        # Fallback de nomes comuns (apenas os principais para simplicidade)
+        named = {'white': '#FFFFFF', 'black': '#000000', 'transparent': 'TRANSPARENT'}
+        if c in named: return named[c]
+        
+        # Para RGB/HSL, extrai apenas se houver interesse estatístico forte (mantém como string por enquanto)
+        if c.startswith('rgb') or c.startswith('hsl'):
+            # Simplificação: extrai os números apenas para normalizar o formato
+            nums = re.findall(r'[\d.]+', c)
+            if c.startswith('rgb'):
+                if len(nums) >= 3:
+                     # Se possível, converte para Hex se não tiver transparência complexa
+                     try:
+                         if len(nums) == 3 or (len(nums) == 4 and float(nums[3]) >= 0.95):
+                            return '#%02X%02X%02X' % (int(nums[0]), int(nums[1]), int(nums[2]))
+                     except: pass
+            return c.replace(' ', '').upper()
+        
+        return None
 
     def extract(self) -> dict:
         return {
@@ -89,7 +194,7 @@ class DesignAnalyzer:
             'animations':  self._animations(),
             'interactions':self._interactions(),
             'images':      self._images(),
-            'css_vars':    self._css_vars(),
+            'css_vars':    self._css_vars, # Usa as variáveis já extraídas no parse
         }
 
     # ── Meta ──────────────────────────────────────────────────
@@ -106,144 +211,176 @@ class DesignAnalyzer:
 
     # ── Cores ─────────────────────────────────────────────────
     def _colors(self) -> dict:
-        # Frequência de cores hex
-        all_hex = re.findall(r'#(?:[0-9A-Fa-f]{6}|[0-9A-Fa-f]{3})\b', self.css)
-        normalized = []
-        for c in all_hex:
-            if len(c) == 4:
-                c = '#' + ''.join(x*2 for x in c[1:])
-            normalized.append(c.upper())
-
-        freq = {}
-        for c in normalized:
-            freq[c] = freq.get(c, 0) + 1
-        top = sorted(freq, key=freq.get, reverse=True)
-
-        # Tenta classificar por uso semântico
+        # 1. Cores por frequência (já calculadas no parse estruturado)
+        top = sorted(self._color_freq, key=self._color_freq.get, reverse=True)
+        
+        # 2. Busca semântica inteligente
         semantic = {}
-        sem_patterns = [
-            ('primary',    r'(?:primary|main|brand|accent)[^:]*:\s*(#[0-9a-fA-F]{3,6})'),
-            ('background', r'(?:background|bg)[^:]*:\s*(#[0-9a-fA-F]{3,6})'),
-            ('text',       r'(?:color|text)[^:]*:\s*(#[0-9a-fA-F]{3,6})'),
-            ('border',     r'(?:border)[^:]*:\s*(#[0-9a-fA-F]{3,6})'),
-            ('success',    r'(?:success|green)[^:]*:\s*(#[0-9a-fA-F]{3,6})'),
-            ('error',      r'(?:error|danger|red)[^:]*:\s*(#[0-9a-fA-F]{3,6})'),
-        ]
-        for label, pattern in sem_patterns:
-            m = re.search(pattern, self.css, re.IGNORECASE)
-            if m:
-                c = m.group(1).upper()
-                if len(c) == 4:
-                    c = '#' + ''.join(x*2 for x in c[1:])
-                semantic[label] = c
+        
+        # Tenta descobrir o fundo do body primeiro (frequentemente o mais importante)
+        body_bg = ''
+        for rule in self._all_rules:
+            if any(sel.strip() in ('body', 'html', ':root') for sel in rule.selectorText.split(',')):
+                bg = rule.style.getPropertyValue('background-color') or rule.style.getPropertyValue('background')
+                if bg:
+                    body_bg = self._normalize_color(self._resolve_vars(bg))
+                    if body_bg: break
+        
+        if body_bg: semantic['background'] = body_bg
+        
+        # Outras semânticas por palavras-chave em variáveis CSS (mais preciso que regex global)
+        sem_maps = {
+            'primary':   ['primary', 'brand', 'accent', 'blue-600', 'indigo-500'],
+            'text':      ['text', 'foreground', 'font-color'],
+            'success':   ['success', 'green', 'ok'],
+            'error':     ['error', 'danger', 'red', 'destructive'],
+            'border':    ['border', 'divide', 'outline'],
+        }
+        
+        for role, keywords in sem_maps.items():
+            if role in semantic: continue
+            for var_name, var_val in self._css_vars.items():
+                if any(k in var_name.lower() for k in keywords):
+                    norm = self._normalize_color(var_val)
+                    if norm: 
+                        semantic[role] = norm; break
+        
+        # Preenchimento fallback com as top cores se necessário
+        if not semantic.get('primary') and len(top) > 0:
+            # Pega a cor mais frequente que não seja branco/preto como primary
+            for c in top:
+                if c not in ('#FFFFFF', '#000000', 'TRANSPARENT'):
+                    semantic['primary'] = c; break
 
-        return {'top': top[:12], 'semantic': semantic, 'freq': freq}
+        return {'top': top[:12], 'semantic': semantic, 'freq': self._color_freq}
 
     # ── Tipografia ────────────────────────────────────────────
     def _typography(self) -> dict:
         families = {}
-        for f in re.findall(r'font-family\s*:\s*([^;}{]+)', self.css, re.IGNORECASE):
+        sizes = []
+        weights = []
+        heights = []
+        hierarchy = {}
+        google = []
+
+        # Extração via regras estruturadas
+        for rule in self._all_rules:
+            # Google Fonts e Imports
+            # (Estes geralmente estão fora das STYLE_RULE, mas cssutils os catáloga)
+            pass 
+
+        # Fallback controlado para fontes e imports (Regex aqui é aceitável pois é tiro curto)
+        for f in re.findall(r'font-family\s*:\s*([^;}{]+)', self.css_text, re.IGNORECASE):
             first = f.strip().split(',')[0].strip().strip('"\'')
             if first and len(first) > 1 and first.lower() not in ('inherit','initial','sans-serif','serif','monospace'):
                 families[first] = families.get(first, 0) + 1
-        sorted_families = sorted(families, key=families.get, reverse=True)
+        
+        # Uso das regras já parseadas para propriedades comuns
+        for rule in self._all_rules:
+            s = rule.style.getPropertyValue('font-size')
+            if s: sizes.append(s)
+            w = rule.style.getPropertyValue('font-weight')
+            if w: weights.append(w)
+            lh = rule.style.getPropertyValue('line-height')
+            if lh: heights.append(lh)
+            
+            # Hierarquia (h1-h6)
+            sel = rule.selectorText.lower()
+            for tag in ['h1','h2','h3','h4','h5','h6','p']:
+                if tag == sel or sel.startswith(tag + '{') or (',' + tag) in sel.replace(' ',''):
+                    if s: hierarchy[tag] = s
 
-        sizes  = re.findall(r'font-size\s*:\s*([\d.]+(?:px|rem|em))', self.css, re.IGNORECASE)
-        weights = re.findall(r'font-weight\s*:\s*(\d{3}|bold|normal)', self.css, re.IGNORECASE)
-        heights = re.findall(r'line-height\s*:\s*([\d.]+(?:px|rem|em|)?)', self.css, re.IGNORECASE)
-
-        # Hierarquia tipográfica — tamanhos usados em h1..h6
-        hierarchy = {}
-        for tag in ['h1','h2','h3','h4','h5','h6','p','small']:
-            pattern = rf'{tag}\s*[,{{][^}}]*font-size\s*:\s*([\d.]+(?:px|rem|em))'
-            m = re.search(pattern, self.css, re.IGNORECASE)
-            if m:
-                hierarchy[tag] = m.group(1)
-
-        # Google Fonts
-        google = re.findall(r'@import[^;]*fonts\.googleapis\.com[^;]+;', self.css)
+        google = re.findall(r'@import[^;]*fonts\.googleapis\.com[^;]+;', self.css_text)[:2]
 
         return {
-            'families':  sorted_families[:4],
-            'sizes':     sorted(set(sizes), key=lambda x: float(re.sub(r'[^\d.]','',x) or '0'))[:8],
-            'weights':   sorted(set(weights))[:5],
+            'families':  sorted(families, key=families.get, reverse=True)[:4],
+            'sizes':     sorted(list(set(sizes)), key=lambda x: float(re.sub(r'[^\d.]','',x) or '0'))[:8],
+            'weights':   sorted(list(set(weights)))[:5],
             'heights':   list(set(heights))[:4],
             'hierarchy': hierarchy,
-            'google':    google[:2],
+            'google':    google,
         }
 
     # ── Espaçamentos ──────────────────────────────────────────
     def _spacing(self) -> dict:
-        paddings = re.findall(r'padding(?:-(?:top|bottom|left|right))?\s*:\s*([\d.]+px)', self.css)
-        margins  = re.findall(r'margin(?:-(?:top|bottom|left|right))?\s*:\s*([\d.]+px)', self.css)
-        gaps     = re.findall(r'gap\s*:\s*([\d.]+px)', self.css)
+        paddings, margins, gaps, radii, shadows = [], [], [], [], []
 
-        def top_values(vals, n=6):
-            freq = {}
-            for v in vals:
-                freq[v] = freq.get(v, 0) + 1
-            return sorted(freq, key=freq.get, reverse=True)[:n]
+        for rule in self._all_rules:
+            # Captura valores de espaçamento
+            for p in rule.style:
+                name = p.name
+                val = p.value
+                if 'padding' in name and 'px' in val: paddings.append(val)
+                elif 'margin' in name and 'px' in val: margins.append(val)
+                elif 'gap' in name and 'px' in val: gaps.append(val)
+                elif 'border-radius' in name and 'px' in val: radii.append(val)
+                elif 'box-shadow' in name: shadows.append(val)
 
-        # Border radius
-        radii = re.findall(r'border-radius\s*:\s*([\d.]+px)', self.css)
-        radius_freq = {}
-        for r in radii:
-            radius_freq[r] = radius_freq.get(r, 0) + 1
-        top_radii = sorted(radius_freq, key=radius_freq.get, reverse=True)[:3]
-
-        # Box shadows
-        shadows = re.findall(r'box-shadow\s*:\s*([^;}]+)', self.css)
+        def top_vals(vals, n=6):
+            f = {}
+            for v in vals: f[v] = f.get(v, 0) + 1
+            return sorted(f, key=f.get, reverse=True)[:n]
 
         return {
-            'paddings':      top_values(paddings),
-            'margins':       top_values(margins),
-            'gaps':          top_values(gaps),
-            'border_radius': top_radii,
+            'paddings':      top_vals(paddings),
+            'margins':       top_vals(margins),
+            'gaps':          top_vals(gaps),
+            'border_radius': top_vals(radii, 3),
             'shadows':       [s.strip() for s in shadows[:3]],
         }
 
     # ── Layout ────────────────────────────────────────────────
     def _layout(self) -> dict:
-        css = self.css.replace(' ', '')
         layout = {
-            'flexbox':   'display:flex' in css,
-            'grid':      'display:grid' in css,
-            'bootstrap': bool(re.search(r'bootstrap', self.css, re.I) or
-                           (self.soup and self.soup.find(class_=re.compile(r'\bcol-\w+\b')))),
-            'tailwind':  bool(re.search(r'tailwind', self.css, re.I)),
-            'responsive': '@media' in self.css,
+            'flexbox':   'display:flex' in self.css_text.replace(' ', ''),
+            'grid':      'display:grid' in self.css_text.replace(' ', ''),
+            'bootstrap': False,
+            'tailwind':  False,
+            'responsive': '@media' in self.css_text,
         }
 
-        # Breakpoints
-        breakpoints = re.findall(r'@media[^{]*\((?:max|min)-width\s*:\s*([\d.]+px)\)', self.css)
-        layout['breakpoints'] = sorted(set(breakpoints),
-                                       key=lambda x: int(re.sub(r'[^\d]','',x)))[:5]
+        if self.soup:
+            layout['bootstrap'] = bool(self.soup.find(class_=re.compile(r'\bcol-\w+\b')))
+            layout['tailwind']  = bool(self.soup.find(class_=re.compile(r'\b(?:flex|grid|p-|m-|tw-)\b')))
+
+        # Breakpoints (extraídos das regras analisadas)
+        breakpoints = []
+        for rule in self._sheet:
+            if rule.type == cssutils.css.CSSRule.MEDIA_RULE:
+                m = re.search(r'\((?:max|min)-width\s*:\s*([\d.]+px)\)', rule.media.mediaText)
+                if m: breakpoints.append(m.group(1))
+        
+        layout['breakpoints'] = sorted(set(breakpoints), key=lambda x: int(re.sub(r'[^\d]','',x)))[:5]
 
         # Max-width do container
-        max_widths = re.findall(r'max-width\s*:\s*([\d.]+(?:px|rem|%))', self.css)
-        layout['max_width'] = max_widths[0] if max_widths else None
+        layout['max_width'] = None
+        for rule in self._all_rules:
+            if 'container' in rule.selectorText.lower():
+                val = rule.style.getPropertyValue('max-width')
+                if val: layout['max_width'] = val; break
 
-        # Grid columns
-        grid_cols = re.findall(r'grid-template-columns\s*:\s*([^;]+);', self.css)
-        layout['grid_columns'] = [g.strip() for g in grid_cols[:3]]
-
-        # Flex patterns
-        flex_dirs = re.findall(r'flex-direction\s*:\s*(row|column)', self.css)
+        # Grid columns e Flex directions (via rules)
+        grid_cols = []
+        flex_dirs = []
+        for rule in self._all_rules:
+            gc = rule.style.getPropertyValue('grid-template-columns')
+            if gc: grid_cols.append(gc)
+            fd = rule.style.getPropertyValue('flex-direction')
+            if fd: flex_dirs.append(fd)
+        
+        layout['grid_columns'] = list(set(grid_cols))[:3]
         layout['flex_directions'] = list(set(flex_dirs))
 
-        # Sections structure
+        # Section labels
         sections = []
         if self.soup:
             for tag in ['header','nav','section','main','article','aside','footer']:
-                for el in self.soup.find_all(tag):
-                    cls = ' '.join(el.get('class', []))[:50]
-                    eid = el.get('id', '')
-                    label = f'<{tag}>'
-                    if eid: label += f' #{eid}'
-                    elif cls: label += f' .{cls.split()[0]}'
-                    sections.append(label)
-        layout['sections'] = sections[:15]
+                el = self.soup.find(tag) # Apenas o primeiro de cada para performance
+                if el:
+                    cls = (el.get('class') or [''])[0]
+                    sections.append(f'<{tag}> .{cls}' if cls else f'<{tag}>')
 
+        layout['sections'] = sections[:10]
         return layout
 
     # ── Componentes ───────────────────────────────────────────
@@ -506,10 +643,30 @@ class DesignAnalyzer:
 
     # ── Animações ─────────────────────────────────────────────
     def _animations(self) -> dict:
-        keyframes = re.findall(r'@keyframes\s+([\w-]+)', self.css)
-        transitions = re.findall(r'transition\s*:\s*([^;}{]+)', self.css)
-        transforms  = re.findall(r'transform\s*:\s*([^;}{]+)', self.css)
-        durations   = re.findall(r'(?:transition|animation)[^:]*:\s*[^;]*?([\d.]+s)\b', self.css)
+        keyframes = []
+        transitions = []
+        transforms  = []
+        durations   = []
+        
+        for rule in self._sheet:
+            if rule.type == cssutils.css.CSSRule.UNKNOWN_RULE:
+                text = rule.cssText.strip()
+                if text.startswith('@keyframes'):
+                    m = re.search(r'@keyframes\s+([\w-]+)', text)
+                    if m: keyframes.append(m.group(1))
+        
+        for rule in self._all_rules:
+            for p in rule.style:
+                name = p.name
+                val  = p.value
+                if 'transition' in name:
+                    transitions.append(val)
+                    if 's' in val: durations.append(re.search(r'[\d.]+s', val).group(0))
+                elif 'animation' in name:
+                    if 's' in val: durations.append(re.search(r'[\d.]+s', val).group(0))
+                elif 'transform' in name:
+                    transforms.append(val)
+
         return {
             'keyframes':   list(set(keyframes))[:6],
             'transitions': [t.strip() for t in set(transitions)][:5],
@@ -519,21 +676,26 @@ class DesignAnalyzer:
 
     # ── Interações ────────────────────────────────────────────
     def _interactions(self) -> dict:
-        hover_rules  = re.findall(r'([^{}]+):hover\s*\{([^}]+)\}', self.css)
-        focus_rules  = re.findall(r'([^{}]+):focus\s*\{([^}]+)\}', self.css)
-        active_rules = re.findall(r'([^{}]+):active\s*\{([^}]+)\}', self.css)
+        hover_rules  = []
+        focus_rules  = []
+        active_rules = []
+
+        for rule in self._all_rules:
+            sel = rule.selectorText.lower()
+            if ':hover' in sel: hover_rules.append(rule)
+            elif ':focus' in sel: focus_rules.append(rule)
+            elif ':active' in sel: active_rules.append(rule)
 
         def simplify(rules, limit=4):
             out = []
-            for selector, props in rules[:limit]:
-                sel = selector.strip()[-40:]
-                prop_list = [p.strip() for p in props.split(';') if p.strip()][:3]
-                out.append({'selector': sel, 'properties': prop_list})
+            for r in rules[:limit]:
+                props = [f"{p.name}: {p.value}" for p in r.style][:3]
+                out.append({'selector': r.selectorText[-40:], 'properties': props})
             return out
 
         # Scroll behavior
-        scroll = 'scroll-behavior' in self.css
-        sticky = 'position:sticky' in self.css.replace(' ','') or 'position: sticky' in self.css
+        scroll = 'scroll-behavior' in self.css_text
+        sticky = 'position:sticky' in self.css_text.replace(' ','')
 
         # JS interactions
         js_events = []
@@ -562,13 +724,6 @@ class DesignAnalyzer:
                     types[ext] = types.get(ext, 0) + 1
         return {'total': count, 'by_type': types}
 
-    # ── CSS custom properties ─────────────────────────────────
-    def _css_vars(self) -> dict:
-        vars_found = re.findall(r'(--[\w-]+)\s*:\s*([^;}{]+);', self.css)
-        result = {}
-        for name, val in vars_found:
-            result[name.strip()] = val.strip()
-        return result
 
 
 # ══════════════════════════════════════════════════════════════
