@@ -147,8 +147,9 @@ def _run_shadow_build(html_f: str, css_f: str):
   defaultExtractor: content => content.match(/[\\w-/:]+(?<!:)/g) || []
 }};
 """
-    # Grava config temporário NA RAIZ para evitar erros de protocolo 'c:'
-    tmp_config_name = '_tmp_shadow.config.cjs'
+    # Grava config temporário NA RAIZ para o Cosmiconfig achar automaticamente
+    # (Não passamos --config no CLI para evitar o bug de ESM absoluto no Windows)
+    tmp_config_name = 'purgecss.config.js'
     tmp_config_path = os.path.join(os.getcwd(), tmp_config_name)
 
     try:
@@ -156,10 +157,15 @@ def _run_shadow_build(html_f: str, css_f: str):
             f.write(config_js)
 
         original_size = os.path.getsize(css_f)
-        logger.info("  Shadow Build: rodando PurgeCSS CLI (Safelist Armored)...")
+        logger.info("  Shadow Build: rodando PurgeCSS CLI (Safelist Armored bypass)...")
 
-        # Chama PurgeCSS usando o nome curto do config na raiz
-        run_command([CONFIG['PURGECSS_BIN'], '--config', tmp_config_name], timeout=60)
+        # Chama PurgeCSS injetando arquivos pela CLI; safelist sera lido do purgecss.config.js automaticamente
+        cmd = [CONFIG['PURGECSS_BIN'], '--css', rel_css, '--output', rel_safe, '--content', rel_html]
+        if len(content_entries) > 1:
+            for js_f in content_entries[1:]:
+                cmd.append(js_f.strip("'"))
+                
+        run_command(cmd, timeout=60)
         
         if not os.path.exists(safe_css):
             logger.warning("  Shadow Build: falha ao gerar styles.safe.css")

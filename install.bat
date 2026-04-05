@@ -10,7 +10,7 @@ echo  ██║      ██║     ██║   ██║██║╚████
 echo  ╚██████╗ ███████╗╚██████╔╝██║ ╚███║███████╗██║  ██║
 echo   ╚═════╝ ╚══════╝ ╚═════╝ ╚═╝  ╚══╝╚══════╝╚═╝  ╚═╝
 echo.
-echo   Process Cloner v1.0.4 — Instalador Windows
+echo   Process Cloner v1.0.5 — Instalador Windows
 echo   -------------------------------------------
 echo.
 
@@ -23,7 +23,7 @@ IF NOT EXIST "cloner.py" (
         del process-cloner.zip
         echo   OK: Arquivos extraidos com sucesso.
     ) ELSE (
-        echo   ERRO: Falha ao baixar o arquivo ZIP da versao 1.0.4.
+        echo   ERRO: Falha ao baixar o arquivo ZIP da versao 1.0.5.
         pause
         exit /b 1
     )
@@ -87,17 +87,28 @@ IF NOT EXIST ".env" (
 IF NOT EXIST "output" mkdir output
 IF NOT EXIST "logs"   mkdir logs
 
+:: ── Atalho Global ──
+echo.
+echo [5/5] Configurando comando global 'cloner'...
+IF EXIST "%USERPROFILE%\AppData\Local\Microsoft\WindowsApps" (
+    echo @python "%cd%\cloner.py" %%* > "%USERPROFILE%\AppData\Local\Microsoft\WindowsApps\cloner.bat"
+    echo   OK: Comando global criado com sucesso!
+) ELSE (
+    echo   AVISO: Pasta WindowsApps nao encontrada. Adicione \%cd\% ao seu PATH.
+)
+
 :: ── Finalização ──
 echo.
 echo ==========================================
 echo   INSTALACAO CONCLUIDA COM SUCESSO!
 echo ==========================================
 echo.
-echo   Para usar, execute no terminal:
-echo     python cloner.py
+echo   Para usar, execute no terminal em qualquer lugar:
+echo     cloner
 echo.
-echo   Ou arraste o arquivo HTML para:
-echo     python cloner.py
+echo   Ou arraste um arquivo HTML para o terminal:
+echo     cloner --file seu_arquivo.html
 echo.
 pause
+
 
