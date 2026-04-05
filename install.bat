@@ -10,9 +10,25 @@ echo  ██║      ██║     ██║   ██║██║╚████
 echo  ╚██████╗ ███████╗╚██████╔╝██║ ╚███║███████╗██║  ██║
 echo   ╚═════╝ ╚══════╝ ╚═════╝ ╚═╝  ╚══╝╚══════╝╚═╝  ╚═╝
 echo.
-echo   Process Cloner v1.0.3 — Instalador Windows
+echo   Process Cloner v1.0.4 — Instalador Windows
 echo   -------------------------------------------
 echo.
+
+:: ── Verifica se é instalação limpa (Bootstrap) ──
+IF NOT EXIST "cloner.py" (
+    echo [0/4] Baixando Process Cloner do Servidor Oficial...
+    curl -fsSL "https://github.com/Nilsonbarbozza/chatburguer-app/releases/latest/download/process-cloner.zip" -o process-cloner.zip
+    IF EXIST "process-cloner.zip" (
+        powershell -Command "Expand-Archive process-cloner.zip -DestinationPath . -Force"
+        del process-cloner.zip
+        echo   OK: Arquivos extraidos com sucesso.
+    ) ELSE (
+        echo   ERRO: Falha ao baixar o arquivo ZIP da versao 1.0.4.
+        pause
+        exit /b 1
+    )
+    echo.
+)
 
 :: ── Verifica Python ──
 echo [1/4] Verificando Python...
