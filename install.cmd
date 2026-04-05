@@ -100,3 +100,4 @@ echo   Ou arraste o arquivo HTML para:
 echo     python cloner.py
 echo.
 pause
+
