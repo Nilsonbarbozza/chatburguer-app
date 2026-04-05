@@ -28,7 +28,8 @@ def main():
         from cli.updater import Updater
         from cli.auth    import TokenAuth
         token = TokenAuth().get_saved_token()
-        Updater().check_and_update(token=token)
+        force = '--force' in args
+        Updater().check_and_update(token=token, force=force)
         sys.exit(0)
 
     if '--logout' in args:
