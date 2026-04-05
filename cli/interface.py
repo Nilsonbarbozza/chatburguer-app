@@ -68,7 +68,7 @@ class ClonerCLI:
             console.print(banner_text)
             console.print(
                 Panel.fit(
-                    "[bold white]Process Cloner[/bold white] [dim]v1.0[/dim]  •  "
+                    "[bold white]Process Cloner[/bold white] [dim]v1.0.3[/dim]  •  "
                     "[dim]Clone. Organize. Personalize.[/dim]",
                     border_style="cyan",
                     padding=(0, 2),
@@ -230,6 +230,7 @@ class ClonerCLI:
     def _print_success(self, result: dict):
         """Exibe relatório final após processamento bem-sucedido."""
         out = result.get('output', {})
+        stats = self.reporter.summary(result)
         skill = result.get('skill_file')
 
         if RICH_AVAILABLE:
@@ -241,27 +242,39 @@ class ClonerCLI:
             table.add_column(style="dim", width=20)
             table.add_column(style="bold white")
 
-            table.add_row("📄 HTML:",    out.get('html_file', '—'))
-            table.add_row("🎨 CSS:",     out.get('css_file',  '—'))
+            table.add_row("📄 HTML Original:", out.get('html_file', '—'))
+            table.add_row("🎨 CSS Original:",  f"{out.get('css_file', '—')} [dim]({stats.get('css_size', '—')})[/dim]")
+            
+            # Destaque para o Shadow Build
+            if 'shadow_css_size' in stats:
+                table.add_row("⚡ CSS Otimizado:", f"{stats.get('shadow_css_size')} [bold green](-{stats.get('reduction')})[/bold green]")
+                table.add_row("🧪 Tester Env:",   f"[bold cyan]{stats.get('tester_file', '—')}[/bold cyan]")
+
             if out.get('js_bundle'):
                 table.add_row("⚙️  JS Bundle:", out['js_bundle'])
             table.add_row("🖼️  Imagens:", out.get('images_dir', '—'))
+            
             skill_files = result.get('skill_files', [])
             if skill_files:
                 for sf in skill_files:
                     table.add_row("🧠 " + os.path.basename(sf) + ":", sf)
             elif skill:
                 table.add_row("🧠 Skill LLM:", skill)
-            table.add_row("📋 Log:",     "logs/processor.log")
+            
+            table.add_row("📋 Log:", "logs/processor.log")
 
-            console.print(Panel(table, title="[bold green]Arquivos Gerados[/bold green]", border_style="green"))
+            console.print(Panel(table, title="[bold green]Relatório de Performance[/bold green]", border_style="green"))
             console.print()
-            console.print("[dim]Próximo passo:[/dim] Abra a pasta de saída na sua IDE ou LLM favorita.")
-            console.print("[dim]Dica:[/dim] Use o arquivo [bold]skills/frontend.md[/bold] como contexto para o agente de código.\n")
+            console.print("[bold green]✅ Sucesso![/bold green] O CSS foi reduzido drasticamente na versão [bold]styles.safe.css[/bold].")
+            console.print("[dim]Próximo passo:[/dim] Abra o [bold]tester.html[/bold] para validar o layout otimizado.")
+            console.print("[dim]Dica:[/dim] Se estiver OK, você pode substituir o index.html pelo tester.html.\n")
         else:
             print("\n✅ Concluído!")
             print(f"  HTML    : {out.get('html_file')}")
-            print(f"  CSS     : {out.get('css_file')}")
+            print(f"  CSS     : {out.get('css_file')} ({stats.get('css_size')})")
+            if 'shadow_css_size' in stats:
+                print(f"  SHADOW  : {stats.get('shadow_css_size')} (-{stats.get('reduction')})")
+                print(f"  TESTER  : {stats.get('tester_file')}")
             print(f"  Imagens : {out.get('images_dir')}")
             if skill:
                 print(f"  Skill   : {skill}")

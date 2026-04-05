@@ -29,6 +29,8 @@ CONFIG = {
     'USE_TAILWIND':         os.getenv('USE_TAILWIND',      'false').lower() == 'true',
     'LIGHTNINGCSS_TARGETS': os.getenv('LIGHTNINGCSS_TARGETS', '>= 0.5%'),
     'MINIFY_CSS':           os.getenv('MINIFY_CSS',        'false').lower() == 'true',
+    'MINIFY_LEVEL':         os.getenv('MINIFY_LEVEL',      'extreme'),
+    'ALWAYS_GENERATE_TESTER': os.getenv('ALWAYS_GENERATE_TESTER', 'true').lower() == 'true',
 }
 
 
@@ -45,12 +47,15 @@ def get_paths() -> dict:
     scripts = os.path.join(out, 'scripts')
     skills  = os.path.join(out, 'skills')
     return {
-        'OUT_DIR':     out,
-        'STYLES_DIR':  styles,
-        'IMAGES_DIR':  images,
-        'SCRIPTS_DIR': scripts,
-        'SKILLS_DIR':  skills,
-        'STYLE_FILE':  os.path.join(styles,  'styles.css'),
-        'BUNDLE_FILE': os.path.join(scripts, 'main.js'),
-        'SKILL_FILE':  os.path.join(skills,  'frontend.md'),
+        'OUT_DIR':         out,
+        'STYLES_DIR':      styles,
+        'IMAGES_DIR':      images,
+        'SCRIPTS_DIR':     scripts,
+        'SKILLS_DIR':      skills,
+        'STYLE_FILE':      os.path.join(styles,  'styles.css'),
+        'SAFE_STYLE_FILE': os.path.join(styles,  'styles.safe.css'),
+        'BUNDLE_FILE':     os.path.join(scripts, 'main.js'),
+        'TESTER_FILE':     os.path.join(out,     'tester.html'),
+        'SKILL_FILE':      os.path.join(skills,  'frontend.md'),
     }
+

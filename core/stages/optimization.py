@@ -41,6 +41,7 @@ class OptimizationStage(ProcessorStage):
 class PostCssOptimizationStage(ProcessorStage):
     def process(self, context: Dict[str, Any]) -> Dict[str, Any]:
         logger.info("=== ETAPA 10: Shadow Build + Otimização Final CSS ===")
+        paths  = get_paths()
         out    = context.get('output', {})
         html_f = out.get('html_file')
         css_f  = out.get('css_file')
@@ -48,13 +49,17 @@ class PostCssOptimizationStage(ProcessorStage):
         if not (html_f and css_f and os.path.exists(html_f) and os.path.exists(css_f)):
             return context
 
-        # --- Shadow Build (PurgeCSS com Safelist Couraçada — sempre ativo) ---
+        # --- Shadow Build (PurgeCSS com Safelist Couraçada) ---
         if tool_available(CONFIG['PURGECSS_BIN']) and CONFIG['USE_PURGECSS']:
             _run_shadow_build(html_f, css_f)
+            
+            # Geração do tester.html (Ambiente de Sombra)
+            if os.path.exists(paths['SAFE_STYLE_FILE']) and CONFIG['ALWAYS_GENERATE_TESTER']:
+                _generate_tester_html(html_f, paths['TESTER_FILE'])
 
-        # --- LightningCSS: minifica o styles.css já substituído ---
-        if tool_available(CONFIG['LIGHTNINGCSS_BIN']) and CONFIG['USE_LIGHTNINGCSS']:
-            logger.info("  LightningCSS: minificando CSS final...")
+        # --- LightningCSS: minifica o styles.css original (leve) se solicitado ---
+        if tool_available(CONFIG['LIGHTNINGCSS_BIN']) and CONFIG['USE_LIGHTNINGCSS'] and CONFIG['MINIFY_CSS']:
+            logger.info("  LightningCSS: minificando CSS original...")
             run_command([
                 CONFIG['LIGHTNINGCSS_BIN'], css_f,
                 '--targets', CONFIG['LIGHTNINGCSS_TARGETS'],
@@ -62,10 +67,33 @@ class PostCssOptimizationStage(ProcessorStage):
             ])
 
         if tool_available(CONFIG['PRETTIER_BIN']) and CONFIG['USE_PRETTIER']:
-            logger.info("  Prettier: formatando CSS...")
+            logger.info("  Prettier: formatando CSS original...")
             run_command([CONFIG['PRETTIER_BIN'], '--write', css_f])
 
         return context
+
+
+def _generate_tester_html(index_path: str, tester_path: str):
+    """Copia o index.html e troca a referência do CSS para a versão segura."""
+    try:
+        with open(index_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        
+        # Substitui styles.css por styles.safe.css (com regex para ser resiliente a aspas)
+        new_content = re.sub(r'href=["\']styles/styles\.css["\']', 'href="styles/styles.safe.css"', content)
+        
+        # Adiciona um banner discreto no topo do tester.html para identificação
+        banner = '<div style="background:#2563eb;color:white;text-align:center;padding:8px;font-family:sans-serif;font-size:12px;position:sticky;top:0;z-index:9999">AMBIENTE DE SOMBRA (OTIMIZADO) - Valide este layout antes de promover para produção</div>'
+        if '<body>' in new_content:
+            new_content = new_content.replace('<body>', f'<body>\n{banner}')
+        elif '<body ' in new_content:
+             new_content = re.sub(r'(<body[^>]*>)', r'\1\n' + banner, new_content)
+        
+        with open(tester_path, 'w', encoding='utf-8') as f:
+            f.write(new_content)
+        logger.info(f"  ✅ Ambiente de Sombra gerado: {os.path.basename(tester_path)}")
+    except Exception as e:
+        logger.warning(f"  ❌ Falha ao gerar tester.html: {e}")
 
 
 # ──────────────────────────────────────────────
@@ -77,81 +105,86 @@ def _run_shadow_build(html_f: str, css_f: str):
     """
     Estratégia Shadow Build:
       1. Coleta sources: index.html + todos os .js em scripts/
-      2. Gera um purgecss.config.cjs temporário com safelist couraçada
-      3. Roda PurgeCSS → gera styles.safe.css (shadow isolado)
-      4. Loga a % de redução
-      5. Substitui styles.css pelo shadow (mantendo o nome original)
+      2. Gera um purgecss.config.cjs temporário com Safelist Couraçada na raiz
+      3. Roda PurgeCSS CLI → gera styles.safe.css (Shadow Isolado)
+      4. Minifica styles.safe.css agressivamente com LightningCSS O3
+      5. Loga a % de redução comparativa
     """
-    out_dir      = os.path.dirname(css_f)        # output/styles/
-    out_dir_root = os.path.dirname(out_dir)      # output/
+    out_dir      = os.path.dirname(css_f)
+    out_dir_root = os.path.dirname(out_dir)
     safe_css     = os.path.join(out_dir, 'styles.safe.css')
 
-    # Caminhos absolutos com forward-slashes (compatível Node.js no Windows)
-    abs_html = os.path.abspath(html_f).replace('\\', '/')
-    abs_css  = os.path.abspath(css_f).replace('\\', '/')
-    abs_safe = os.path.abspath(safe_css).replace('\\', '/')
+    # Caminhos relativos (essencial para Node.js 24+ no Windows)
+    rel_html = os.path.relpath(html_f).replace('\\', '/')
+    rel_css  = os.path.relpath(css_f).replace('\\', '/')
+    rel_safe = os.path.relpath(safe_css).replace('\\', '/')
 
-    # Sources adicionais: todos os .js em scripts/
-    content_entries = [f'"{abs_html}"']
+    # Coleta de assets para análise de classes
+    content_entries = [f"'{rel_html}'"]
     scripts_dir = os.path.join(out_dir_root, 'scripts')
     if os.path.isdir(scripts_dir):
         js_files = glob(os.path.join(scripts_dir, '**', '*.js'), recursive=True)
         for js in js_files:
-            content_entries.append(f'"{os.path.abspath(js).replace(chr(92), "/")}"')
+            rel_js = os.path.relpath(js).replace('\\', '/')
+            content_entries.append(f"'{rel_js}'")
 
     content_str = ', '.join(content_entries)
 
-    # Config JS com safelist couraçada (regex literals nativos do JS)
+    # Config JS com Safelist Couraçada (Armored)
     config_js = f"""module.exports = {{
   content: [{content_str}],
-  css: ["{abs_css}"],
-  output: "{abs_safe}",
+  css: ['{rel_css}'],
+  output: '{rel_safe}',
   safelist: {{
     standard: [
-      /^tw-/, /^view-/, /^-tw-/, /^inline_/,
-      /^btn-/, /^uploader-/, /^preview-/, /^mask-/,
-      /^tool-/, /^brush-/, /^zoom-/, /^editor-/,
-      /^text-/, /^bg-/, /^font-/, /^rounded-/,
-      /^border-/, /^p-/, /^m-/, /^flex-/, /^grid-/,
-      /^w-/, /^h-/, /^max-/, /^min-/, /^z-/,
-      /^opacity-/, /^transition-/, /^duration-/, /^ease-/,
-      /^hover:/, /^focus:/, /^disabled:/, /^md:/, /^lg:/, /^sm:/,
-      'active', 'selected', 'loading', 'open', 'closed', 'hidden', 'visible'
+      /^tw-/, /^view-/, /^-tw-/, /^inline_/, /^btn-/, /^nav-/, /^modal-/,
+      /^data-/, /^aria-/, /^role-/, /^is-/, /^has-/,
+      'active', 'selected', 'loading', 'open', 'closed', 'hidden', 'visible', 'enabled', 'disabled'
     ],
-    deep:   [/data-state/, /data-active/, /data-orientation/, /aria-/, /radix/],
-    greedy: [/inline_/]
+    deep:   [/data-state/, /data-active/, /data-orientation/, /aria-/, /radix/, /next-/],
+    greedy: [/inline_/, /hover:/, /focus:/, /md:/, /lg:/, /sm:/]
   }},
   defaultExtractor: content => content.match(/[\\w-/:]+(?<!:)/g) || []
 }};
 """
-
-    # Grava config temporário
-    tmp_config = os.path.join(out_dir_root, '_shadow_build.config.cjs')
-    with open(tmp_config, 'w', encoding='utf-8') as f:
-        f.write(config_js)
-
-    original_size = os.path.getsize(css_f)
-    logger.info("  Shadow Build: rodando PurgeCSS com safelist couraçada...")
+    # Grava config temporário NA RAIZ para evitar erros de protocolo 'c:'
+    tmp_config_name = '_tmp_shadow.config.cjs'
+    tmp_config_path = os.path.join(os.getcwd(), tmp_config_name)
 
     try:
-        run_command([CONFIG['PURGECSS_BIN'], '--config', tmp_config], timeout=60)
+        with open(tmp_config_path, 'w', encoding='utf-8') as f:
+            f.write(config_js)
+
+        original_size = os.path.getsize(css_f)
+        logger.info("  Shadow Build: rodando PurgeCSS CLI (Safelist Armored)...")
+
+        # Chama PurgeCSS usando o nome curto do config na raiz
+        run_command([CONFIG['PURGECSS_BIN'], '--config', tmp_config_name], timeout=60)
+        
+        if not os.path.exists(safe_css):
+            logger.warning("  Shadow Build: falha ao gerar styles.safe.css")
+            return
+
+        # Minificação Extrema do Shadow
+        if tool_available(CONFIG['LIGHTNINGCSS_BIN']):
+            logger.info("  Shadow Build: aplicando minificação extrema O3 via LightningCSS...")
+            run_command([
+                CONFIG['LIGHTNINGCSS_BIN'], safe_css,
+                '--targets', CONFIG['LIGHTNINGCSS_TARGETS'],
+                '-o', safe_css, '--minify'
+            ])
+
+        shadow_size = os.path.getsize(safe_css)
+        reduction   = (1 - shadow_size / original_size) * 100 if original_size > 0 else 0
+        logger.info(f"  CSS original:  {original_size / 1024:.2f} KB")
+        logger.info(f"  CSS shadow:    {shadow_size   / 1024:.2f} KB  (-{reduction:.1f}%)")
+        logger.info(f"  ✅ Shadow Build concluído: styles.safe.css disponível para tester.html")
+
+    except Exception as e:
+        logger.warning(f"  Shadow Build: Erro na execução: {e}")
     finally:
-        if os.path.exists(tmp_config):
-            os.remove(tmp_config)
-
-    if not os.path.exists(safe_css):
-        logger.warning("  Shadow Build: styles.safe.css não foi gerado — mantendo CSS original")
-        return
-
-    # Relatório de redução
-    shadow_size = os.path.getsize(safe_css)
-    reduction   = (1 - shadow_size / original_size) * 100 if original_size > 0 else 0
-    logger.info(f"  CSS original:  {original_size / 1024:.2f} KB")
-    logger.info(f"  CSS shadow:    {shadow_size   / 1024:.2f} KB  (-{reduction:.1f}%)")
-
-    # Substitui styles.css pelo shadow — mantendo o nome original
-    shutil.move(safe_css, css_f)
-    logger.info(f"  ✅ styles.css substituído com versão otimizada ({reduction:.1f}% menor)")
+        if os.path.exists(tmp_config_path):
+            os.remove(tmp_config_path)
 
 
 def _sanitize_css(css: str) -> str:
