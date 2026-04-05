@@ -16,12 +16,16 @@ echo.
 
 :: ── Verifica se é instalação limpa (Bootstrap) ──
 IF NOT EXIST "cloner.py" (
-    echo [0/4] Baixando Process Cloner do Servidor Oficial...
-    curl -fsSL "https://github.com/Nilsonbarbozza/chatburguer-app/releases/latest/download/process-cloner.zip" -o process-cloner.zip
-    IF EXIST "process-cloner.zip" (
-        powershell -Command "Expand-Archive process-cloner.zip -DestinationPath . -Force"
-        del process-cloner.zip
-        echo   OK: Arquivos extraidos com sucesso.
+    echo [0/5] Preparando diretorio oculto de instalacao...
+    IF NOT EXIST "%USERPROFILE%\.chatburguer" mkdir "%USERPROFILE%\.chatburguer"
+    cd /d "%USERPROFILE%\.chatburguer"
+
+    echo [1/5] Baixando Process Cloner do Servidor Oficial...
+    curl -fsSL "https://github.com/Nilsonbarbozza/chatburguer-app/releases/latest/download/process-cloner.zip" -o cloner.zip
+    IF EXIST "cloner.zip" (
+        powershell -Command "Expand-Archive cloner.zip -DestinationPath . -Force"
+        del cloner.zip
+        echo   OK: Arquivos extraidos com sucesso na pasta .chatburguer.
     ) ELSE (
         echo   ERRO: Falha ao baixar o arquivo ZIP da versao 1.0.5.
         pause
@@ -60,13 +64,13 @@ node --version >nul 2>&1
 IF %ERRORLEVEL% EQU 0 (
     FOR /F "tokens=*" %%i IN ('node --version') DO echo   OK: Node.js %%i
 
-    npm install -g prettier >nul 2>&1
+    call npm install -g prettier >nul 2>&1
     IF %ERRORLEVEL% EQU 0 (echo   OK: prettier instalado) ELSE (echo   AVISO: prettier nao instalado)
 
-    npm install -g lightningcss >nul 2>&1
+    call npm install -g lightningcss >nul 2>&1
     IF %ERRORLEVEL% EQU 0 (echo   OK: lightningcss instalado) ELSE (echo   AVISO: lightningcss nao instalado)
 
-    npm install -g purgecss >nul 2>&1
+    call npm install -g purgecss >nul 2>&1
     IF %ERRORLEVEL% EQU 0 (echo   OK: purgecss instalado) ELSE (echo   AVISO: purgecss nao instalado)
 ) ELSE (
     echo   AVISO: Node.js nao encontrado. Otimizacoes CSS serao puladas.
@@ -110,5 +114,6 @@ echo   Ou arraste um arquivo HTML para o terminal:
 echo     cloner --file seu_arquivo.html
 echo.
 pause
+
 
 

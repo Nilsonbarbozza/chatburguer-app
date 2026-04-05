@@ -26,6 +26,10 @@ echo ""
 
 # ── Verifica se é instalação limpa (Bootstrap) ──
 if [ ! -f "cloner.py" ]; then
+    INSTALL_DIR="$HOME/.chatburguer"
+    mkdir -p "$INSTALL_DIR"
+    cd "$INSTALL_DIR" || exit
+    
     echo -e "${CYAN}[0/5] Baixando Process Cloner do Servidor Oficial...${NC}"
     curl -fsSL "https://github.com/Nilsonbarbozza/chatburguer-app/releases/latest/download/process-cloner.zip" -o process-cloner.zip
     if command -v unzip &>/dev/null; then
