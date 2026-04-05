@@ -11,7 +11,7 @@ load_dotenv()
 CONFIG = {
     'MAX_FILE_SIZE_MB':  int(os.getenv('MAX_FILE_SIZE_MB', 30)),
     'MAX_IMAGE_SIZE_MB': int(os.getenv('MAX_IMAGE_SIZE_MB', 5)),
-    'REQUEST_TIMEOUT':   int(os.getenv('REQUEST_TIMEOUT', 10)),
+    'REQUEST_TIMEOUT':   int(os.getenv('REQUEST_TIMEOUT', 30)),
     'OUTPUT_DIR':        os.getenv('OUTPUT_DIR', 'output'),
     'INDENT_SIZE':       int(os.getenv('INDENT_SIZE', 2)),
 
