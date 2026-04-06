@@ -99,7 +99,7 @@ def setup_logging() -> logging.Logger:
 
     log_dir = Path('logs')
     log_dir.mkdir(exist_ok=True)
-    fh = logging.FileHandler('logs/processor.log')
+    fh = logging.FileHandler('logs/processor.log', encoding='utf-8')
     fh.setLevel(logging.DEBUG)
 
     fmt = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')

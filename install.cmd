@@ -10,7 +10,7 @@ echo  ██║      ██║     ██║   ██║██║╚████
 echo  ╚██████╗ ███████╗╚██████╔╝██║ ╚███║███████╗██║  ██║
 echo   ╚═════╝ ╚══════╝ ╚═════╝ ╚═╝  ╚══╝╚══════╝╚═╝  ╚═╝
 echo.
-echo   Process Cloner v1.0.5 — Instalador Windows
+echo   Process Cloner v1.0.6 — Instalador Windows
 echo   -------------------------------------------
 echo.
 
@@ -27,7 +27,7 @@ IF NOT EXIST "cloner.py" (
         del cloner.zip
         echo   OK: Arquivos extraidos com sucesso na pasta .chatburguer.
     ) ELSE (
-        echo   ERRO: Falha ao baixar o arquivo ZIP da versao 1.0.5.
+        echo   ERRO: Falha ao baixar o arquivo ZIP da versao 1.0.6.
         pause
         exit /b 1
     )

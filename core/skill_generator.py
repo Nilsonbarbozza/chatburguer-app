@@ -661,9 +661,11 @@ class DesignAnalyzer:
                 val  = p.value
                 if 'transition' in name:
                     transitions.append(val)
-                    if 's' in val: durations.append(re.search(r'[\d.]+s', val).group(0))
+                    m = re.search(r'[\d.]+s', val)
+                    if m: durations.append(m.group(0))
                 elif 'animation' in name:
-                    if 's' in val: durations.append(re.search(r'[\d.]+s', val).group(0))
+                    m = re.search(r'[\d.]+s', val)
+                    if m: durations.append(m.group(0))
                 elif 'transform' in name:
                     transforms.append(val)
 

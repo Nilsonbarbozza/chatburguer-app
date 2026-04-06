@@ -14,7 +14,7 @@ from typing import Optional
 
 import requests
 
-CURRENT_VERSION = "1.0.5"
+CURRENT_VERSION = "1.0.6"
 API_BASE_URL    = os.getenv('CLONER_API_URL', 'https://chatburguer-server.onrender.com')
 INSTALL_DIR     = Path(__file__).parent.parent
 REQUEST_TIMEOUT = 20
