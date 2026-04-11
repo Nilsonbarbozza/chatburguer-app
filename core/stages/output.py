@@ -26,12 +26,28 @@ class OutputStage(ProcessorStage):
         os.makedirs(paths['STYLES_DIR'], exist_ok=True)
         os.makedirs(paths['OUT_DIR'],    exist_ok=True)
 
-        # Salva CSS
+        # Salva CSS extraído/otimizado
         save_file(paths['STYLE_FILE'], context.get('css', ''))
 
-        # Formata e salva HTML
-        raw_html   = context['soup'].decode()
-        final_html = _format_html(raw_html)
+        # Gera HTML bruto do soup
+        raw_html = context['soup'].decode(formatter='html')
+
+        # LIMPEZA PRÉ-FORMATADOR (Evita erro de sintaxe no Prettier)
+        # 1. Remove tags de fechamento espúrias para void elements
+        clean_html = re.sub(r'</(source|track|wbr|hr|br|img|link|meta)>', '', raw_html, flags=re.IGNORECASE)
+        # 2. Remove slashes de auto-fechamento (ex: <source /> -> <source>)
+        clean_html = re.sub(r'<(source|track|wbr|hr|br|img|link|meta)([^>]*?)\s*/>', r'<\1\2>', clean_html, flags=re.IGNORECASE)
+
+        # Agora formata com Prettier/lxml
+        raw_formatted = _format_html(clean_html)
+
+        # LIMPEZA PÓS-FORMATADOR (Finaliza semântica)
+        # Garante que boolean attributes não tenham ="" nem ="True"
+        final_html = re.sub(r'\s(autoplay|loop|muted|playsinline|webkit-playsinline)(=""|="True"|="true")', r' \1', raw_formatted, flags=re.IGNORECASE)
+        # Remove eventuais tags de fechamento ou slashes que o formatador possa ter reinserido
+        final_html = re.sub(r'</(source|track|wbr|hr|br|img|link|meta)>', '', final_html, flags=re.IGNORECASE)
+        final_html = re.sub(r'<(source|track|wbr|hr|br|img|link|meta)([^>]*?)\s*/>', r'<\1\2>', final_html, flags=re.IGNORECASE)
+        
         html_path  = os.path.join(paths['OUT_DIR'], 'index.html')
         save_file(html_path, final_html)
 

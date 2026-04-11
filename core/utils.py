@@ -69,6 +69,7 @@ def run_command(cmd: List[str], stdin: str = None, timeout: int = 30) -> Optiona
             encoding='utf-8',
             errors='ignore',
             timeout=timeout,
+            shell=(os.name == 'nt')
         )
         if result.returncode == 0:
             return result.stdout

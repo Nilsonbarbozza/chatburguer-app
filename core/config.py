@@ -31,6 +31,11 @@ CONFIG = {
     'MINIFY_CSS':           os.getenv('MINIFY_CSS',        'false').lower() == 'true',
     'MINIFY_LEVEL':         os.getenv('MINIFY_LEVEL',      'extreme'),
     'ALWAYS_GENERATE_TESTER': os.getenv('ALWAYS_GENERATE_TESTER', 'true').lower() == 'true',
+
+    # Validação Visual (Shadow Health Check)
+    'USE_VALIDATION':        os.getenv('USE_VALIDATION', 'true').lower() == 'true',
+    'VALIDATION_THRESHOLD':  float(os.getenv('VALIDATION_THRESHOLD', 0.05)), # Tolerância de 5% de pixels diferentes
+    'PLAYWRIGHT_TIMEOUT':    int(os.getenv('PLAYWRIGHT_TIMEOUT', 30000)),
 }
 
 
@@ -44,12 +49,14 @@ def get_paths() -> dict:
     out     = CONFIG['OUTPUT_DIR']
     styles  = os.path.join(out, 'styles')
     images  = os.path.join(out, 'images')
+    videos  = os.path.join(out, 'videos')
     scripts = os.path.join(out, 'scripts')
     skills  = os.path.join(out, 'skills')
     return {
         'OUT_DIR':         out,
         'STYLES_DIR':      styles,
         'IMAGES_DIR':      images,
+        'VIDEOS_DIR':      videos,
         'SCRIPTS_DIR':     scripts,
         'SKILLS_DIR':      skills,
         'STYLE_FILE':      os.path.join(styles,  'styles.css'),

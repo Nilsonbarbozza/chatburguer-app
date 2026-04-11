@@ -19,5 +19,13 @@ class LoadingStage(ProcessorStage):
         with open(context['input_file'], 'r', encoding='utf-8', errors='replace') as f:
             context['html'] = f.read()
         context['soup'] = BeautifulSoup(context['html'], 'lxml')
+        
+        # Tenta descobrir base_url via tag <base> se não fornecido
+        if not context.get('base_url'):
+            base_tag = context['soup'].find('base')
+            if base_tag and base_tag.get('href'):
+                context['base_url'] = base_tag['href']
+                logger.info(f"Base URL detectada via HTML: {context['base_url']}")
+
         logger.info(f"HTML carregado: {len(context['html'])} bytes")
         return context

@@ -7,6 +7,7 @@ import re
 import shutil
 import tempfile
 import logging
+import pathlib
 from glob import glob
 from typing import Dict, Any
 
@@ -119,56 +120,58 @@ def _run_shadow_build(html_f: str, css_f: str):
     rel_css  = os.path.relpath(css_f).replace('\\', '/')
     rel_safe = os.path.relpath(safe_css).replace('\\', '/')
 
-    # Coleta de assets para análise de classes
-    content_entries = [f"'{rel_html}'"]
-    scripts_dir = os.path.join(out_dir_root, 'scripts')
-    if os.path.isdir(scripts_dir):
-        js_files = glob(os.path.join(scripts_dir, '**', '*.js'), recursive=True)
-        for js in js_files:
-            rel_js = os.path.relpath(js).replace('\\', '/')
-            content_entries.append(f"'{rel_js}'")
-
-    content_str = ', '.join(content_entries)
-
-    # Config JS com Safelist Couraçada (Armored)
-    config_js = f"""module.exports = {{
-  content: [{content_str}],
-  css: ['{rel_css}'],
-  output: '{rel_safe}',
-  safelist: {{
-    standard: [
-      /^tw-/, /^view-/, /^-tw-/, /^inline_/, /^btn-/, /^nav-/, /^modal-/,
-      /^data-/, /^aria-/, /^role-/, /^is-/, /^has-/,
-      'active', 'selected', 'loading', 'open', 'closed', 'hidden', 'visible', 'enabled', 'disabled'
-    ],
-    deep:   [/data-state/, /data-active/, /data-orientation/, /aria-/, /radix/, /next-/],
-    greedy: [/inline_/, /hover:/, /focus:/, /md:/, /lg:/, /sm:/]
-  }},
-  defaultExtractor: content => content.match(/[\\w-/:]+(?<!:)/g) || []
-}};
-"""
-    # Grava config temporário NA RAIZ para o Cosmiconfig achar automaticamente
-    # (Não passamos --config no CLI para evitar o bug de ESM absoluto no Windows)
-    tmp_config_name = 'purgecss.config.js'
-    tmp_config_path = os.path.join(os.getcwd(), tmp_config_name)
-
     try:
-        with open(tmp_config_path, 'w', encoding='utf-8') as f:
-            f.write(config_js)
+        # Limpa possíveis arquivos de config que travam o Node no Windows
+        for f_ghost in ['purgecss.config.js', 'purgecss.config.cjs', 'purgecss.config.json']:
+            if os.path.exists(f_ghost):
+                try: os.remove(f_ghost)
+                except: pass
+
+        # Deleta arquivo antigo para garantir que leremos o novo
+        if os.path.exists(safe_css):
+            os.remove(safe_css)
 
         original_size = os.path.getsize(css_f)
-        logger.info("  Shadow Build: rodando PurgeCSS CLI (Safelist Armored bypass)...")
+        logger.info(f"  Shadow Build: rodando PurgeCSS CLI em modo agressivo...")
 
-        # Chama PurgeCSS injetando arquivos pela CLI; safelist sera lido do purgecss.config.js automaticamente
-        cmd = [CONFIG['PURGECSS_BIN'], '--css', rel_css, '--output', rel_safe, '--content', rel_html]
-        if len(content_entries) > 1:
-            for js_f in content_entries[1:]:
-                cmd.append(js_f.strip("'"))
-                
-        run_command(cmd, timeout=60)
+        # Lista de safelist para a CLI (Library Shield - Proteção Universal)
+        safelist_items = [
+            # Bibliotecas de Carousel/Slider
+            "swiper-", "swiper-container", "swiper-wrapper", "swiper-slide", "swiper-pagination", "swiper-button",
+            "slick-", "owl-", "lity-", "mfp-",
+            # Frameworks e Componentes UI
+            "bootstrap-", "btn-", "nav-", "modal-", "dropdown-", "collapse-", "fade", "show",
+            # Estados Dinâmicos (JS Injected)
+            "is-", "has-", "active", "selected", "loading", "open", "closed", "hidden", "visible", "enabled", "disabled",
+            "current", "focused", "pressed", "expended", "collapsed",
+            # Animações e Efeitos
+            "animate-", "aos-", "wow-", "transition-", "transform-",
+            # Classes do Process Cloner
+            "view-", "inline_", "sf-hidden"
+        ]
+
+        # PurgeCSS CLI --output espera um DIRETÓRIO. Usamos um temporário.
+        temp_file_found = False
+        with tempfile.TemporaryDirectory() as tmp_out:
+            cmd = [
+                CONFIG['PURGECSS_BIN'], 
+                '--css', rel_css, 
+                '--content', rel_html,
+                '--output', tmp_out,
+                '--safelist'
+            ] + safelist_items
+
+            logger.debug(f"  Executando PurgeCSS CLI...")
+            run_command(cmd, timeout=60)
+            
+            # Localiza o arquivo gerado
+            expected_out = os.path.join(tmp_out, os.path.basename(css_f))
+            if os.path.exists(expected_out):
+                shutil.copy2(expected_out, safe_css)
+                temp_file_found = True
         
-        if not os.path.exists(safe_css):
-            logger.warning("  Shadow Build: falha ao gerar styles.safe.css")
+        if not temp_file_found or not os.path.exists(safe_css):
+            logger.warning("  Shadow Build: falha ao gerar styles.safe.css (Arquivo não encontrado)")
             return
 
         # Minificação Extrema do Shadow
@@ -182,15 +185,15 @@ def _run_shadow_build(html_f: str, css_f: str):
 
         shadow_size = os.path.getsize(safe_css)
         reduction   = (1 - shadow_size / original_size) * 100 if original_size > 0 else 0
-        logger.info(f"  CSS original:  {original_size / 1024:.2f} KB")
-        logger.info(f"  CSS shadow:    {shadow_size   / 1024:.2f} KB  (-{reduction:.1f}%)")
-        logger.info(f"  ✅ Shadow Build concluído: styles.safe.css disponível para tester.html")
+        logger.info(f"  Resultados Shadow Build:")
+        logger.info(f"    - Original: {original_size / 1024:.1f} KB")
+        logger.info(f"    - Shadow:   {shadow_size / 1024:.1f} KB (-{reduction:.1f}%)")
+        logger.info(f"  ✅ Shadow Build concluído com sucesso.")
 
     except Exception as e:
         logger.warning(f"  Shadow Build: Erro na execução: {e}")
     finally:
-        if os.path.exists(tmp_config_path):
-            os.remove(tmp_config_path)
+        pass
 
 
 def _sanitize_css(css: str) -> str:

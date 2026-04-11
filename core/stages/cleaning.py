@@ -20,6 +20,7 @@ class CleaningStage(ProcessorStage):
         soup = _clean_html(soup)
         soup = _semantic_conversion(soup)
         soup = _clean_head(soup)
+        soup = _clean_video_semantics(soup)
         context['soup'] = soup
         return context
 
@@ -90,4 +91,39 @@ def _clean_head(soup: BeautifulSoup) -> BeautifulSoup:
         ld.decompose()
 
     logger.info("Head limpo")
+    return soup
+
+
+def _clean_video_semantics(soup: BeautifulSoup) -> BeautifulSoup:
+    """Melhora a semântica de tags de vídeo e organiza fallbacks."""
+    videos = soup.find_all('video')
+    for video in videos:
+        # 1. Limpa atributos booleanos
+        for attr in ['autoplay', 'loop', 'muted', 'playsinline', 'webkit-playsinline']:
+            if video.has_attr(attr):
+                # Usar string vazia ou herdar o valor original se for boolean
+                video[attr] = '' # Em HTML5 isso resulta em apenas 'attr' se for void
+
+        # 2. Tenta capturar fallback (link/imagem logo após o vídeo que aponta para o mesmo recurso)
+        nxt = video.find_next_sibling()
+        moved_link = None
+        if nxt and nxt.name == 'a':
+            href = nxt.get('href', '')
+            if href.endswith('.mp4') or href.endswith('.webm'):
+                logger.debug("Movendo fallback de vídeo (link) para dentro da tag <video>")
+                moved_link = nxt.extract()
+                video.append(moved_link)
+        elif nxt and nxt.name == 'img':
+            video.append(nxt.extract())
+
+        # 3. Inteligência Adicional: Se source estiver vazia, tenta usar o href do link movido
+        for source in video.find_all('source'):
+            if not source.get('src') and not source.get('data-src') and moved_link:
+                href = moved_link.get('href')
+                if href:
+                    logger.info(f"Herdando src do link de fallback: {href}")
+                    source['src'] = href
+
+    if videos:
+        logger.info(f"Semântica de vídeo processada: {len(videos)} tags")
     return soup
