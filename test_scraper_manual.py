@@ -15,14 +15,15 @@ from core.stages.cleaning import CleaningStage
 from core.stages.maintenance import MaintenanceStage
 from core.stages.extraction import ExtractionStage
 from core.stages.javascript import JavaScriptExtractionStage
+from core.stages.refactoring import RefactoringStage
 from core.stages.optimization import OptimizationStage
 from core.stages.output import OutputStage
 from core.skill_generator import SkillGeneratorStage
 
 def run_full_manual_test():
     # URL alvo para o teste
-    url = "https://prismlive.com/en_us/effect.html"
-    output_dir = "output_full_scraper_test"
+    url = "https://prismlive.com/en_us/mobile.html"
+    output_dir = "output_mobile_scraper_test"
     
     print(f"🚀 INICIANDO TESTE DE PIPELINE COMPLETO (VIA URL - BYPASS TOKEN)")
     print(f"🔗 Alvo: {url}")
@@ -41,6 +42,7 @@ def run_full_manual_test():
         .add_stage(MaintenanceStage())         # Etapa 4: Comentários de Manutenção
         .add_stage(ExtractionStage())          # Etapa 5: Extração de Ativos (CSS/Imagens reais)
         .add_stage(JavaScriptExtractionStage()) # Etapa 6: Coleta de Scripts
+        .add_stage(RefactoringStage())         # Etapa 6.5: Refatoração Semântica + Design System
         .add_stage(OptimizationStage())        # Etapa 7: Otimização
         .add_stage(OutputStage())              # Etapa 9: Geração de Saída (index.html + styles.css)
         .add_stage(SkillGeneratorStage())      # Etapa 12: Geração de Memória para IA (Skills)

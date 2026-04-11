@@ -34,25 +34,35 @@ class ExtractionStage(ProcessorStage):
         os.makedirs(paths['SCRIPTS_DIR'], exist_ok=True)
 
         # CSS externo
+        context['css'] = context.get('css', '')
         for link in soup.find_all('link', rel='stylesheet'):
             href = link.get('href', '')
-            if not href:
+            if not href or 'styles/styles.css' in href:
                 continue
             full_url = _resolve_url(href, base_url)
-            if full_url:
+            if full_url and not full_url.startswith('data:'):
                 filename = f"style_{hashlib.md5(full_url.encode()).hexdigest()[:8]}.css"
                 local    = os.path.join(paths['STYLES_DIR'], filename)
                 if _download_asset(full_url, local):
-                    link['href'] = f"styles/{filename}"
-                    # Processa ativos internos do CSS externo baixado
+                    # Adiciona ao CSS principal para unificação
                     try:
                         with open(local, 'r', encoding='utf-8', errors='replace') as f:
                             ext_css = f.read()
+                        
+                        # Processa ativos internos ANTES da unificação para manter caminhos
                         ext_css = _extract_css_base64_images(ext_css, paths['IMAGES_DIR'])
-                        ext_css = _extract_css_remote_assets(ext_css, full_url, paths['IMAGES_DIR']) # Usa full_url como base
-                        save_file(local, ext_css)
+                        ext_css = _extract_css_remote_assets(ext_css, full_url, paths['IMAGES_DIR'])
+                        
+                        # Concatena com banner de separação
+                        context['css'] += f"\n\n/* --- BUNDLED: {href} --- */\n" + ext_css
+                        
+                        # Remove a tag link do HTML pois será unificada
+                        link.decompose()
+                        
+                        # Remove o arquivo individual (opcional, vamos manter por segurança se der erro)
+                        # os.remove(local) 
                     except Exception as e:
-                        logger.warning(f"Erro ao processar ativos do CSS externo {filename}: {e}")
+                        logger.warning(f"Erro ao unificar CSS {filename}: {e}")
 
         # Scripts externos
         for script in soup.find_all('script', src=True):
@@ -67,8 +77,11 @@ class ExtractionStage(ProcessorStage):
                     script['src'] = f"scripts/{filename}"
 
         # CSS inline + estilos inline → classes
-        context['css']  = _extract_style_tags(soup)
-        context['css']  = _extract_css_base64_images(context['css'], paths['IMAGES_DIR'])
+        # Adiciona ao CSS já acumulado dos arquivos externos
+        inline_css      = _extract_style_tags(soup)
+        context['css'] += _extract_css_base64_images(inline_css, paths['IMAGES_DIR'])
+        
+        # Processa ativos remotos no CSS acumulado (agora contendo tudo)
         context['css']  = _extract_css_remote_assets(context['css'], base_url, paths['IMAGES_DIR'])
         context['soup'] = _extract_images(soup, base_url, paths['IMAGES_DIR'])
         context['soup'] = _extract_videos(soup, base_url, paths['VIDEOS_DIR'])

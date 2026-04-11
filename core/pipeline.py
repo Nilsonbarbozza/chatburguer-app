@@ -61,6 +61,7 @@ def build_pipeline() -> Pipeline:
     from core.stages.optimization import OptimizationStage, PostCssOptimizationStage
     from core.stages.shadow_validation import ShadowValidationStage
     from core.stages.tailwind     import TailwindIntegrationStage
+    from core.stages.refactoring  import RefactoringStage
     from core.stages.output       import OutputStage
     from core.skill_generator     import SkillGeneratorStage
 
@@ -73,6 +74,7 @@ def build_pipeline() -> Pipeline:
         .add_stage(MaintenanceStage())
         .add_stage(ExtractionStage())
         .add_stage(JavaScriptExtractionStage())
+        .add_stage(RefactoringStage())
         .add_stage(OptimizationStage())
         .add_stage(TailwindIntegrationStage())
         .add_stage(OutputStage())

@@ -31,17 +31,26 @@ class MaintenanceStage(ProcessorStage):
                 el.insert(0, Comment(f" {label} "))
 
         tag_labels = [
-            ('header',  '[SECTION] Cabeçalho'),
-            ('footer',  '[SECTION] Rodapé'),
-            ('main',    '[SECTION] Conteúdo Principal'),
-            ('nav',     '[SECTION] Navegação'),
-            ('aside',   '[SECTION] Sidebar'),
-            ('article', '[SECTION] Artigo'),
+            ('header',  '[COMPONENT] Header Principal'),
+            ('footer',  '[COMPONENT] Rodapé Principal'),
+            ('main',    '[LAYOUT] Conteúdo Principal'),
+            ('nav',     '[LAYOUT] Menu de Navegação'),
+            ('aside',   '[LAYOUT] Barra Lateral (Sidebar)'),
+            ('article', '[COMPONENT] Artigo de Conteúdo'),
+            ('section', '[LAYOUT] Seção Estrutural'),
         ]
         for tag, label in tag_labels:
             for el in soup.find_all(tag):
-                if not any(isinstance(c, Comment) for c in el.children):
-                    el.insert(0, Comment(f" {label} "))
+                # Verifica se já tem comentário ou data-attribute
+                component_info = el.get('data-cloner-component')
+                section_info = el.get('data-cloner-section')
+                
+                final_label = label
+                if component_info: final_label = f"[COMPONENT] {component_info}"
+                elif section_info: final_label = f"[SECTION] {section_info}"
+                
+                if not any(isinstance(c, Comment) and "[SECTION]" in str(c) for c in el.children):
+                    el.insert(0, Comment(f" {final_label} "))
 
         logger.info("Comentários estruturais injetados")
         context['soup'] = soup

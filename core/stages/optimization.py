@@ -238,6 +238,14 @@ def _optimize_lightningcss(css_text: str) -> str:
 
 
 def _optimize_regex(css_text: str) -> str:
+    # Se não for para minificar, apenas higieniza o básico preservando estrutura
+    if not CONFIG.get('MINIFY_CSS'):
+        # Apenas remove comentários de arquivos bundled se solicitado, 
+        # mas como queremos manutenção, vamos manter apenas espaços limpos.
+        clean = re.sub(r'[ \t]+', ' ', css_text)
+        return clean.strip()
+
+    # Caso contrário, minificação agressiva (original)
     minified = re.sub(r'/\*.*?\*/', '', css_text, flags=re.DOTALL)
     minified = re.sub(r'\s+', ' ', minified)
     minified = re.sub(r'\s*([{};:,>~+])\s*', r'\1', minified)

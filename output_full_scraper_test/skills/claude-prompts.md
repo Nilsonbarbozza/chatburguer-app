@@ -1,5 +1,5 @@
 # Prompts para Claude Code — Face Effects · Filters · Stickers | PRISM Effects
-> Gerado pelo Process Cloner em 11/04/2026 17:31
+> Gerado pelo Process Cloner em 11/04/2026 17:59
 > Copie e cole estes prompts diretamente no Claude Code.
 > Eles já referenciam os arquivos de skill corretos.
 
@@ -24,10 +24,10 @@ Leia os arquivos da pasta skills/ antes de qualquer alteração:
 
 Vou personalizar o projeto em output/index.html.
 Regras obrigatórias:
-- Preserve TODAS as cores: as cores do design-tokens.md
-- Preserve a fonte: fonte documentada no design-tokens.md
-- Mantenha o container com max-width: 1200px
-- Mantenha o sistema de layout: layout padrão
+- Preserve TODAS as cores: TRANSPARENT, #FFFFFF, #255DE4
+- Preserve a fonte: Pretendard Variable
+- Mantenha o container com max-width: 100%
+- Mantenha o sistema de layout: Flexbox
 - Os componentes existentes (Navbar, Botões / CTA, Footer, Alerta / Toast) devem continuar funcionando
 
 Minha personalização:
@@ -44,7 +44,7 @@ Leia skills/design-tokens.md e skills/components.md.
 Crie uma nova seção HTML para inserir em output/index.html.
 A seção deve seguir exatamente o design system do projeto:
 - Usar apenas as cores de skills/design-tokens.md
-- Usar a fonte fonte documentada no design-tokens.md
+- Usar a fonte Pretendard Variable
 - Seguir o grid documentado em skills/layout-system.md
 - Ter os mesmos padrões de hover/transição de skills/ux-patterns.md
 
@@ -63,7 +63,7 @@ Analise output/index.html e styles/styles.css.
 Corrija os problemas de responsividade respeitando os breakpoints documentados.
 
 Prioridade:
-1. Mobile (768px ou menor)
+1. Mobile (1024px ou menor)
 2. Tablet
 3. Desktop
 
@@ -130,4 +130,4 @@ Não altere nenhum estilo visual — apenas qualidade e correção.
 
 ---
 
-*Process Cloner — 11/04/2026 17:31*
+*Process Cloner — 11/04/2026 17:59*

@@ -1,11 +1,46 @@
 # Layout System — Face Effects · Filters · Stickers | PRISM Effects
-> Gerado pelo Process Cloner em 11/04/2026 17:31
+> Gerado pelo Process Cloner em 11/04/2026 17:59
 > **REGRA**: Toda nova seção deve respeitar este sistema de grid e breakpoints.
 
 ---
 
 ## Tecnologias de layout identificadas
 
+- Flexbox
+
+**Container max-width**: `100%`
+
+```css
+.container {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+```
+
+## Breakpoints responsivos
+
+| Breakpoint | Largura | Uso |
+|------------|---------|-----|
+| `1024px` | 1024px | Desktop |
+| `1280px` | 1280px | Breakpoint |
+
+### Template padrão de media queries
+
+```css
+@media (max-width: 1024px) {
+  /* ajustes para Desktop */
+}
+
+@media (max-width: 1280px) {
+  /* ajustes para 1280px */
+}
+
+```
+
+## Padrões Flexbox
+
+- `flex-direction: column`
 
 ## Estrutura de seções HTML
 
@@ -32,7 +67,7 @@ Use esta estrutura ao criar qualquer nova página:
 
   <!-- MAIN -->
   <main>
-    <!-- container max-width: None -->
+    <!-- container max-width: 100% -->
     <div class="container">
       <!-- conteúdo aqui -->
     </div>
@@ -47,4 +82,4 @@ Use esta estrutura ao criar qualquer nova página:
 
 ---
 
-*Process Cloner — 11/04/2026 17:31*
+*Process Cloner — 11/04/2026 17:59*
