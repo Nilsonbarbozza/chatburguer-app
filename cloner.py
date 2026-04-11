@@ -38,18 +38,24 @@ def main():
         print("✅ Token removido. Execute 'cloner' para fazer login novamente.")
         sys.exit(0)
 
-    # Modo direto: cloner --file caminho.html [--url https://...]
-    if '--file' in args:
-        idx  = args.index('--file')
-        file = args[idx + 1] if idx + 1 < len(args) else None
-        url  = None
+    # Modo direto: cloner --url https://... [--file caminho.html]
+    if '--url' in args or '--file' in args:
+        url = None
+        file = None
+        
         if '--url' in args:
             uidx = args.index('--url')
-            url  = args[uidx + 1] if uidx + 1 < len(args) else None
-        if not file:
-            print("Uso: cloner --file caminho/para/arquivo.html [--url https://site.com]")
+            url = args[uidx + 1] if uidx + 1 < len(args) else None
+            
+        if '--file' in args:
+            fidx = args.index('--file')
+            file = args[fidx + 1] if fidx + 1 < len(args) else None
+            
+        if not url and not file:
+            print("Uso: cloner --url https://site.com [--file local.html]")
             sys.exit(1)
-        _run_direct(file, url)
+            
+        _run_direct(file_path=file, url=url)
         return
 
     # Modo interativo padrão
@@ -57,7 +63,7 @@ def main():
     ClonerCLI().run()
 
 
-def _run_direct(file_path: str, base_url: str = None):
+def _run_direct(file_path: str = None, url: str = None):
     """Executa o pipeline sem prompts interativos."""
     from cli.auth     import TokenAuth, AuthError
     from core.pipeline import build_pipeline
@@ -73,7 +79,10 @@ def _run_direct(file_path: str, base_url: str = None):
     pipeline = build_pipeline()
 
     try:
-        result = pipeline.execute({'input_file': file_path, 'base_url': base_url})
+        result = pipeline.execute({
+            'input_file': file_path,
+            'url': url
+        })
         out = result['output']
         print(f"✅ Concluído → {out['html_file']}")
         if result.get('skill_file'):

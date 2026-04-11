@@ -51,6 +51,7 @@ def build_pipeline() -> Pipeline:
       10. PostCSS          → PurgeCSS + LightningCSS final
       11. SkillGenerator   → gera skills/frontend.md para LLMs
     """
+    from core.stages.scraper      import ScraperStage
     from core.stages.validation   import ValidationStage
     from core.stages.loading      import LoadingStage
     from core.stages.cleaning     import CleaningStage
@@ -65,6 +66,7 @@ def build_pipeline() -> Pipeline:
 
     return (
         Pipeline()
+        .add_stage(ScraperStage())
         .add_stage(ValidationStage())
         .add_stage(LoadingStage())
         .add_stage(CleaningStage())

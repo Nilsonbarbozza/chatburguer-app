@@ -16,8 +16,18 @@ logger = logging.getLogger('html_processor')
 class LoadingStage(ProcessorStage):
     def process(self, context: Dict[str, Any]) -> Dict[str, Any]:
         logger.info("=== ETAPA 2: Carregamento ===")
-        with open(context['input_file'], 'r', encoding='utf-8', errors='replace') as f:
-            context['html'] = f.read()
+        
+        # Se o HTML já estiver presente (vido do Scraper), pulamos a leitura de arquivo
+        if not context.get('html'):
+            if not context.get('input_file'):
+                raise ValueError("Nenhum arquivo de entrada ou HTML fornecido.")
+                
+            with open(context['input_file'], 'r', encoding='utf-8', errors='replace') as f:
+                context['html'] = f.read()
+                logger.info(f"HTML carregado via arquivo: {context['input_file']}")
+        else:
+            logger.info("Usando HTML pré-carregado do estágio anterior.")
+            
         context['soup'] = BeautifulSoup(context['html'], 'lxml')
         
         # Tenta descobrir base_url via tag <base> se não fornecido
