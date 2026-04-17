@@ -22,8 +22,8 @@ from core.skill_generator import SkillGeneratorStage
 
 def run_full_manual_test():
     # URL alvo para o teste
-    url = "https://prismlive.com/en_us/mobile.html"
-    output_dir = "output_mobile_scraper_test"
+    url = "https://betterproposals.io/product/creating-proposals"
+    output_dir = "betterpropost_test"
     
     print(f"🚀 INICIANDO TESTE DE PIPELINE COMPLETO (VIA URL - BYPASS TOKEN)")
     print(f"🔗 Alvo: {url}")
