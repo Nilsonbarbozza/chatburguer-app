@@ -48,6 +48,7 @@ STAGE_LABELS = {
     'OutputStage':              ('💾', 'Gerando arquivos de saída...'),
     'PostCssOptimizationStage': ('✨', 'Otimização final CSS...'),
     'SkillGeneratorStage':      ('🧠', 'Gerando skills/frontend.md...'),
+    'DataClearStage':           ('📊', 'Destilando dados para LLM/RAG...'),
 }
 
 
@@ -112,25 +113,34 @@ class ClonerCLI:
                 print(f"  {status} {name}")
             print()
 
-    def _get_input_file(self) -> Optional[str]:
-        """Solicita o arquivo HTML ao usuário."""
+    def _get_input_source(self) -> Optional[dict]:
+        """Solicita o arquivo HTML ou URL ao usuário."""
         if RICH_AVAILABLE:
-            console.rule("[cyan]Selecionar Arquivo[/cyan]")
+            console.rule("[cyan]Selecionar Arquivo ou URL[/cyan]")
             console.print()
-            console.print("[bold]Arraste o arquivo HTML aqui ou cole o caminho completo:[/bold]")
-            console.print("[dim](Arquivo gerado pelo SingleFile, HTTrack ou similar)[/dim]\n")
+            console.print("[bold]Arraste o arquivo HTML, cole o caminho completo ou insira uma URL:[/bold]")
+            console.print("[dim](Ex: https://chatburguer.com/ ou C:/site.html)[/dim]\n")
             raw = Prompt.ask("[cyan]>[/cyan]")
         else:
-            print("\n--- Selecionar Arquivo ---")
-            print("Arraste o arquivo HTML ou cole o caminho:")
+            print("\n--- Selecionar HTML ou URL ---")
+            print("Arraste o arquivo HTML, cole o caminho ou uma URL:")
             raw = input("> ")
 
         path = raw.strip().strip('"').strip("'")
 
         if not path:
-            self._error("Nenhum arquivo informado.")
+            self._error("Nenhuma entrada informada.")
             return None
 
+        # Detecta se é URL
+        if path.startswith("http://") or path.startswith("https://"):
+            if RICH_AVAILABLE:
+                console.print(f"\n[green]✅ URL detectada:[/green] {path}\n")
+            else:
+                print(f"\n✅ URL: {path}\n")
+            return {'url': path, 'file': None}
+
+        # Caso contrário, trata como arquivo local
         resolved = self.uploader.resolve(path)
         if not resolved:
             self._error(f"Arquivo não encontrado: {path}")
@@ -142,7 +152,7 @@ class ClonerCLI:
         else:
             print(f"\n✅ Arquivo: {Path(resolved).name} ({size_mb:.1f}MB)\n")
 
-        return resolved
+        return {'url': None, 'file': resolved}
 
     def _get_base_url(self) -> Optional[str]:
         """Pergunta pela base URL (opcional)."""
@@ -157,32 +167,71 @@ class ClonerCLI:
 
     def _get_output_dir(self) -> str:
         """Pergunta pelo diretório de saída."""
+        desktop = os.path.join(os.path.expanduser("~"), "Desktop")
         default = "output"
+        
         if RICH_AVAILABLE:
+            console.print(f"[dim]Padrão: {default} (ou deixe em branco para salvar na Área de Trabalho)[/dim]")
             out = Prompt.ask(f"[cyan]Pasta de saída[/cyan]", default=default)
         else:
-            print(f"Pasta de saída [padrão: {default}]:")
-            out = input("> ").strip() or default
+            print(f"Pasta de saída [padrão: {default}, Enter para Área de Trabalho]:")
+            out = input("> ").strip()
+            
+        if not out or out == default and not RICH_AVAILABLE:
+            # Se o usuário não digitou nada, vai para o Desktop
+            if not out:
+                return os.path.join(desktop, "ClonerOutput").replace('\\', '/')
 
         # Remove aspas e normaliza barras (Windows drag-and-drop)
         out = out.strip().strip('"').strip("'").replace('\\', '/').strip('/')
         return out or default
 
-    def _confirm_start(self, file_path: str, base_url: Optional[str], out_dir: str) -> bool:
+    def _get_operation_mode(self) -> tuple:
+        """Solicita o modo de operação ao usuário."""
+        if RICH_AVAILABLE:
+            console.rule("[cyan]Modo de Operação[/cyan]")
+            console.print()
+            console.print("Escolha como deseja processar os dados:")
+            console.print("[bold cyan]1.[/bold cyan] Clone Web [dim](Web Service - Completo)[/dim]")
+            console.print("[bold cyan]2.[/bold cyan] Dataset p/ IA [dim](Com Anonimização PII - Recomendado)[/dim]")
+            console.print("[bold cyan]3.[/bold cyan] Dataset p/ IA [dim](Sem Anonimização - Rígido)[/dim]")
+            console.print()
+            choice = Prompt.ask("Selecione uma opção", choices=["1", "2", "3"], default="1")
+        else:
+            print("\n--- Modo de Operação ---")
+            print("1. Clone Web")
+            print("2. Dataset p/ IA (Com Anonimização)")
+            print("3. Dataset p/ IA (Sem Anonimização)")
+            choice = input("> ").strip() or "1"
+
+        if choice == "1":
+            return "web", False
+        elif choice == "2":
+            return "dataset", True
+        else:
+            return "dataset", False
+
+    def _confirm_start(self, input_file: Optional[str], input_url: Optional[str], base_url: Optional[str], out_dir: str) -> bool:
         """Confirma antes de iniciar o processamento."""
+        source_label = input_url if input_url else Path(input_file).name
+
         if RICH_AVAILABLE:
             console.print()
             summary = Table(show_header=False, box=None, padding=(0, 1))
             summary.add_column(style="dim")
             summary.add_column(style="bold white")
-            summary.add_row("Arquivo:",   Path(file_path).name)
-            summary.add_row("Base URL:",  base_url or "[dim]não informado[/dim]")
-            summary.add_row("Saída:",     out_dir)
+            if input_url:
+                summary.add_row("URL Alvo:", input_url)
+            else:
+                summary.add_row("Arquivo:", source_label)
+                summary.add_row("Base URL:", base_url or "[dim]não informado[/dim]")
+                
+            summary.add_row("Saída:", out_dir)
             console.print(Panel(summary, title="[bold cyan]Resumo[/bold cyan]", border_style="cyan"))
             console.print()
             return Confirm.ask("[bold]Iniciar processamento?[/bold]", default=True)
         else:
-            print(f"\nArquivo : {file_path}")
+            print(f"\nOrigem  : {source_label}")
             print(f"Saída   : {out_dir}")
             ans = input("Iniciar? [S/n]: ").strip().lower()
             return ans in ('', 's', 'sim', 'y', 'yes')
@@ -242,17 +291,28 @@ class ClonerCLI:
             table.add_column(style="dim", width=20)
             table.add_column(style="bold white")
 
-            table.add_row("📄 HTML Original:", out.get('html_file', '—'))
-            table.add_row("🎨 CSS Original:",  f"{out.get('css_file', '—')} [dim]({stats.get('css_size', '—')})[/dim]")
-            
-            # Destaque para o Shadow Build
-            if 'shadow_css_size' in stats:
-                table.add_row("⚡ CSS Otimizado:", f"{stats.get('shadow_css_size')} [bold green](-{stats.get('reduction')})[/bold green]")
-                table.add_row("🧪 Tester Env:",   f"[bold cyan]{stats.get('tester_file', '—')}[/bold cyan]")
+            # Sessão de Web (se houver)
+            if 'html_file' in out and not 'dataset_rows' in stats:
+                table.add_row("📄 HTML Original:", out.get('html_file', '—'))
+                table.add_row("🎨 CSS Original:",  f"{out.get('css_file', '—')} [dim]({stats.get('css_size', '—')})[/dim]")
+                
+                if 'shadow_css_size' in stats:
+                    table.add_row("⚡ CSS Otimizado:", f"{stats.get('shadow_css_size')} [bold green](-{stats.get('reduction')})[/bold green]")
+                    table.add_row("🧪 Tester Env:",   f"[bold cyan]{stats.get('tester_file', '—')}[/bold cyan]")
+
+            # Sessão de Dataset (se houver)
+            if 'dataset_rows' in stats:
+                table.add_row("📁 Dataset JSONL:", f"[bold cyan]{stats.get('dataset_path', '—')}[/bold cyan]")
+                table.add_row("📊 Unidades/Rows:", f"{stats.get('dataset_rows')}")
+                table.add_row("🧠 Est. Tokens:",  f"{stats.get('dataset_tokens')}")
+                pii_status = "[green]✅ Filtrado[/green]" if stats.get('pii_filtered') else "[yellow]⚠️  Bruto[/yellow]"
+                table.add_row("🛡️  PII Redaction:", pii_status)
 
             if out.get('js_bundle'):
                 table.add_row("⚙️  JS Bundle:", out['js_bundle'])
-            table.add_row("🖼️  Imagens:", out.get('images_dir', '—'))
+            
+            if 'html_file' in out and not 'dataset_rows' in stats:
+                table.add_row("🖼️  Imagens:", out.get('images_dir', '—'))
             
             skill_files = result.get('skill_files', [])
             if skill_files:
@@ -263,21 +323,26 @@ class ClonerCLI:
             
             table.add_row("📋 Log:", "logs/processor.log")
 
-            console.print(Panel(table, title="[bold green]Relatório de Performance[/bold green]", border_style="green"))
+            console.print(Panel(table, title="[bold green]Estatísticas[/bold green]", border_style="green"))
             console.print()
-            console.print("[bold green]✅ Sucesso![/bold green] O CSS foi reduzido drasticamente na versão [bold]styles.safe.css[/bold].")
-            console.print("[dim]Próximo passo:[/dim] Abra o [bold]tester.html[/bold] para validar o layout otimizado.")
-            console.print("[dim]Dica:[/dim] Se estiver OK, você pode substituir o index.html pelo tester.html.\n")
+            
+            if 'dataset_rows' in stats:
+                console.print("[bold green]✅ Sucesso![/bold green] O conteúdo foi destilado e anonimizado para seu modelo.")
+                console.print("[dim]Próximo passo:[/dim] Utilize o arquivo [bold]dataset.jsonl[/bold] em sua base vetorial ou Fine-tuning.\n")
+            else:
+                console.print("[bold green]✅ Sucesso![/bold green] O CSS foi reduzido drasticamente na versão [bold]styles.safe.css[/bold].")
+                console.print("[dim]Próximo passo:[/dim] Abra o [bold]tester.html[/bold] para validar o layout otimizado.\n")
         else:
             print("\n✅ Concluído!")
-            print(f"  HTML    : {out.get('html_file')}")
-            print(f"  CSS     : {out.get('css_file')} ({stats.get('css_size')})")
-            if 'shadow_css_size' in stats:
-                print(f"  SHADOW  : {stats.get('shadow_css_size')} (-{stats.get('reduction')})")
-                print(f"  TESTER  : {stats.get('tester_file')}")
-            print(f"  Imagens : {out.get('images_dir')}")
-            if skill:
-                print(f"  Skill   : {skill}")
+            if 'dataset_rows' in stats:
+                print(f"  Dataset : {stats.get('dataset_path')}")
+                print(f"  Rows    : {stats.get('dataset_rows')}")
+                print(f"  Tokens  : {stats.get('dataset_tokens')}")
+            else:
+                print(f"  HTML    : {out.get('html_file')}")
+                print(f"  CSS     : {out.get('css_file')} ({stats.get('css_size')})")
+                if skill:
+                    print(f"  Skill   : {skill}")
 
     def _print_user_info(self, user_data: dict):
         """Exibe boas-vindas ao usuário autenticado."""
@@ -305,36 +370,45 @@ class ClonerCLI:
 
         self._print_tool_status()
 
-        # 1. Selecionar arquivo
-        input_file = self._get_input_file()
-        if not input_file:
+        # 1. Selecionar origem (arquivo local ou URL online)
+        input_source = self._get_input_source()
+        if not input_source:
             sys.exit(1)
 
-        # 2. Base URL (opcional)
-        base_url = self._get_base_url()
+        input_file = input_source['file']
+        input_url  = input_source['url']
 
-        # 3. Diretório de saída
+        # 2. Selecionar modo
+        mode, redact_pii = self._get_operation_mode()
+
+        # 3. Base URL (opcional, só pergunta se estiver enviando um arquivo local)
+        base_url = None
+        if input_file:
+            base_url = self._get_base_url()
+
+        # 4. Diretório de saída
         out_dir = self._get_output_dir()
 
-        # 4. Confirmar
-        if not self._confirm_start(input_file, base_url, out_dir):
+        # 5. Confirmar
+        if not self._confirm_start(input_file, input_url, base_url, out_dir):
             if RICH_AVAILABLE:
                 console.print("\n[yellow]Operação cancelada.[/yellow]\n")
             else:
                 print("\nCancelado.\n")
             sys.exit(0)
 
-        # 5. Importar e montar pipeline
+        # 6. Importar e montar pipeline
         from core.pipeline import build_pipeline
         from core.config import update_output_dir
         update_output_dir(out_dir)
 
-        pipeline = build_pipeline()
+        pipeline = build_pipeline(mode=mode, redact_pii=redact_pii)
 
         # 6. Executar com progresso
         try:
             result = self._run_pipeline_with_progress(pipeline, {
                 'input_file': input_file,
+                'url':        input_url,
                 'base_url':   base_url,
             })
         except Exception as e:

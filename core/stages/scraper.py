@@ -33,16 +33,29 @@ class ScraperStage(ProcessorStage):
                 
                 page = browser_context.new_page()
                 
-                # Navega e aguarda carregamento inicial até a rede estabilizar
-                logger.info(f"Acessando URL: {url} (aguardando networkidle)...")
-                page.goto(url, wait_until="networkidle", timeout=60000)
+                # Otimização para modo Dataset: Bloqueia imagens e fontes para economizar banda/tempo
+                if context.get('mode') == 'dataset':
+                    logger.info("Modo Dataset detectado: Bloqueando download de imagens, fontes e mídia...")
+                    page.route("**/*", lambda route: route.abort() 
+                               if route.request.resource_type in ["image", "font", "media"] 
+                               else route.continue_())
+                
+                # Navega até a página com timeout protegido
+                logger.info(f"Acessando URL: {url}...")
+                try:
+                    page.goto(url, wait_until="domcontentloaded", timeout=60000)
+                except Exception as e:
+                    logger.warning(f"Timeout ao abrir página (pode ser contorno de lazy-load/mapas). Prosseguindo: {e}")
                 
                 # --- Lógica de Auto-Scroll para acionar Lazy Loading ---
                 logger.info("Executando Auto-Scroll para ativar Lazy Loading e componentes dinâmicos...")
                 self._auto_scroll(page)
                 
-                # Aguarda estabilização final da rede após o scroll
-                page.wait_for_load_state("networkidle")
+                # Aguarda estabilização final da rede, mas não colapsa se a rede nunca parar (ex: Google Maps)
+                try:
+                    page.wait_for_load_state("networkidle", timeout=15000)
+                except Exception:
+                    logger.info("Rede não estabilizou completamente (comum em mapas/carrosséis). Extraindo assim mesmo.")
                 
                 # Breve pausa para garantir que scripts de carrossel terminem de renderizar
                 time.sleep(2)
@@ -69,16 +82,16 @@ class ScraperStage(ProcessorStage):
             async () => {
                 await new Promise((resolve) => {
                     let totalHeight = 0;
-                    let distance = 400; // Distância por pulo
+                    let distance = 800; // Distância por pulo aumentada para mais agilidade
                     let timer = setInterval(() => {
                         let scrollHeight = document.body.scrollHeight;
                         window.scrollBy(0, distance);
                         totalHeight += distance;
-                        if(totalHeight >= scrollHeight || totalHeight > 10000){ // Limite de 10k pixels por segurança
+                        if(totalHeight >= scrollHeight || totalHeight > 30000){ // Limite expandido para 30k pixels
                             clearInterval(timer);
                             resolve();
                         }
-                    }, 100);
+                    }, 150);
                 });
                 window.scrollTo(0, 0); // Volta ao topo para os outros estágios
             }

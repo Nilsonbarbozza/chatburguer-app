@@ -42,4 +42,12 @@ class Reporter:
         if js_bundle and os.path.exists(js_bundle):
             stats['js_size'] = f"{os.path.getsize(js_bundle) / 1024:.1f}KB"
 
+        # Estatísticas do Dataset (AgenteDataClear)
+        if 'dataset_entry' in result:
+            entry = result['dataset_entry']
+            stats['dataset_rows']    = len(entry.get('content', {}).get('semantic_chunks', []))
+            stats['dataset_tokens']  = entry.get('metadata', {}).get('token_count_estimate', 0)
+            stats['dataset_path']    = result.get('dataset_path')
+            stats['pii_filtered']    = entry.get('compliance', {}).get('pii_filtered', False)
+
         return stats

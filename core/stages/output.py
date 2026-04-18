@@ -4,6 +4,7 @@ Stage 9 — Geração dos arquivos finais (index.html + styles/styles.css)
 """
 import os
 import re
+import json
 import logging
 from typing import Dict, Any
 
@@ -23,11 +24,21 @@ class OutputStage(ProcessorStage):
         logger.info("=== ETAPA 9: Geração de Saída ===")
         paths = get_paths()
 
+        os.makedirs(paths['OUT_DIR'], exist_ok=True)
+
+        # Se houver entrada de dataset (AgenteDataClear), gera APENAS o JSONL e encerra
+        if 'dataset_entry' in context:
+            dataset_path = os.path.join(paths['OUT_DIR'], 'dataset.jsonl')
+            save_file(dataset_path, json.dumps(context['dataset_entry'], ensure_ascii=False) + '\n')
+            context['dataset_path'] = dataset_path
+            logger.info(f"📁 Dataset exportado: {dataset_path}")
+            return context
+
         os.makedirs(paths['STYLES_DIR'], exist_ok=True)
-        os.makedirs(paths['OUT_DIR'],    exist_ok=True)
 
         # Salva CSS extraído/otimizado
-        save_file(paths['STYLE_FILE'], context.get('css', ''))
+        if context.get('css'):
+            save_file(paths['STYLE_FILE'], context.get('css', ''))
 
         # Gera HTML bruto do soup
         raw_html = context['soup'].decode(formatter='html')

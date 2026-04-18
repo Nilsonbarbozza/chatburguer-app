@@ -34,8 +34,9 @@ class Pipeline:
         return context
 
 
-def build_pipeline() -> Pipeline:
+def build_pipeline(mode: str = 'web', redact_pii: bool = True) -> Pipeline:
     """
+    Monta o pipeline dinamicamente com base no modo de operação.
     Monta o pipeline completo v1.0.
 
     Ordem das etapas:
@@ -64,21 +65,32 @@ def build_pipeline() -> Pipeline:
     from core.stages.refactoring  import RefactoringStage
     from core.stages.output       import OutputStage
     from core.skill_generator     import SkillGeneratorStage
+    from core.stages.dataclear    import DataClearStage
 
-    return (
-        Pipeline()
-        .add_stage(ScraperStage())
-        .add_stage(ValidationStage())
-        .add_stage(LoadingStage())
-        .add_stage(CleaningStage())
-        .add_stage(MaintenanceStage())
-        .add_stage(ExtractionStage())
-        .add_stage(JavaScriptExtractionStage())
-        .add_stage(RefactoringStage())
-        .add_stage(OptimizationStage())
-        .add_stage(TailwindIntegrationStage())
-        .add_stage(OutputStage())
-        .add_stage(PostCssOptimizationStage())
-        .add_stage(ShadowValidationStage())
-        .add_stage(SkillGeneratorStage())
-    )
+    pipeline = Pipeline()
+    
+    # Estágios Comuns
+    pipeline.add_stage(ScraperStage())
+    pipeline.add_stage(ValidationStage())
+    pipeline.add_stage(LoadingStage())
+    pipeline.add_stage(CleaningStage())
+    
+    if mode == 'web':
+        # Pipeline Completo para Web
+        pipeline.add_stage(MaintenanceStage())
+        pipeline.add_stage(ExtractionStage())
+        pipeline.add_stage(JavaScriptExtractionStage())
+        pipeline.add_stage(RefactoringStage())
+        pipeline.add_stage(OptimizationStage())
+        pipeline.add_stage(TailwindIntegrationStage())
+        pipeline.add_stage(OutputStage())
+        pipeline.add_stage(PostCssOptimizationStage())
+        pipeline.add_stage(ShadowValidationStage())
+        pipeline.add_stage(SkillGeneratorStage())
+    
+    elif mode == 'dataset':
+        # Pipeline Otimizado para Dataset de IA
+        pipeline.add_stage(DataClearStage(redact_pii=redact_pii))
+        pipeline.add_stage(OutputStage())
+
+    return pipeline

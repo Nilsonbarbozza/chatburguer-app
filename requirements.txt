@@ -11,5 +11,8 @@ cssutils>=2.7.0
 # CLI — Interface visual do terminal
 rich>=13.7.0
 
+# Ferramentas de Dados
+markdownify>=0.11.6
+
 # Opcional — verificação de tipo MIME
 # python-magic>=0.4.27

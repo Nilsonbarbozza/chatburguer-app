@@ -17,7 +17,14 @@ logger = logging.getLogger('html_processor')
 class ValidationStage(ProcessorStage):
     def process(self, context: Dict[str, Any]) -> Dict[str, Any]:
         logger.info("=== ETAPA 1: Validação ===")
-        filepath = context['input_file']
+        filepath = context.get('input_file')
+
+        if not filepath:
+            if context.get('html'):
+                logger.info("Validação de arquivo ignorada: usando HTML proveniente do Scraper.")
+                return context
+            else:
+                raise ValueError("Nenhum arquivo de entrada ou conteúdo HTML fornecido.")
 
         if not os.path.exists(filepath):
             raise FileNotFoundError(f"Arquivo não encontrado: {filepath}")
