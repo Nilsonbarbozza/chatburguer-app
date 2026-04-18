@@ -17,3 +17,7 @@ playwright-stealth>=2.0.3
 
 # Opcional — verificação de tipo MIME
 # python-magic>=0.4.27
+
+# RAG — Vetorização e Geração
+chromadb>=0.4.0
+openai>=1.0.0
