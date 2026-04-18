@@ -48,6 +48,7 @@ class Reporter:
             stats['dataset_rows']    = len(entry.get('content', {}).get('semantic_chunks', []))
             stats['dataset_tokens']  = entry.get('metadata', {}).get('token_count_estimate', 0)
             stats['dataset_path']    = result.get('dataset_path')
+            stats['dataset_readable_path'] = result.get('dataset_readable_path')
             stats['pii_filtered']    = entry.get('compliance', {}).get('pii_filtered', False)
 
         return stats

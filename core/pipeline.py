@@ -34,7 +34,7 @@ class Pipeline:
         return context
 
 
-def build_pipeline(mode: str = 'web', redact_pii: bool = True) -> Pipeline:
+def build_pipeline(mode: str = 'web', redact_pii: bool = True, strict: bool = False) -> Pipeline:
     """
     Monta o pipeline dinamicamente com base no modo de operação.
     Monta o pipeline completo v1.0.
@@ -90,7 +90,7 @@ def build_pipeline(mode: str = 'web', redact_pii: bool = True) -> Pipeline:
     
     elif mode == 'dataset':
         # Pipeline Otimizado para Dataset de IA
-        pipeline.add_stage(DataClearStage(redact_pii=redact_pii))
+        pipeline.add_stage(DataClearStage(redact_pii=redact_pii, strict=strict))
         pipeline.add_stage(OutputStage())
 
     return pipeline

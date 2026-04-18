@@ -23,14 +23,14 @@ class DataClearStage(ProcessorStage):
     Agente de limpeza e estruturação de dados (AgenteDataClear).
     Transforma o soup em um dataset JSONL otimizado.
     """
-    def __init__(self, redact_pii: bool = True):
+    def __init__(self, redact_pii: bool = True, strict: bool = False):
         self.redact = redact_pii
-        # Tags de ruído que não agregam conhecimento útil para LLM
-        # Removido 'aside' e 'form' para não quebrar Buy Boxes e seletores de variante
+        self.strict = strict
+        # Tags estruturais que não compõem conteúdo legível para o modelo
         self.noise_tags = [
-            'script', 'style', 'nav', 'footer', 'header', 
-            'iframe', 'noscript', 'svg', 
-            'canvas', 'video', 'audio'
+            'script', 'style', 'nav', 'footer', 'header', 'aside',
+            'iframe', 'noscript', 'svg', 'path', 'g', 'canvas', 
+            'video', 'audio', 'button', 'form', 'section[role="complementary"]'
         ]
 
     def process(self, context: Dict[str, Any]) -> Dict[str, Any]:
@@ -50,16 +50,54 @@ class DataClearStage(ProcessorStage):
         for tag in clean_soup(self.noise_tags):
             tag.decompose()
             
-        # Limpeza de classes de ruído comuns (Regex mais restrita com delimitações de limite de palavra)
-        # Evitando o uso de 'ad-' solto que pode coincidir com 's-item__ad' (itens patrocinados úteis)
-        noise_classes = re.compile(r'\b(cookie-notice|cookie-banner|social-share|popup-overlay|modal-overlay)\b', re.I)
-        for tag in clean_soup.find_all(class_=noise_classes):
+        # 1.5 The Cookie Monster (Destruição de DOM Invisível de GDPR)
+        # Procura e destrói contêineres inteiros de políticas de cookies
+        cookie_and_gdpr_patterns = re.compile(
+            r'\b(cookie-consent|cookiebot|CybotCookiebotDialog|cookie-banner|cookie-notice|gdpr-banner|consent-banner|social-share|popup-overlay|modal-overlay)\b', 
+            re.I
+        )
+
+        for tag in clean_soup.find_all(class_=cookie_and_gdpr_patterns):
             tag.decompose()
+
+        # Destrói também tags por ID (muito comum no Cookiebot e OneTrust)
+        for tag in clean_soup.find_all(id=cookie_and_gdpr_patterns):
+            tag.decompose()
+
+        # 1.6 Sniper de Ads e Sponsored Content
+        ad_patterns = re.compile(r'\b(ad-container|sponsored|promoted|taboola|outbrain|related-content|trending)\b', re.I)
+        for tag in clean_soup.find_all(class_=ad_patterns):
+            tag.decompose()
+
+        # 1.7 O "Cheat Code" Semântico (Extração de JSON-LD)
+        # Portais como Reuters escondem o conteúdo limpo aqui.
+        json_ld_data = []
+        for script in soup.find_all('script', type='application/ld+json'):
+            try:
+                js_content = json.loads(script.string)
+                if isinstance(js_content, dict):
+                    # Extraímos apenas o que é útil para contexto (Título, Descrição, Artigo)
+                    useful = {
+                        "headline": js_content.get("headline"),
+                        "description": js_content.get("description"),
+                        "articleBody": js_content.get("articleBody")
+                    }
+                    # Remove campos nulos
+                    json_ld_data.append({k: v for k, v in useful.items() if v})
+            except:
+                continue
+
+        # Isolamento Robusto de Main Content (Adaptabilidade Universal):
+        # Tenta focar apenas no conteúdo principal para escapar da interface de SPAs pesados (como o Maps).
+        # Se não achar um role="main", usa a fallback defensiva para o body inteiro, não quebrando o eBay.
+        main_content = clean_soup.find(attrs={'role': 'main'})
+        if not main_content:
+            main_content = clean_soup.body if clean_soup.body else clean_soup
 
         # 2. Conversão para Markdown (The MD-Transformer)
         if md_converter:
             markdown_body = md_converter(
-                str(clean_soup), 
+                str(main_content), 
                 heading_style="ATX", 
                 bullets="-",
                 # Mantemos as tags <a> e <img> para que o Markdownify converta em `[texto](url)` 
@@ -77,15 +115,34 @@ class DataClearStage(ProcessorStage):
         markdown_body = re.sub(r'[\u200b\u200c\u200d\u200e\u200f\u202a-\u202e\u2060-\u206f\xad\ufeff]', '', markdown_body)
         markdown_body = re.sub(r'[ \t]+', ' ', markdown_body) # Remove excesso de espaços no meio das palavras
         
+        # --- PODA SEMÂNTICA (MODO STRICT) ---
+        if self.strict:
+            logger.info("[STRICT] Executando Poda Semântica de Elite...")
+            markdown_body = self._semantic_pruning(markdown_body)
+
         # Anti-Ofuscação CSS (O "Sniper" de Letras Soltas):
-        # Muitas vezes o rastreio anti-bot quebra a palavra em múltiplas linhas e até usa alfabetos
-        # cirílicos (como 'Р' ou 'о') para bypassar regex básicos de [a-z]. 
         # Esta regra apaga sumariamente QUALQUER linha do documento que contenha apenas uma única letra/número.
         markdown_body = re.sub(r'(?m)^\s*\w\s*$\n?', '', markdown_body)
         
-        # Limpa o excesso de quebras de linha acumuladas pela fragmentação
         markdown_body = re.sub(r'\n{3,}', '\n\n', markdown_body)
 
+        # Filtro de UI Boilerplate (Descarte Direto de Ações de Tela)
+        # Fundamental para SPAs que deixam os labels na tela (Google Maps)
+        ui_noise_patterns = [
+            r'Arraste para alterar\n?',
+            r'Recolher painel lateral\n?',
+            r'Mostrar teclado\n?',
+            r'Ocultar teclado\n?',
+            r'Fazer login\n?',
+            r'Mostrar seu local\n?',
+            r'Tipo de mapa\n?',
+            r'Zoom\n?',
+            r'Camadas\n?',
+            r'Navegar para a frente\n?',
+            r'Navegar para trás\n?'
+        ]
+        for pattern in ui_noise_patterns:
+            markdown_body = re.sub(pattern, '', markdown_body, flags=re.IGNORECASE)
 
         # 3. Anonimização (The Safety Layer)
         if self.redact:
@@ -103,26 +160,30 @@ class DataClearStage(ProcessorStage):
             "source_url": context.get('url') or context.get('base_url', ''),
         }
         
+        chunks = self._create_chunks(
+            markdown_body, 
+            chunk_size=1000, 
+            overlap=150, 
+            metadata_snapshot=metadata_snapshot
+        )
+
+        # Montagem do Payload Final
         dataset_entry = {
             "metadata": {
-                "source_url": context.get('url') or context.get('base_url'),
+                "source_url": context.get('url'),
                 "crawl_timestamp": datetime.now().isoformat(),
-                "language_detected": "pt-BR", # TODO: Implementar detecção real se necessário
-                "token_count_estimate": len(markdown_body.split()) // 0.75 # Estimativa rudimentar
+                "language_detected": context.get('language', 'pt-BR'),
+                "token_count_estimate": len(markdown_body.split()) * 1.3,
+                "json_ld_context": json_ld_data if json_ld_data else None
             },
             "content": {
-                "title": title.strip() if title else "",
-                "markdown_body": markdown_body.strip(),
-                "semantic_chunks": self._create_chunks(
-                    markdown_body, 
-                    chunk_size=1000, 
-                    overlap=150, 
-                    metadata_snapshot=metadata_snapshot
-                )
+                "title": soup.title.string if soup.title else "Sem título",
+                "markdown_body": markdown_body,
+                "semantic_chunks": chunks
             },
             "compliance": {
                 "pii_filtered": self.redact,
-                "gdpr_status": "compliant" if self.redact else "not_evaluated"
+                "gdpr_status": "compliant"
             }
         }
 
@@ -130,6 +191,48 @@ class DataClearStage(ProcessorStage):
         logger.info("✅ Dados destilados e prontos para exportação JSONL.")
         
         return context
+
+    def _semantic_pruning(self, text: str) -> str:
+        """
+        Executa poda agressiva de conteúdo editorial ruidoso (Markdown-centric).
+        """
+        # 1. SNIPER DE BLOCOS (O Bloco do WhatsApp da BBC e similares)
+        # Muitas vezes o markdownify adiciona negrito ou links aos marcadores
+        block_patterns = [
+            # Bloco Whatsapp da BBC
+            re.compile(r'\*\*\[No WhatsApp\].*?Fim do Whatsapp!', re.DOTALL | re.IGNORECASE),
+            re.compile(r'\[Pule Whatsapp.*?\]\(.*?\).*?(Fim do Whatsapp!|#end-of-whatsapp)', re.DOTALL | re.IGNORECASE),
+            # Bloco de recomendações/mais lidas
+            re.compile(r'\[Pule Mais lidas.*?\]\(.*?\).*?(Fim do Mais lidas|#end-of-recommendations)', re.DOTALL | re.IGNORECASE),
+            # Redes Sociais
+            re.compile(r'Siga a BBC News Brasil no.*?\n', re.IGNORECASE)
+        ]
+
+        for pattern in block_patterns:
+            text = re.sub(pattern, '\n', text)
+
+        # 2. FOOTER KILL-SWITCH (Truncamento Agressivo)
+        # Lista de gatilhos que marcam o fim do jornalismo e o início do ruído
+        footer_triggers = [
+            r'## Assista', 
+            r'## Histórias relacionadas',
+            r'## Tópicos relacionados',
+            r'## Leia mais', 
+            r'## Principais notícias',
+            r'## Mais lidas'
+        ]
+        
+        for trigger in footer_triggers:
+            match = re.search(trigger, text, re.IGNORECASE)
+            if match:
+                logger.info(f"[STRICT] Kill-Switch ativado pela âncora: {trigger}")
+                text = text[:match.start()].strip()
+                break # Interrompe após o primeiro corte
+
+        # 3. Limpeza de 'Skip-links' residuais
+        text = re.sub(r'\[Pule.*?\]\(.*?\)', '', text, flags=re.IGNORECASE)
+        
+        return text.strip()
 
     def _redact_pii(self, text: str) -> str:
         """Remove e-mails e telefones para conformidade GDPR."""

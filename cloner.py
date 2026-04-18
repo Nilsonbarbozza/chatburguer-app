@@ -44,6 +44,7 @@ def main():
         file = None
         mode = 'web'
         redact = True
+        strict = False # Poda Semântica de Elite
         
         if '--url' in args:
             uidx = args.index('--url')
@@ -59,12 +60,15 @@ def main():
             
         if '--no-redact' in args:
             redact = False
+
+        if '--strict' in args:
+            strict = True
             
         if not url and not file:
-            print("Uso: cloner --url https://site.com [--file local.html] [--mode web|dataset]")
+            print("Uso: cloner --url https://site.com [--file local.html] [--mode web|dataset] [--strict]")
             sys.exit(1)
             
-        _run_direct(file_path=file, url=url, mode=mode, redact=redact)
+        _run_direct(file_path=file, url=url, mode=mode, redact=redact, strict=strict)
         return
 
     # Modo interativo padrão
@@ -72,32 +76,61 @@ def main():
     ClonerCLI().run()
 
 
-def _run_direct(file_path: str = None, url: str = None, mode: str = 'web', redact: bool = True):
+def _run_direct(file_path: str = None, url: str = None, mode: str = 'web', redact: bool = True, strict: bool = False):
     """Executa o pipeline sem prompts interativos."""
     from cli.auth     import TokenAuth, AuthError
     from core.pipeline import build_pipeline
     from core.config   import update_output_dir
+    import json
+
+    # Configuração de Logs p/ Console (Compatibilidade Windows Total)
+    def safe_print(msg, emoji=""):
+        # Mapeamento de emojis para ASCII se falhar
+        mapping = {
+            "✅": "[OK]",
+            "❌": "[ERRO]",
+            "✨": "[JSON]",
+            "🧠": "[SKILL]",
+            "⚠️": "[AVISO]",
+            "→": "-> "
+        }
+        clean_msg = msg.replace("→", "->")
+        try:
+            print(f"{emoji} {clean_msg}")
+        except UnicodeEncodeError:
+            print(f"{mapping.get(emoji, '[*]')} {clean_msg}")
 
     try:
         TokenAuth().ensure_authenticated()
     except AuthError as e:
-        print(f"❌ {e}")
+        safe_print(f"Erro: {e}", "❌")
         sys.exit(1)
 
     update_output_dir('output')
-    pipeline = build_pipeline(mode=mode, redact_pii=redact)
+    pipeline = build_pipeline(mode=mode, redact_pii=redact, strict=strict)
 
     try:
         result = pipeline.execute({
             'input_file': file_path,
             'url': url
         })
-        out = result['output']
-        print(f"✅ Concluído → {out['html_file']}")
-        if result.get('skill_file'):
-            print(f"🧠 Skill     → {result['skill_file']}")
+        if mode == 'dataset':
+            jsonl_path = result.get('dataset_path')
+            readable_path = result.get('dataset_readable_path')
+            
+            if not jsonl_path:
+                jsonl_path = os.path.join('output', 'dataset.jsonl')
+            
+            safe_print(f"Dataset Concluido -> {jsonl_path}", "✅")
+            if readable_path:
+                safe_print(f"Versao Legivel  -> {readable_path}", "✨")
+        else:
+            out = result.get('output', {})
+            safe_print(f"Concluido -> {out.get('html_file', 'index.html')}", "✅")
+            if result.get('skill_file'):
+                safe_print(f"Skill     -> {result['skill_file']}", "🧠")
     except Exception as e:
-        print(f"❌ Erro: {e}")
+        safe_print(f"Erro: {e}", "❌")
         sys.exit(1)
 
 

@@ -195,21 +195,25 @@ class ClonerCLI:
             console.print("[bold cyan]1.[/bold cyan] Clone Web [dim](Web Service - Completo)[/dim]")
             console.print("[bold cyan]2.[/bold cyan] Dataset p/ IA [dim](Com Anonimização PII - Recomendado)[/dim]")
             console.print("[bold cyan]3.[/bold cyan] Dataset p/ IA [dim](Sem Anonimização - Rígido)[/dim]")
+            console.print("[bold cyan]4.[/bold cyan] Dataset p/ IA [dim](Poda Semântica de Elite - Strict)[/dim]")
             console.print()
-            choice = Prompt.ask("Selecione uma opção", choices=["1", "2", "3"], default="1")
+            choice = Prompt.ask("Selecione uma opção", choices=["1", "2", "3", "4"], default="1")
         else:
             print("\n--- Modo de Operação ---")
             print("1. Clone Web")
             print("2. Dataset p/ IA (Com Anonimização)")
             print("3. Dataset p/ IA (Sem Anonimização)")
+            print("4. Dataset p/ IA (Poda Semântica)")
             choice = input("> ").strip() or "1"
 
         if choice == "1":
-            return "web", False
+            return "web", False, False
         elif choice == "2":
-            return "dataset", True
+            return "dataset", True, False # Redact=True, Strict=False
+        elif choice == "3":
+            return "dataset", False, False # Redact=False, Strict=False
         else:
-            return "dataset", False
+            return "dataset", True, True # Redact=True, Strict=True (Poda Semântica)
 
     def _confirm_start(self, input_file: Optional[str], input_url: Optional[str], base_url: Optional[str], out_dir: str) -> bool:
         """Confirma antes de iniciar o processamento."""
@@ -303,6 +307,8 @@ class ClonerCLI:
             # Sessão de Dataset (se houver)
             if 'dataset_rows' in stats:
                 table.add_row("📁 Dataset JSONL:", f"[bold cyan]{stats.get('dataset_path', '—')}[/bold cyan]")
+                if 'dataset_readable_path' in stats:
+                    table.add_row("✨ Versão Legível:", f"[bold cyan]{stats.get('dataset_readable_path', '—')}[/bold cyan]")
                 table.add_row("📊 Unidades/Rows:", f"{stats.get('dataset_rows')}")
                 table.add_row("🧠 Est. Tokens:",  f"{stats.get('dataset_tokens')}")
                 pii_status = "[green]✅ Filtrado[/green]" if stats.get('pii_filtered') else "[yellow]⚠️  Bruto[/yellow]"
@@ -379,7 +385,7 @@ class ClonerCLI:
         input_url  = input_source['url']
 
         # 2. Selecionar modo
-        mode, redact_pii = self._get_operation_mode()
+        mode, redact_pii, strict_mode = self._get_operation_mode()
 
         # 3. Base URL (opcional, só pergunta se estiver enviando um arquivo local)
         base_url = None
@@ -402,7 +408,7 @@ class ClonerCLI:
         from core.config import update_output_dir
         update_output_dir(out_dir)
 
-        pipeline = build_pipeline(mode=mode, redact_pii=redact_pii)
+        pipeline = build_pipeline(mode=mode, redact_pii=redact_pii, strict=strict_mode)
 
         # 6. Executar com progresso
         try:
