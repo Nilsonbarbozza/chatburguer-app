@@ -259,10 +259,10 @@ class DataClearStage(ProcessorStage):
             text = text.replace(url, f'__TOKEN_URL_BLINDADA_{i}__')
 
         # ---------------------------------------------------------
-        # 3. OFUSCAÇÃO DE E-MAIL (Padrão Global Avançado)
+        # 3. OFUSCAÇÃO DE E-MAIL (Padrão Global Unicode)
         # ---------------------------------------------------------
-        # Suporta tags especiais (+), subdomínios complexos e TLDs globais
-        email_pattern = re.compile(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,8}\b')
+        # Suporta domínios e nomes com acentos (ex: müller, logística)
+        email_pattern = re.compile(r'[a-zA-Z0-9._%+\-À-ÿ]+@[a-zA-Z0-9.\-À-ÿ]+\.[a-zA-Z]{2,8}')
         text = email_pattern.sub('[REDACTED_EMAIL]', text)
 
         # ---------------------------------------------------------
