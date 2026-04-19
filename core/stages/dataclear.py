@@ -235,11 +235,68 @@ class DataClearStage(ProcessorStage):
         return text.strip()
 
     def _redact_pii(self, text: str) -> str:
-        """Remove e-mails e telefones para conformidade GDPR."""
-        # Email
-        text = re.sub(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b', '[REDACTED_EMAIL]', text)
-        # Telefone (Brasil e Internacional genérico)
-        text = re.sub(r'\+?\d{1,3}[\s-]?\(?\d{2,3}\)?[\s-]?\d{4,5}[\s-]?\d{4}', '[REDACTED_PHONE]', text)
+        """
+        Escudo PII Enterprise Nível 4: Conformidade GDPR/LGPD Global.
+        Implementa sanitização prévia, whitelist de URLs e um arsenal de Regex tático.
+        """
+        # ---------------------------------------------------------
+        # 1. PRÉ-PROCESSAMENTO: Correção de Conflitos do Markdownify
+        # ---------------------------------------------------------
+        # O Markdownify frequentemente escapa underscores (\_) para não confundir com itálico.
+        # Isso quebra a leitura de e-mails como carlos\_diretoria@...
+        # Esta linha desfaz o escape para que a Regex enxergue o e-mail real.
+        text = text.replace(r'\_', '_')
+
+        # ---------------------------------------------------------
+        # 2. O ESCUDO DE URL (Whitelist Temporária Absoluta)
+        # ---------------------------------------------------------
+        # Captura links HTTP brutos ou dentro da sintaxe Markdown [texto](link)
+        url_pattern = re.compile(r'https?://[^\s\)]+')
+        urls_encontradas = url_pattern.findall(text)
+        
+        # Mascara as URLs temporariamente com um hash irreal para proteção total
+        for i, url in enumerate(urls_encontradas):
+            text = text.replace(url, f'__TOKEN_URL_BLINDADA_{i}__')
+
+        # ---------------------------------------------------------
+        # 3. OFUSCAÇÃO DE E-MAIL (Padrão Global Avançado)
+        # ---------------------------------------------------------
+        # Suporta tags especiais (+), subdomínios complexos e TLDs globais
+        email_pattern = re.compile(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,8}\b')
+        text = email_pattern.sub('[REDACTED_EMAIL]', text)
+
+        # ---------------------------------------------------------
+        # 4. ARSENAL TÁTICO DE TELEFONES (Cobertura Mundial)
+        # ---------------------------------------------------------
+        # Em vez de uma regex falha, dividimos a busca em 3 padrões específicos.
+        phone_patterns = [
+            # TÁTICA 1: Formato Internacional com DDI (Europa, Ásia, Américas)
+            # Pega o +, o DDI (1-3 digitos) e fatias de números com espaços/hífens.
+            # Ex: +358 45 123 4567 | +55 (11) 98765-4321 | 00 44 20 7123 1234
+            r'(?:\+|00)\d{1,3}[\s-]?\(?\d{1,4}\)?[\s-]?\d{2,5}[\s-]?\d{2,5}[\s-]?\d{0,5}',
+
+            # TÁTICA 2: Números Toll-Free e de Serviço (Brasil e Mundo)
+            # Foco estrito em prefixes de gratuidade para evitar falsos positivos com valores financeiros.
+            # Ex: 0800-123-4567 | 0300 123 4567 | 1-800-555-0199
+            r'\b(?:1-)?(?:0800|0300|800|888|877|866|900|080)[\s-]?\d{3,4}[\s-]?\d{4}\b',
+
+            # TÁTICA 3: Celular/Fixo Nacional (Com DDD, fortemente padronizado)
+            # Exige parênteses ou delimitadores claros para não apagar CNPJs.
+            # Ex: (21) 99999-8888 | 11 98765-4321
+            r'\b\(?\d{2,3}\)?[\s-]?9?\d{4}[\s-]?\d{4}\b'
+        ]
+
+        # Executa as varreduras em sequência
+        for pattern in phone_patterns:
+            text = re.sub(pattern, '[REDACTED_PHONE]', text)
+
+        # ---------------------------------------------------------
+        # 5. RESTAURAÇÃO DA INTEGRIDADE ESTRUTURAL
+        # ---------------------------------------------------------
+        # Devolve as URLs originais intactas para o documento final
+        for i, url in enumerate(urls_encontradas):
+            text = text.replace(f'__TOKEN_URL_BLINDADA_{i}__', url)
+
         return text
 
     def _create_chunks(self, text: str, chunk_size: int = 1000, overlap: int = 150, metadata_snapshot: dict = None) -> list:

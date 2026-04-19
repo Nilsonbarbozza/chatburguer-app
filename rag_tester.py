@@ -6,12 +6,36 @@ from chromadb.utils import embedding_functions
 print("Iniciando Motor RAG Local (ChromaDB)...")
 
 # 1. Carregar o nosso dataset limpo
-# Substitua o caminho se o seu arquivo estiver em outra pasta
-caminho_arquivo = "output/dataset_readable.json"
+print("\nSelecione o Dataset para Ingestão:")
+print("1. Notícias (BBC)")
+print("2. E-commerce (eBay - Rigido)")
+print("3. E-commerce (eBay - Strict)")
+print("4. E-commerce (eBay - Strict2)")
+escolha_dataset = input("Opção (1, 2, 3 ou 4): ").strip()
+
+if escolha_dataset == "1":
+    caminho_arquivo = "output/bbc/dataset_readable.json"
+    collection_name = "noticias_bbc"
+    pergunta_teste = "Por que o diesel preocupa o governo e o que foi feito?"
+elif escolha_dataset == "2":
+    caminho_arquivo = "output/ebay_rigido/dataset_readable.json"
+    collection_name = "market_ebay_rigido"
+    pergunta_teste = "Qual o carregador de iPhone mais vendido e qual o preço?"
+elif escolha_dataset == "3":
+    caminho_arquivo = "output/ebay_strict/dataset_readable.json"
+    collection_name = "market_ebay_strict"
+    pergunta_teste = "Qual o carregador de iPhone mais vendido e qual o preço?"
+elif escolha_dataset == "4":
+    caminho_arquivo = "output/ebay_strict2/dataset_readable.json"
+    collection_name = "market_ebay_strict2"
+    pergunta_teste = "Qual a URL de destino do adaptador de 20W?"
+else:
+    print("Opção inválida.")
+    exit()
 
 try:
     if not os.path.exists(caminho_arquivo):
-        print(f"Erro: Arquivo {caminho_arquivo} nao encontrado. Por favor, execute o cloner primeiro.")
+        print(f"Erro: Arquivo {caminho_arquivo} não encontrado. Certifique-se de que o arquivo existe na pasta correspondente.")
         exit()
 
     with open(caminho_arquivo, 'r', encoding='utf-8') as f:
@@ -19,7 +43,7 @@ try:
     
     # Acessa os chunks da primeira (e única) página do nosso teste
     chunks = dados[0]["content"]["semantic_chunks"]
-    print(f"Dataset carregado com sucesso. {len(chunks)} Chunks encontrados.")
+    print(f"Dataset '{collection_name}' carregado com sucesso. {len(chunks)} Chunks encontrados.")
 except Exception as e:
     print(f"Erro ao ler o arquivo JSON: {e}")
     exit()
@@ -33,7 +57,7 @@ ef = embedding_functions.DefaultEmbeddingFunction()
 
 # Cria (ou carrega) a nossa "gaveta" de vetores
 collection = client.get_or_create_collection(
-    name="noticias_bbc",
+    name=collection_name,
     embedding_function=ef
 )
 
@@ -64,7 +88,7 @@ print("Ingestão Concluída!\n")
 # 5. TESTE PRÁTICO (Busca Semântica)
 # ==========================================
 print("Realizando busca semântica...")
-pergunta_do_usuario = "Por que o diesel preocupa o governo e o que foi feito?"
+pergunta_do_usuario = pergunta_teste
 
 # O ChromaDB vai converter essa pergunta em vetor e buscar os 2 chunks mais próximos
 resultados = collection.query(
