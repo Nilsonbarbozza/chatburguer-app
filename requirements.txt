@@ -21,3 +21,7 @@ playwright-stealth>=2.0.3
 # RAG — Vetorização e Geração
 chromadb>=0.4.0
 openai>=1.0.0
+fastapi>=0.100.0
+uvicorn>=0.22.0
+tenacity>=8.2.0
+pydantic>=2.0.0

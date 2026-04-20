@@ -266,24 +266,19 @@ class DataClearStage(ProcessorStage):
         text = email_pattern.sub('[REDACTED_EMAIL]', text)
 
         # ---------------------------------------------------------
-        # 4. ARSENAL TÁTICO DE TELEFONES (Cobertura Mundial)
+        # 4. ARSENAL TÁTICO DE TELEFONES (Cobertura Mundial Refinada)
         # ---------------------------------------------------------
-        # Em vez de uma regex falha, dividimos a busca em 3 padrões específicos.
+        # Ajustamos para exigir separadores ou símbolos, evitando colisão com IDs de produto.
         phone_patterns = [
-            # TÁTICA 1: Formato Internacional com DDI (Europa, Ásia, Américas)
-            # Pega o +, o DDI (1-3 digitos) e fatias de números com espaços/hífens.
-            # Ex: +358 45 123 4567 | +55 (11) 98765-4321 | 00 44 20 7123 1234
-            r'(?:\+|00)\d{1,3}[\s-]?\(?\d{1,4}\)?[\s-]?\d{2,5}[\s-]?\d{2,5}[\s-]?\d{0,5}',
+            # TÁTICA 1: Formato Internacional (Exige + ou 00 no início)
+            r'(?:\+|00)\d{1,3}[\s-]?\(?\d{1,4}\)?[\s-]?\d{2,5}[\s-]?\d{2,5}(?:[\s-]?\d{1,5})?',
 
-            # TÁTICA 2: Números Toll-Free e de Serviço (Brasil e Mundo)
-            # Foco estrito em prefixes de gratuidade para evitar falsos positivos com valores financeiros.
-            # Ex: 0800-123-4567 | 0300 123 4567 | 1-800-555-0199
-            r'\b(?:1-)?(?:0800|0300|800|888|877|866|900|080)[\s-]?\d{3,4}[\s-]?\d{4}\b',
+            # TÁTICA 2: Toll-Free (Exige hífen ou espaço após o prefixo)
+            r'\b(?:1-)?(?:0800|0300|800|888|877|866|900|080)[\s-]?\d{3,4}[\s-]?\d{3,4}\b',
 
-            # TÁTICA 3: Celular/Fixo Nacional (Com DDD, fortemente padronizado)
-            # Exige parênteses ou delimitadores claros para não apagar CNPJs.
-            # Ex: (21) 99999-8888 | 11 98765-4321
-            r'\b\(?\d{2,3}\)?[\s-]?9?\d{4}[\s-]?\d{4}\b'
+            # TÁTICA 3: Nacional com Separadores (Para evitar IDs de 10-12 dígitos puros)
+            # Se for apenas número sem parênteses ou traço, o sistema ignora como sendo um SKU/ID.
+            r'\b(?:\(\d{2,3}\)|\d{2,3})[\s\-.]?9?\d{4}[\-.]\d{4}\b'
         ]
 
         # Executa as varreduras em sequência

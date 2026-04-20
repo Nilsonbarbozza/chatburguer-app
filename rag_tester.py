@@ -53,12 +53,19 @@ except Exception as e:
     print(f"Erro ao ler o arquivo JSON: {e}")
     exit()
 
-# 2. Inicializar o ChromaDB (Persistente para não precisar recriar toda vez)
-# Ele criará uma pasta "vector_db" localmente
+# 2. Inicializar o ChromaDB
 client = chromadb.PersistentClient(path="./vector_db")
 
-# Usando o modelo padrão do Chroma para gerar os embeddings automaticamente
-ef = embedding_functions.DefaultEmbeddingFunction()
+# Carrega API Key para Embeddings
+from dotenv import load_dotenv
+load_dotenv()
+api_key = os.getenv("OPENAI_API_KEY")
+
+# Enterprise Embedding Engine (Sincronizado com o Gerador)
+ef = embedding_functions.OpenAIEmbeddingFunction(
+    api_key=api_key,
+    model_name="text-embedding-3-small"
+)
 
 # Cria (ou carrega) a nossa "gaveta" de vetores
 collection = client.get_or_create_collection(
