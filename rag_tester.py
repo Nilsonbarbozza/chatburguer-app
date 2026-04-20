@@ -11,7 +11,8 @@ print("1. Notícias (BBC)")
 print("2. E-commerce (eBay - Rigido)")
 print("3. E-commerce (eBay - Strict)")
 print("4. E-commerce (eBay - Strict2)")
-escolha_dataset = input("Opção (1, 2, 3 ou 4): ").strip()
+print("5. Notícias (Finlândia - Strict)")
+escolha_dataset = input("Opção (1, 2, 3, 4 e 5): ").strip()
 
 if escolha_dataset == "1":
     caminho_arquivo = "output/bbc/dataset_readable.json"
@@ -29,6 +30,10 @@ elif escolha_dataset == "4":
     caminho_arquivo = "output/ebay_strict2/dataset_readable.json"
     collection_name = "market_ebay_strict2"
     pergunta_teste = "Qual a URL de destino do adaptador de 20W?"
+elif escolha_dataset == "5":
+    caminho_arquivo = "output/finlandia_strict/dataset_readable.json"
+    collection_name = "finlandia_strict"
+    pergunta_teste = "Qual salario minimo na finlândia?"
 else:
     print("Opção inválida.")
     exit()

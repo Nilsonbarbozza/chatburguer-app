@@ -26,7 +26,8 @@ print("1. Notícias (BBC)")
 print("2. E-commerce (eBay - Rigido)")
 print("3. E-commerce (eBay - Strict)")
 print("4. E-commerce (eBay - Strict2)")
-escolha = input("Selecione (1, 2, 3 ou 4): ").strip()
+print("5. Notícias (Finlândia - Strict)")
+escolha = input("Selecione (1, 2, 3, 4 e 5): ").strip()
 
 if escolha == "1":
     collection_target = "noticias_bbc"
@@ -36,6 +37,8 @@ elif escolha == "3":
     collection_target = "market_ebay_strict"
 elif escolha == "4":
     collection_target = "market_ebay_strict2"
+elif escolha == "5":
+    collection_target = "finlandia_strict"
 else:
     print("Opção inválida.")
     sys.exit(1)
