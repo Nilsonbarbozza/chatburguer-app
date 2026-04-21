@@ -101,9 +101,20 @@ Novo Resumo (Máximo 3 linhas):"""
             logger.error(f"❌ MemoryManager: Compression failed: {e}")
             return current_summary, history # Fallback to keeping it (or losing older history if strictly capped)
 
-    def get_messages(self, session_id: str, system_prompt: str, context_rag: str, current_query: str) -> List[Dict[str, str]]:
-        """Constructs the full message stack for the LLM."""
+    def get_messages(self, session_id: str, system_prompt: str, context_rag: str, current_query: str) -> Tuple[List[Dict[str, str]], Dict[str, Any]]:
+        """
+        Constructs the message stack and calculates economy metrics.
+        Returns (messages, metrics).
+        """
         summary, history = self._get_session_state(session_id)
+        
+        # Heurística de tokens: ~4 caracteres por token
+        def estimate_tokens(text_list):
+            total_chars = sum(len(m['content']) for m in text_list)
+            return total_chars // 4
+
+        tokens_raw_history = estimate_tokens(history)
+        tokens_summary = len(summary) // 4
         
         messages = [{"role": "system", "content": system_prompt}]
         
@@ -118,7 +129,20 @@ Novo Resumo (Máximo 3 linhas):"""
         context_prompt = f"Contexto Recuperado do Documento:\n{context_rag}\n\nPergunta Atual: {current_query}"
         messages.append({"role": "user", "content": context_prompt})
         
-        return messages
+        # Auditoria de economia
+        metrics = {
+            "history_tokens_raw": tokens_raw_history,
+            "history_tokens_compressed": tokens_summary,
+            "economy_percentage": 0
+        }
+        
+        if summary:
+            # Calculamos a economia comparando o resumo com o que seria o histórico infinito (estimado)
+            # Para fins de log, mostramos o quanto o resumo é menor que a janela curta + passada
+            metrics["economy_percentage"] = round((1 - (tokens_summary / (tokens_raw_history + 500))) * 100, 1) # +500 é offset de histórico antigo
+            logger.info(f"📊 MONITOR DE ECONOMIA: Resumo ativo. Redução de contexto: {metrics['economy_percentage']}%")
+
+        return messages, metrics
 
     def get_history_for_rewriting(self, session_id: str) -> List[Dict[str, str]]:
         """Returns raw history for the query rewriter."""

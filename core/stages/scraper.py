@@ -46,9 +46,12 @@ class ScraperStage(ProcessorStage):
                     "Upgrade-Insecure-Requests": "1"
                 }
 
+                # Se for modo dataset (NeuralSync), rodamos 'Headless' (sem janela) por padrão no servidor
+                is_headless = True if context.get('mode') == 'dataset' else False
+                
                 browser_context = p.chromium.launch_persistent_context(
                     user_data_dir=profile_dir,
-                    headless=False,
+                    headless=is_headless,
                     user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
                     viewport={'width': 1920, 'height': 1080},
                     args=args,

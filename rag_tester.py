@@ -12,7 +12,8 @@ print("2. E-commerce (eBay - Rigido)")
 print("3. E-commerce (eBay - Strict)")
 print("4. E-commerce (eBay - Strict2)")
 print("5. Notícias (Finlândia - Strict)")
-escolha_dataset = input("Opção (1, 2, 3, 4 e 5): ").strip()
+print("6. Trading Economics (Market - Strict)")
+escolha_dataset = input("Opção (1, 2, 3, 4, 5 e 6): ").strip()
 
 if escolha_dataset == "1":
     caminho_arquivo = "output/bbc/dataset_readable.json"
@@ -34,6 +35,10 @@ elif escolha_dataset == "5":
     caminho_arquivo = "output/finlandia_strict/dataset_readable.json"
     collection_name = "finlandia_strict"
     pergunta_teste = "Qual salario minimo na finlândia?"
+elif escolha_dataset == "6":
+    caminho_arquivo = "output/treading-dataset-scrict/dataset_readable.json"
+    collection_name = "trading_market_strict"
+    pergunta_teste = "Quais as previsões econômicas para 2026?"
 else:
     print("Opção inválida.")
     exit()
