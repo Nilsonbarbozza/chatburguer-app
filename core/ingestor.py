@@ -21,7 +21,8 @@ class IngestorAgent:
         # Enterprise Embedding Engine
         self.ef = embedding_functions.OpenAIEmbeddingFunction(
             api_key=self._api_key,
-            model_name="text-embedding-3-small"
+            model_name="text-embedding-3-small",
+            dimensions=512
         )
 
     @staticmethod
