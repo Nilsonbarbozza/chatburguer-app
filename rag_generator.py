@@ -17,16 +17,29 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 
+# Initialize Logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s"
+)
+logger = logging.getLogger("NeuralSafety")
+
 # Load ENV
 load_dotenv()
 api_key = os.getenv("OPENAI_API_KEY")
 
 if not api_key or api_key == "sk-sua-chave-aqui":
-    print("Erro: OPENAI_API_KEY nao configurada no arquivo .env")
-    sys.exit(1)
+    logger.error("🚨 CRITICAL: OPENAI_API_KEY nao configurada no arquivo .env ou ambiente.")
+    # No Docker, preferimos deixar o container falhar para que o orquestrador (K8s/Compose) saiba do erro.
+    raise RuntimeError("API Key ausente.")
 
 # Initialize FastAPI
-app = FastAPI(title="NeuralSafety Enterprise RAG API", version="1.0.0")
+app = FastAPI(
+    title="NeuralSafety Enterprise RAG API",
+    version="1.0.0",
+    docs_url="/api/docs", # Endpoint profissional de documentação
+    redoc_url="/api/redoc"
+)
 
 # Habilita CORS para o navegador
 app.add_middleware(
@@ -37,7 +50,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Initialize Cores
+# Initialize Core Services (Standardized for /app context)
 rag_service = NeuralRAG(api_key=api_key)
 memory_manager = SlidingWindowMemory(client_llm=rag_service.client_llm)
 ingestor = IngestorAgent(openai_api_key=api_key)

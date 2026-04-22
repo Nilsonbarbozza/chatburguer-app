@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  neural-safety:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    image: neuralsafety/core:v1.0
+    container_name: neuralsafety_engine
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=production
+    env_file:
+      - .env
+    volumes:
+      # Persistência de Dados Críticos (Nível Militar)
+      # Mapeia as pastas locais para dentro do container
+      - ./data/vector_db:/app/vector_db
+      - ./data/sessions.db:/app/sessions.db
+      - ./data/output:/app/output
+    
+    # Governança de Recursos Enterprise
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 4G

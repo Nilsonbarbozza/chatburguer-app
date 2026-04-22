@@ -1,7 +1,7 @@
 import sqlite3
 import json
 import logging
-from typing import List, Dict, Tuple, Optional
+from typing import List, Dict, Tuple, Optional, Any
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
