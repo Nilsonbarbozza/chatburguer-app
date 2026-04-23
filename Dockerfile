@@ -1,6 +1,6 @@
 # 1. Imagem Oficial do Playwright (Garante estabilidade do Scraper)
 # Esta base já contém todas as dependências de sistema para o Chromium
-FROM mcr.microsoft.com/playwright/python:v1.42.0-jammy
+FROM mcr.microsoft.com/playwright/python:v1.58.0-jammy
 
 # 2. Configurações de Ambiente
 ENV PYTHONDONTWRITEBYTECODE=1 \

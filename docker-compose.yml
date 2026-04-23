@@ -15,11 +15,10 @@ services:
     env_file:
       - .env
     volumes:
-      # Persistência de Dados Críticos (Nível Militar)
-      # Mapeia as pastas locais para dentro do container
-      - ./data/vector_db:/app/vector_db
-      - ./data/sessions.db:/app/sessions.db
-      - ./data/output:/app/output
+      # Sincronização de Código em Tempo Real (Development/Hotfix Mode)
+      - .:/app
+      # Garantia de Persistência de Dados no Volume Mapeado
+      - ./data:/app/data
     
     # Governança de Recursos Enterprise
     deploy:

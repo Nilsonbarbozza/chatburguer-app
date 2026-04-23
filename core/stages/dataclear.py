@@ -87,10 +87,25 @@ class DataClearStage(ProcessorStage):
             except:
                 continue
 
-        # Isolamento Robusto de Main Content (Adaptabilidade Universal):
-        # Tenta focar apenas no conteúdo principal para escapar da interface de SPAs pesados (como o Maps).
-        # Se não achar um role="main", usa a fallback defensiva para o body inteiro, não quebrando o eBay.
-        main_content = clean_soup.find(attrs={'role': 'main'})
+        # Isolamento Robusto de Main Content (Heurística de Densidade Cascata):
+        # Evita a armadilha de honeypots ou divs de acessibilidade vazias (role="main") validando a densidade de bytes limpos.
+        # Adicionamos seletores de elite para Blogs (entry-content, post-content)
+        blog_content_patterns = re.compile(r'entry-content|post-content|article-content|main-content|post-text', re.I)
+        
+        candidates = [
+            clean_soup.find('main'),
+            clean_soup.find(attrs={'role': 'main'}),
+            clean_soup.find(class_=blog_content_patterns),
+            clean_soup.find('article')
+        ]
+        
+        main_content = None
+        for candidate in candidates:
+            if candidate and len(candidate.get_text(strip=True)) > 200:
+                main_content = candidate
+                break
+                
+        # Se nenhuma âncora passar pelo teste de densidade, assume corpo defensivo.
         if not main_content:
             main_content = clean_soup.body if clean_soup.body else clean_soup
 
@@ -211,8 +226,8 @@ class DataClearStage(ProcessorStage):
         for pattern in block_patterns:
             text = re.sub(pattern, '\n', text)
 
-        # 2. FOOTER KILL-SWITCH (Truncamento Agressivo)
-        # Lista de gatilhos que marcam o fim do jornalismo e o início do ruído
+        # 2. FOOTER KILL-SWITCH (Desativado para evitar falsos-positivos agressivos)
+        # Em vez de cortar o texto, vamos apenas remover as seções de ruído no final se elas existirem.
         footer_triggers = [
             r'## Assista', 
             r'## Histórias relacionadas',
@@ -222,12 +237,13 @@ class DataClearStage(ProcessorStage):
             r'## Mais lidas'
         ]
         
-        for trigger in footer_triggers:
-            match = re.search(trigger, text, re.IGNORECASE)
-            if match:
-                logger.info(f"[STRICT] Kill-Switch ativado pela âncora: {trigger}")
-                text = text[:match.start()].strip()
-                break # Interrompe após o primeiro corte
+        # Comentamos o corte bruto e mantemos apenas para análise futura se necessário
+        # for trigger in footer_triggers:
+        #     match = re.search(trigger, text, re.IGNORECASE)
+        #     if match:
+        #         logger.info(f"[STRICT] Kill-Switch evitado (apenas logado): {trigger}")
+        #         # text = text[:match.start()].strip()
+        #         break 
 
         # 3. Limpeza de 'Skip-links' residuais
         text = re.sub(r'\[Pule.*?\]\(.*?\)', '', text, flags=re.IGNORECASE)

@@ -8,8 +8,9 @@ from typing import Dict, Any, List
 logger = logging.getLogger('neural_ingestor')
 
 class IngestorAgent:
-    def __init__(self, vector_db_path: str = "./vector_db", openai_api_key: str = None):
-        self.vector_db_path = vector_db_path
+    def __init__(self, vector_db_path: str = None, openai_api_key: str = None):
+        raw_path = vector_db_path or os.getenv("CHROMA_DB_PATH", "data/vector_db")
+        self.vector_db_path = os.path.abspath(raw_path)
         self._api_key = openai_api_key or os.getenv("OPENAI_API_KEY")
         
         if not self._api_key:

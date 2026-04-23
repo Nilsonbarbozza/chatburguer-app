@@ -458,7 +458,7 @@
 
             syncBtn.disabled = true;
             syncStatus.style.display = 'block';
-            syncStatus.innerText = 'NeuralSync iniciado... 🌀';
+            syncStatus.innerText = 'NeuralSync operando... Aguarde a clonagem matemática. 🌀';
 
             try {
                 const response = await fetch('/ingest/url', {
@@ -474,8 +474,8 @@
                 const data = await response.json();
                 
                 if (response.ok) {
-                    syncStatus.innerText = `Sucesso! Coleção: ${data.collection}`;
-                    // Adiciona a nova coleção ao seletor se ela não existir
+                    syncStatus.innerText = `Otimização concluída! Coleção: ${data.collection} ✅`;
+                    // Adiciona a nova coleção ao seletor (agora de forma verídica)
                     const selector = document.getElementById('collection-select');
                     const exists = Array.from(selector.options).some(opt => opt.value === data.collection);
                     if (!exists) {
@@ -483,18 +483,20 @@
                         opt.value = data.collection;
                         opt.text = `${data.collection} (Sincronizado)`;
                         selector.appendChild(opt);
+                        // Auto-seleciona a nova coleção recém-criada
+                        selector.value = data.collection;
                     }
                     setTimeout(() => {
                         syncStatus.style.display = 'none';
                         syncBtn.disabled = false;
                         syncUrl.value = '';
-                    }, 5000);
+                    }, 8000); // 8s de celebração na UI
                 } else {
-                    syncStatus.innerText = 'Erro na sincronização.';
+                    syncStatus.innerText = `Falha na clonagem: ${data.detail || 'Erro desconhecido'} ❌`;
                     syncBtn.disabled = false;
                 }
             } catch (err) {
-                syncStatus.innerText = 'Falha de conexão.';
+                syncStatus.innerText = 'Erro crítico de conexão com o Motor Neural. 🚫';
                 syncBtn.disabled = false;
             }
         });

@@ -108,16 +108,22 @@ def run_neural_sync(url: str, collection: str, strict: bool):
         })
         
         # 2. Ingestão dos vetores
-        readable_path = result.get("dataset_readable_path")
-        if not readable_path:
-            # Fallback para o caminho padrão se o OutputStage não retornou
-            readable_path = os.path.join("output", "dataset_readable.json")
+        # Sincronizamos com o diretório de saída configurado no sistema
+        from core.config import CONFIG
+        output_dir = CONFIG.get('OUTPUT_DIR', 'data/output')
+        readable_path = os.path.join(output_dir, "dataset_readable.json")
             
-        ingestor.ingest_dataset_file(readable_path, collection)
-        logging.info(f"✅ NeuralSync Completo para {url}")
+        ingest_result = ingestor.ingest_dataset_file(readable_path, collection)
+        if ingest_result.get("status") != "success":
+            msg = ingest_result.get("message", "Erro desconhecido na ingestão")
+            logging.warning(f"⚠️ NeuralSync Abortado: {msg}")
+            raise ValueError(f"Falha Semântica: {msg}")
+            
+        logging.info(f"✅ NeuralSync Completo para {url} - {ingest_result.get('chunks_count')} vetores.")
         
     except Exception as e:
         logging.error(f"❌ NeuralSync FALHOU para {url}: {e}")
+        raise  # Propaga o erro para o endpoint HTTP saber do colapso
 
 import time
 
@@ -139,25 +145,33 @@ async def list_collections_endpoint():
         return {"collections": []}
 
 @app.post("/ingest/url", response_model=IngestResponse)
-async def ingest_url_endpoint(request: IngestRequest, bg_tasks: BackgroundTasks):
+async def ingest_url_endpoint(request: IngestRequest):
     """
-    Triggers dynamic Scrape & Ingest pipeline.
+    Triggers dynamic Scrape & Ingest pipeline and waits for completion.
     """
+    import asyncio
     # 1. Padroniza nome da coleção e limpa caracteres inválidos (acentos, espaços, etc)
     if request.collection_name:
         collection = ingestor.sanitize_name(request.collection_name)
     else:
         collection = ingestor.format_collection_name(request.url)
     
-    # 2. Agenda a tarefa pesada para rodar em background
-    bg_tasks.add_task(run_neural_sync, request.url, collection, request.strict)
-    
-    return IngestResponse(
-        task_id=f"sync_{int(time.time())}",
-        status="processing",
-        message="NeuralSync iniciado com sucesso. O cérebro será atualizado em breve.",
-        collection=collection
-    )
+    # 2. Executa a tarefa pesada na pool de threads (síncrono para o cliente HTTP, mas sem travar o worker do uvicorn)
+    try:
+        await asyncio.to_thread(run_neural_sync, request.url, collection, request.strict)
+        
+        return IngestResponse(
+            task_id=f"sync_{int(time.time())}",
+            status="success",
+            message="NeuralSync concluído! A base de conhecimento (ChromaDB) foi alimentada.",
+            collection=collection
+        )
+    except ValueError as ve:
+        logger.warning(f"Ingest endpoint abortado semanticamente: {ve}")
+        raise HTTPException(status_code=400, detail=str(ve))
+    except Exception as e:
+        logger.error(f"Ingest endpoint error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/chat", response_model=ChatResponse)
 async def chat_endpoint(request: ChatRequest):

@@ -16,15 +16,19 @@ class NeuralRAG:
     Enterprise-grade RAG core service.
     Handles resilient AI interactions, vector search, and context grounding.
     """
-    def __init__(self, api_key: str, chroma_path: str = "./vector_db"):
-        self.api_key = api_key
-        self.client_llm = OpenAI(api_key=api_key)
-        self.client_chroma = chromadb.PersistentClient(path=chroma_path)
+    def __init__(self, api_key: str, chroma_path: str = None):
+        self._api_key = api_key
+        self.client_llm = OpenAI(api_key=self._api_key)
+        
+        # Puxa o caminho do banco da variável de ambiente (Caminho ABSOLUTO)
+        raw_path = chroma_path or os.getenv("CHROMA_DB_PATH", "data/vector_db")
+        self.vector_db_path = os.path.abspath(raw_path)
+        self.client_chroma = chromadb.PersistentClient(path=self.vector_db_path)
         
         # Unified Embedding Engine (Enterprise Standard)
         # Otimizado com 512 dimensões (Matryoshka) para escala e precisão
         self.ef = OpenAIEmbeddingFunction(
-            api_key=api_key,
+            api_key=self._api_key,
             model_name="text-embedding-3-small",
             dimensions=512
         )
@@ -32,15 +36,15 @@ class NeuralRAG:
         # Tokenizador para auditoria de custos (cl100k_base para modelos v3)
         self.tokenizer = tiktoken.get_encoding("cl100k_base")
         
-        self.system_prompt = """Você é um assistente corporativo de elite.
-A sua função é responder à pergunta do usuário baseando-se ÚNICA E EXCLUSIVAMENTE no Contexto fornecido.
+        self.system_prompt = """Você atua como um Engenheiro de Dados Sênior de Elite.
+A sua função é analisar os dados recuperados, extrair insights e substituir o pensamento humano na produtividade analítica, baseando-se ÚNICA E EXCLUSIVAMENTE no Contexto fornecido.
 
-Regras Estritas:
-1. Se a resposta não estiver contida no contexto, diga exatamente: 'Não possuo informações suficientes no documento para responder a isso.'
-2. Não utilize conhecimentos prévios externos.
-3. Prioridade de Links: Sempre que houver links de produtos específicos (que contêm '/itm/'), use-os em preferência a links de busca genérica.
-4. Citação: Sempre forneça o link direto para o produto mencionado para facilitar a compra do usuário.
-5. Seja direto, claro e profissional.
+Sua arquitetura de resposta deve ser IRREPREENSÍVEL E RICA:
+1. Formatação Avançada: Use estruturação inteligente em Markdown, criando tópicos (bullet points) claros e destacando métricas vitais ou palavras-chave em **negrito**.
+2. Organização Visual: Construa tabelas em Markdown sempre que precisar apresentar dados comparativos, históricos ou quantitativos.
+3. Citação de Fontes: Sempre que a extração possuir links originais ou de produtos (ex: contendo '/itm/' ou links de cotações), incorpore-os naturalmente no texto final para validação.
+4. Anti-Alucinação Estrita: Sua inteligência analítica só se aplica ao que extraímos. Se a resposta da dúvida do usuário NÃO estiver contida nos documentos fornecidos, recuse-se a responder dizendo explicitamente: 'Não possuo informações suficientes no documento extraído para responder a isso.'
+5. Mantenha o padrão corporativo analítico de um relatório de alto valor. Não seja monótono, demonstre cruzamento inteligente de dados.
 """
 
     def num_tokens_from_string(self, string: str) -> int:
