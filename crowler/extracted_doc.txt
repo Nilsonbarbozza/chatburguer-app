@@ -1,0 +1,344 @@
+CRAWLER DE BATALHÃO
+Arquitetura Enterprise de Raspagem Massiva
+Documento Técnico de Implementação — v1.0
+Confidencial — Uso Interno
+1. Sumário Executivo
+Este documento descreve a arquitetura completa do Crawler de Batalhão, um sistema enterprise de raspagem massiva de dados projetado para processar dezenas de milhares de URLs com resiliência, furtividade e conformidade legal. O sistema foi concebido para operar como produto comercial B2B, entregando datasets processados em formato JSONL e/ou Parquet conforme contrato com o cliente.
+Escopo de Operação:  Dezenas de milhares de URLs por ciclo de job, múltiplos clientes simultâneos, SLA de entrega contratual.
+Conformidade:  Motor PII integrado com adesão a LGPD (Lei 13.709/2018), GDPR e legislações internacionais equivalentes. Log de auditoria imútável em cada job.
+2. Princípios de Engenharia
+2.1 Hierarquia de Prioridades
+Toda decisão arquitetural deste sistema segue esta ordem de prioridade:
+Conformidade Legal (LGPD/GDPR) — não negociável
+Resiliência de dados — nenhum dado coletado pode ser perdido por falha
+Furtividade — minimizar assinatura de bot sem comprometer os dois anteriores
+Performance — throughput máximo dentro dos limites dos itens acima
+Custo — otimização de recursos (proxy, banda, CPU/RAM) como consequencia da arquitetura
+2.2 Modelo de Custo por Design
+O sistema opera com classificação dinâmica de defesa. Recursos caros (proxy residencial, Playwright) são consumidos apenas quando estritamente necessário. A maioria dos alvos deve ser resolvida pelas camadas de menor custo.
+Executor
+Custo Relativo / Uso Esperado
+Nivel 0 — curl direto
+~R$0 — sites sem defesa (~30% do corpus)
+Nível 1-2 — curl_cffi TLS spoof
+Baixo — Cloudflare básico (~45% do corpus)
+Nível 3-4 — Playwright + proxy DC
+Médio — JS challenge, Datadome (~20% do corpus)
+Priority — proxy residencial
+Alto — PerimeterX, Akamai (~5% do corpus)
+3. Arquitetura em Camadas
+O pipeline completo é composto por 7 camadas funcionais independentes. Cada camada tem responsabilidade única e pode ser escalada ou substituída de forma isolada.
+CAMADA 1 → Ingestão  |  CAMADA 2 → Defense Intelligence  |  CAMADA 3 → Redis Streams
+CAMADA 4 → Executores  |  CAMADA 5 → Retry Engine  |  CAMADA 6 → DataClear  |  CAMADA 7 → Output
+3.1 Camada de Ingestão
+Responsável por receber o corpus de URLs do cliente, normalizar, deduplicar e priorizar antes de qualquer processamento.
+Normalização de URLs: lowercase, remoção de parâmetros de rastreamento (utm_*, fbclid, etc.), canonicalização de trailing slash
+Deduplicação via Redis SET: antes de enfileirar, verifica se a URL já foi processada neste job. Operação O(1)
+Priorização via Redis Sorted Set: score = urgência do SLA do cliente. URLs de clientes com SLA menor entram com score maior
+# Ingestão com deduplicação e prioridade
+async def ingest_urls(urls: list[str], job_id: str, sla_score: float):
+    pipe = redis.pipeline()
+    for raw_url in urls:
+        url = normalize_url(raw_url)
+        already_seen = await redis.sismember(f"seen:{job_id}", url)
+        if not already_seen:
+            pipe.sadd(f"seen:{job_id}", url)
+            pipe.zadd("priority_queue", {url: sla_score})
+    await pipe.execute()
+3.2 Camada de Defense Intelligence
+Núcleo estratégico do sistema. Classifica cada URL (ou domínio) por nível de defesa antes de ativar o executor correto. Elimina o desperdício de recursos caros em alvos que não requerem.
+Probe Request
+Uma requisição nua é disparada sem proxy ou spoofing. O resultado é analisado para extrair sinais de defesa:
+Sinal Detectado
+Nível / Executor Ativado
+HTML limpo, 200 OK, sem cookies especiais
+Nível 0 — curl direto sem proxy
+Header cf-ray presente
+Nível 1 — curl_cffi Chrome TLS
+<title>Just a moment...</title> ou status 403
+Nível 2 — curl_cffi + header completo
+Cookie datadome ou dd_cookie
+Nível 3 — Playwright + proxy datacenter
+Cookie __px (PerimeterX) ou ak_bmsc (Akamai)
+Nível 4 — Playwright + proxy residencial
+Nível 4 + CAPTCHA recorrente
+Priority — residencial + delay humanizado
+Cache de Classificação:  O resultado da classificação é armazenado em Redis Hash por domínio com TTL de 24h. URLs do mesmo domínio não precisam do probe — reutilizam a classificação cacheada.
+# Defense Intelligence Layer
+async def classify_defense_level(url: str) -> DefenseLevel:
+    domain = extract_domain(url)
+    cached = await redis.hget("defense_cache", domain)
+    if cached:
+        return DefenseLevel(int(cached))
+    response = await raw_probe(url, timeout=5)
+    signals = {
+        "cf_ray":     "cf-ray" in response.headers,
+        "js_challenge": "Just a moment" in response.text,
+        "datadome":   "datadome" in response.cookies,
+        "perimeterx": "__px" in response.cookies,
+        "akamai":     "ak_bmsc" in response.cookies,
+        "captcha":    "captcha" in response.text.lower(),
+        "status":     response.status_code,
+    }
+    level = DefenseLevelRouter.classify(signals)
+    await redis.hset("defense_cache", domain, level.value)
+    await redis.expire("defense_cache", 86400)
+    return level
+3.3 Camada de Message Broker — Redis Streams
+O sistema utiliza Redis Streams (não Redis Lists) como broker de mensagens. A escolha é crítica: Streams possuem ACK persistente nativo via XREADGROUP, histórico de mensagens e reentrega automática após timeout de worker morto.
+Por que Streams e não Lists?  Redis Lists perdem mensagens se o worker morrer sem ACK. Streams garantem que a mensagem volta à fila automaticamente após timeout, sem implementação manual de retry no código da aplicação.
+Estrutura das Filas
+stream:level_0 — URLs nível 0, sem proxy, alta velocidade
+stream:level_12 — URLs nível 1 e 2, curl_cffi com TLS spoof
+stream:level_34 — URLs nível 3 e 4, Playwright + proxy rotativo
+priority_queue — Redis Sorted Set para URLs com SLA urgente
+Três Pilares Obrigatórios
+ACK/NACK: worker pega a mensagem — fila a marca como pendente. Sucesso: XACK. Falha/timeout: fila reentrega automaticamente
+Dead Letter Queue: após 3 tentativas sem sucesso, URL é movida para stream:dead_letters com categorização de causa
+Throttling integrado: consumer group limita leitura por segundo por stream, prevenindo estouro de quota de proxy
+# Consumidor Redis Streams com ACK correto
+async def stream_worker(stream: str, group: str, semaphore: asyncio.Semaphore):
+    while True:
+        messages = await redis.xreadgroup(
+            group, "worker-1", {stream: ">"}, count=10, block=2000
+        )
+        for stream_name, entries in messages:
+            for msg_id, data in entries:
+                async with semaphore:
+                    success = await process_url(data["url"])
+                    if success:
+                        await redis.xack(stream, group, msg_id)
+                    else:
+                        await handle_failure(stream, msg_id, data)
+3.4 Camada de Executores
+Quatro executores especializados operam em paralelo, cada um otimizado para um perfil de defesa. Todos respeitam Semáforos de concorrência para evitar estouro de file descriptors e rate-limit por IP.
+Executor Nível 0 — curl direto
+Biblioteca: aiohttp nativo
+Semáforo: asyncio.Semaphore(20)
+Proxy: nenhum
+Uso esperado: ~30% do corpus
+Executor Nível 1-2 — TLS Spoofing
+Biblioteca: curl_cffi AsyncSession
+Semáforo: asyncio.Semaphore(15)
+TLS fingerprint: Chrome 120 (JA4 completo)
+Headers HTTP/2 SETTINGS frame imitando browser real
+# curl_cffi com identidade completa de browser
+from curl_cffi.requests import AsyncSession
+async def fetch_level12(url: str, identity: BrowserIdentity) -> Response:
+    async with AsyncSession() as session:
+        response = await session.get(
+            url,
+            impersonate="chrome120",
+            headers=identity.headers,      # ordem exata do Chrome
+            cookies=identity.cookies,      # sessao persistente
+            timeout=15,
+        )
+    return response
+Executor Nível 3-4 — Playwright Pool
+Framework: Playwright asyncio
+Semáforo: asyncio.Semaphore(5) — conservador por consumo de RAM
+Pool: um único browser process, múltiplas pages (abas) em paralelo
+Reciclagem de contexto: a cada 50 páginas, contexto é destruído e recriado (previne vazamento de memória progressivo)
+Anti-detecção: playwright-stealth ou configuracões manuais de evasão
+# Playwright pool com reciclagem de contexto
+class PlaywrightPool:
+    def __init__(self):
+        self.browser = None
+        self.context = None
+        self.pages_processed = 0
+        self.RECYCLE_AFTER = 50
+    async def get_page(self):
+        if self.pages_processed % self.RECYCLE_AFTER == 0:
+            if self.context:
+                await self.context.close()
+            self.context = await self.browser.new_context(
+                **stealth_config,
+                proxy={"server": proxy_rotativo.next()},
+            )
+        page = await self.context.new_page()
+        self.pages_processed += 1
+        return page
+3.5 Retry + Escalation Engine
+Motor de resiliência responsável por distinguir falhas transitórias de falhas permanentes e tomar a ação correta para cada tipo. Erros diferentes exigem tratamentos diferentes — misturá-los é perda de inteligência operacional.
+Tipo de Falha
+Ação do Engine
+Timeout de rede
+Retry com exponential backoff: 2s → 4s → 8s
+403 / WAF block
+Escalação automática para executor de nível superior
+404 real
+Descarte permanente com log de auditoria
+429 Rate Limit
+Pausa o worker específico por N minutos
+JS Challenge detectado
+Escalada para fila Playwright com delay humanizado
+3x falha sem padrão
+Movida para Dead Letter Queue categorizada
+Escalation Automático:  Um 403 que persiste após retry não volta para a mesma fila — o engine detecta o padrão e promove a URL para o executor do nível imediatamente superior. Isso fecha o loop com a Defense Intelligence Layer.
+3.6 DataClear Stage
+Camada de transformação e compliance. Todo dado extraído passa por aqui antes de chegar ao output. Opera em modo strict=True por padrão.
+Pipeline Interno do DataClear
+Extração estruturada do HTML/DOM via seletores CSS ou XPath definidos no job config
+Validação de schema: campos obrigatórios, tipos de dados, ranges aceitos
+Filtro PII (motor integrado): detecta e remove/pseudonimiza CPF, email, telefone, nomes completos, endereços
+Deduplicação por hash do conteúdo: previne registros duplicados no dataset final
+Anotação de proveniência: URL de origem, timestamp, executor utilizado, versão do schema
+LGPD por Design:  O filtro PII não é uma camada opcional — é o default. Dados pessoais que aparecem acidentalmente em páginas públicas (nomes de funcionários em rodapés, emails em páginas de contato) são descartados ou pseudonimizados antes de qualquer armazenamento.
+# Exemplo de schema canônico de saída do DataClear
+{
+  "id": "sha256_hash_do_url_+_timestamp",
+  "url": "https://exemplo.com/produto/123",
+  "domain": "exemplo.com",
+  "crawl_timestamp": "2026-04-23T14:32:00Z",
+  "executor_level": 2,
+  "schema_version": "v2",
+  "data": {
+    "title": "...",
+    "price": 129.90,
+    "description": "..."
+  },
+  "pii_fields_removed": [],
+  "audit_hash": "sha256_do_registro_completo"
+}
+3.7 Camada de Output Dinâmico — JSONL e Parquet
+O crawler sempre grava internamente em JSONL como formato intermediário (rápido, append, resiliente). O Export Engine — um processo assíncrono separado — lê esse JSONL e produz os formatos contratados pelo cliente sem bloquear o throughput do crawl.
+Justificativa Técnica da Separação
+Converter JSONL para Parquet inline durante o crawl adiciona latência: o PyArrow precisa acumular um batch para construir o schema colunar. Em escala de dezenas de milhares de URLs, isso para o crawler enquanto aguarda a conversão. A separação elimina esse acoplamento.
+Comparação de Formatos
+Atributo
+JSONL
+Parquet
+Compressão
+1x (gzip até 3x)
+Snappy 8–15x
+Leitura colunar
+Não
+Sim — leitura apenas das colunas pedidas
+Inspeção manual
+Sim — qualquer editor de texto
+Não — binário
+Compatibilidade
+Python, Node, LLM tools, fine-tuning
+BigQuery, Spark, Athena, DuckDB, Databricks
+Schema enforcement
+Implícito (flexível)
+Explícito (rígido por design)
+Particionamento nativo
+Não
+Sim — por domínio/data reduz custo de query
+Contrato de Output por Cliente
+Armazenado em Redis Hash no momento da criação do job:
+# Contrato de cliente — define formatos de entrega
+client_contract = {
+    "client_id": "acme_corp",
+    "output_formats": ["jsonl", "parquet"],  # lista dinâmica
+    "parquet_compression": "snappy",
+    "partition_by": ["domain", "crawl_date"],
+    "jsonl_gzip": True,
+    "schema_version": "v2",
+}
+Manifesto de Entrega
+Junto com os arquivos de dado, o Export Engine gera um manifesto manifest.json contendo: lista de todos os arquivos, total de registros por arquivo, hash MD5 de integridade e versão do schema. Isso permite ao cliente validar a entrega programaticamente e serve como documentação de auditoria LGPD.
+# Estrutura do manifesto de entrega
+{
+  "job_id": "job_acme_20260423_001",
+  "client_id": "acme_corp",
+  "generated_at": "2026-04-23T18:00:00Z",
+  "schema_version": "v2",
+  "total_records": 48392,
+  "formats_delivered": ["jsonl", "parquet"],
+  "files": [
+    {
+      "path": "parquet/domain=exemplo.com/date=2026-04-23/part-0.parquet",
+      "format": "parquet",
+      "records": 1247,
+      "md5": "a3f2...",
+      "size_bytes": 284920
+    }
+  ]
+}
+4. Conformidade Legal — LGPD e Direito Internacional
+Conformidade não é uma camada adicionada após o desenvolvimento — está incorporada no design de cada componente do sistema.
+Princípio LGPD
+Implementação no Sistema
+Finalidade
+DataClear coleta apenas campos definidos no job config. Campos não mapeados são descartados
+Adequação
+Schema canônico versionado garante que o dado coletado é compatível com a finalidade declarada
+Necessidade
+Filtro PII remove dados pessoais acidentais antes de qualquer armazenamento
+Segurança
+audit_hash imutável em cada registro. Log de proveniência por job
+Responsabilização
+Manifesto de entrega com timestamp e hash é a prova documentável de conformidade
+Respeito ao robots.txt
+Módulo de leitura e cache do robots.txt por domínio. Paths bloqueados não entram no corpus
+Rate Limiting como Boa-Fé:  O Semáforo de concorrência não é apenas otimização de performance — é evidência documentável de que o sistema não foi projetado para causar indisponibilidade nos servidores alvo (o que configuraria ataque de disponibilidade).
+5. Stack Tecnológico Recomendado
+Componente
+Tecnologia / Biblioteca
+Runtime principal
+Python 3.11+ com asyncio nativo
+Executor Lível 0
+aiohttp 3.x
+Executor Nível 1-2 (TLS spoof)
+curl_cffi — AsyncSession com impersonate="chrome120"
+Executor Nível 3-4 (JS render)
+Playwright asyncio + playwright-stealth
+Message Broker
+Redis 7+ — Streams (XREADGROUP/XACK)
+Task Queue (opcional)
+arq — nativo asyncio, Redis-backed
+Escrita assíncrona em disco
+aiofiles
+Export JSONL → Parquet
+PyArrow 14+ com schema explícito
+Deduplicação de URLs
+Redis SET (O(1) lookup)
+Fila de prioridade
+Redis Sorted Set (ZADD/ZPOPMIN)
+Cache de classificação
+Redis Hash com TTL 24h
+Filtro PII
+Motor interno (já validado LGPD/GDPR)
+Proxy residencial
+Rotativo — ativado apenas Nível 4+
+Observabilidade
+Métricas: taxa sucesso/nível, custo/URL, lag de fila
+6. Guia de Implementação — Ordem de Desenvolvimento
+Recomenda-se implementar os componentes nesta ordem para permitir testes incrementais com dados reais a partir da Sprint 2.
+Sprint 1: Infraestrutura base — Redis Streams, schema de filas, estrutura de diretórios do projeto
+Sprint 1: DataClear Stage com filtro PII e schema canônico v1
+Sprint 2: Executor Nível 0 (curl direto) + JSONL output + manifesto
+Sprint 2: Defense Intelligence Layer (probe + classificação + cache)
+Sprint 3: Executor Nível 1-2 (curl_cffi) + Retry/Escalation Engine
+Sprint 3: Dead Letter Queue categorizada
+Sprint 4: Executor Nível 3-4 (Playwright pool + recicagem de contexto)
+Sprint 4: Proxy rotativo inteligente (comercial vs residencial por nível)
+Sprint 5: Export Engine assíncrono — conversão JSONL → Parquet
+Sprint 5: Priority Queue com score de SLA + observabilidade completa
+Sprint 6: Testes de carga, ajuste de Semáforos, validação LGPD end-to-end
+7. Observabilidade e Métricas de Saúde
+Um sistema enterprise sem observabilidade é uma caixa-preta inoperable. As seguintes métricas devem ser instrumentadas desde o Sprint 1:
+Métrica
+Significado Operacional
+Taxa de sucesso por nível (0/12/34/priority)
+Detecta degëbrade de WAF em domínios específicos
+Custo de proxy por URL processada
+Alerta de desvio de custo antes de virar prejuízo
+Lag de fila por stream
+Sinaliza gargalos — qual executor está sobrecarregado
+Taxa de Dead Letters por tipo
+Distingue problemas de rede de problemas de WAF
+Tempo médio por URL por nível
+Informa ajuste de Semáforos e SLA realista
+Volume de PII removido por job
+Auditoria de conformidade LGPD por entrega
+8. Decisões em Aberto — Próximas Sessões
+Os itens abaixo foram identificados como pontos de decisão arquitetural que impactam o desenvolvimento mas ainda aguardam definição:
+Schema canônico v1: quais campos são universais (presentes em todos os jobs) versus campos job-specific configuráveis
+Campo de proveniência: incluir versão do executor (curl_cffi vs Playwright) para rastreabilidade de debug ou apenas URL + timestamp
+Evolução de schema: fixo por contrato de cliente ou evolutivo com retrocompatibilidade garantida (Parquet suporta adição de colunas sem quebrar leitores antigos, JSONL não)
+Multi-tenancy no Redis: isolamento por job_id (atual) ou por namespace/instância Redis separada por cliente tier
+SLA de entrega: definição dos níveis de SLA (ex: Standard 48h, Priority 12h, Enterprise 4h) e como isso impacta o score da Priority Queue
+Crawler de Batalhão — Documento Técnico v1.0  |  Confidencial  |  Versão para Time de Implementação

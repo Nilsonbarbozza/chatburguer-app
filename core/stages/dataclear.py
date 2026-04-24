@@ -163,16 +163,27 @@ class DataClearStage(ProcessorStage):
         if self.redact:
             markdown_body = self._redact_pii(markdown_body)
 
-        # 4. Estruturação JSONL
+        # 4. Estruturação Universal (Schema Canônico Nível Batalhão)
+        import hashlib
+        from urllib.parse import urlparse
+        
+        url = context.get('url') or context.get('base_url', '')
+        domain = urlparse(url).netloc if url else "unknown"
+        crawl_timestamp = datetime.now().isoformat()
+        
         title = clean_soup.title.string if clean_soup.title else "Sem Título"
         if title:
             title = unicodedata.normalize("NFKC", title)
             title = re.sub(r'[\u200b\u200c\u200d\u200e\u200f\u202a-\u202e\u2060-\u206f\xad\ufeff]', '', title)
             title = re.sub(r'\s+', ' ', title).strip()
         
+        # Hash determinístico para deduplicação no Data Lake
+        id_string = f"{url}_{crawl_timestamp}"
+        id_hash = hashlib.sha256(id_string.encode('utf-8')).hexdigest()
+        
         metadata_snapshot = {
-            "source_title": title.strip() if title else "Sem Título",
-            "source_url": context.get('url') or context.get('base_url', ''),
+            "source_title": title,
+            "source_url": url,
         }
         
         chunks = self._create_chunks(
@@ -182,19 +193,21 @@ class DataClearStage(ProcessorStage):
             metadata_snapshot=metadata_snapshot
         )
 
-        # Montagem do Payload Final
+        executor = context.get('executor_level', 'frontend-monolithic')
+
+        # Montagem Final do Payload de Data Lake
         dataset_entry = {
-            "metadata": {
-                "source_url": context.get('url'),
-                "crawl_timestamp": datetime.now().isoformat(),
-                "language_detected": context.get('language', 'pt-BR'),
-                "token_count_estimate": len(markdown_body.split()) * 1.3,
-                "json_ld_context": json_ld_data if json_ld_data else None
-            },
-            "content": {
-                "title": soup.title.string if soup.title else "Sem título",
+            "id_hash": id_hash,
+            "url": url,
+            "domain": domain,
+            "crawl_timestamp": crawl_timestamp,
+            "schema_version": "v2_batalhao",
+            "executor": executor, # Proveniência ativada
+            "data": {
+                "title": title,
                 "markdown_body": markdown_body,
-                "semantic_chunks": chunks
+                "json_ld": json_ld_data if json_ld_data else None,
+                "semantic_chunks": chunks # Opcional mantido para RAG sync
             },
             "compliance": {
                 "pii_filtered": self.redact,

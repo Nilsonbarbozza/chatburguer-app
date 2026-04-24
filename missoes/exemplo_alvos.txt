@@ -1,0 +1,9 @@
+# ═══════════════════════════════════════════════════
+# Exemplo de arquivo de missão para o Batalhão
+# Uma URL por linha. Linhas vazias são ignoradas.
+# ═══════════════════════════════════════════════════
+
+https://example.com/
+https://httpbin.org/html
+
+# Adicione suas URLs de alvo abaixo:

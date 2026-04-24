@@ -18,20 +18,19 @@ RUN groupadd -r appgroup && useradd -r -g appgroup -d $APP_HOME -s /sbin/nologin
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# 6. Copia o código-fonte (Core e API)
-COPY ./core ./core
-COPY ./static ./static
-COPY ./rag_generator.py .
-COPY .env .
+# 6. Copia TODO o código-fonte do projeto
+COPY . .
 
 # 7. Cria as pastas de persistência e ajusta permissões ANTES de trocar de usuário
-# Precisamos garantir que o appuser tenha controle sobre os bancos de dados
-RUN mkdir -p vector_db output && \
+RUN mkdir -p data/output data/redis vector_db missoes && \
     chown -R appuser:appgroup $APP_HOME
 
 # 8. Troca para o usuário seguro
 USER appuser
 
-# 9. Exposição e Comando de Execução (Production Standard)
+# 9. Exposição de Porta (para o serviço RAG/FastAPI, ignorado pelo Batalhão)
 EXPOSE 8000
-CMD ["uvicorn", "rag_generator:app", "--host", "0.0.0.0", "--port", "8000"]
+
+# 10. Ponto de Entrada Dinâmico
+# O CMD padrão roda o Batalhão. Para rodar o RAG, sobrescreva no docker-compose.
+CMD ["python", "-m", "core.main_batalhao"]

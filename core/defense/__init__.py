@@ -1,0 +1,1 @@
+# Defense Namespace Init

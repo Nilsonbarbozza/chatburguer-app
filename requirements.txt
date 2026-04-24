@@ -27,3 +27,11 @@ tenacity>=8.2.0
 pydantic>=2.0.0
 tiktoken>=0.6.0
 python-multipart>=0.0.9
+
+# Crawler Dinâmico & Broker
+redis>=5.0.0
+curl_cffi>=0.6.0
+pyarrow>=14.0.0
+aiofiles>=23.2.0
+arq>=0.25.0
+protego>=0.3.0

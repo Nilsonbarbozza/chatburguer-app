@@ -1,0 +1,2094 @@
+*2
+$6
+SELECT
+$1
+0
+*6
+$6
+XGROUP
+$6
+CREATE
+$14
+stream:level_0
+$11
+tropa_elite
+$1
+0
+$8
+MKSTREAM
+*6
+$6
+XGROUP
+$6
+CREATE
+$15
+stream:level_12
+$11
+tropa_elite
+$1
+0
+$8
+MKSTREAM
+*6
+$6
+XGROUP
+$6
+CREATE
+$15
+stream:level_34
+$11
+tropa_elite
+$1
+0
+$8
+MKSTREAM
+*6
+$6
+XGROUP
+$6
+CREATE
+$16
+stream:dataclear
+$11
+tropa_elite
+$1
+0
+$8
+MKSTREAM
+*6
+$6
+XGROUP
+$6
+CREATE
+$19
+stream:dead_letters
+$11
+tropa_elite
+$1
+0
+$8
+MKSTREAM
+*6
+$6
+XGROUP
+$6
+CREATE
+$14
+stream:level_0
+$10
+workers_l0
+$1
+0
+$8
+MKSTREAM
+*6
+$6
+XGROUP
+$6
+CREATE
+$15
+stream:level_12
+$11
+workers_l12
+$1
+0
+$8
+MKSTREAM
+*6
+$6
+XGROUP
+$6
+CREATE
+$15
+stream:level_34
+$11
+workers_l34
+$1
+0
+$8
+MKSTREAM
+*6
+$6
+XGROUP
+$6
+CREATE
+$16
+stream:dataclear
+$17
+workers_dataclear
+$1
+0
+$8
+MKSTREAM
+*4
+$4
+HSET
+$13
+defense_cache
+$11
+example.com
+$1
+1
+*3
+$9
+PEXPIREAT
+$13
+defense_cache
+$13
+1777086999852
+*5
+$4
+XADD
+$14
+stream:level_0
+$15
+1777000599854-0
+$3
+url
+$20
+https://example.com/
+*1
+$5
+MULTI
+*14
+$6
+XCLAIM
+$14
+stream:level_0
+$10
+workers_l0
+$16
+soldado_L0_Alpha
+$1
+0
+$15
+1777000599854-0
+$4
+TIME
+$13
+1777000599854
+$10
+RETRYCOUNT
+$1
+1
+$5
+FORCE
+$6
+JUSTID
+$6
+LASTID
+$15
+1777000599854-0
+*7
+$6
+XGROUP
+$5
+SETID
+$14
+stream:level_0
+$10
+workers_l0
+$15
+1777000599854-0
+$11
+ENTRIESREAD
+$1
+1
+*1
+$4
+EXEC
+*11
+$4
+XADD
+$16
+stream:dataclear
+$15
+1777000599922-0
+$3
+url
+$20
+https://example.com/
+$12
+html_content
+$528
+<!doctype html><html lang="en"><head><title>Example Domain</title><meta name="viewport" content="width=device-width, initial-scale=1"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.</p><p><a href="https://iana.org/domains/example">Learn more</a></p></div></body></html>
+
+$14
+executor_level
+$10
+L0-aiohttp
+$6
+status
+$3
+200
+*1
+$5
+MULTI
+*14
+$6
+XCLAIM
+$16
+stream:dataclear
+$17
+workers_dataclear
+$22
+equipe_limpeza_Charlie
+$1
+0
+$15
+1777000599922-0
+$4
+TIME
+$13
+1777000599923
+$10
+RETRYCOUNT
+$1
+1
+$5
+FORCE
+$6
+JUSTID
+$6
+LASTID
+$15
+1777000599922-0
+*7
+$6
+XGROUP
+$5
+SETID
+$16
+stream:dataclear
+$17
+workers_dataclear
+$15
+1777000599922-0
+$11
+ENTRIESREAD
+$1
+1
+*1
+$4
+EXEC
+*4
+$4
+XACK
+$14
+stream:level_0
+$10
+workers_l0
+$15
+1777000599854-0
+*4
+$4
+XACK
+$16
+stream:dataclear
+$17
+workers_dataclear
+$15
+1777000599922-0
+*4
+$4
+HSET
+$13
+defense_cache
+$21
+blog.dsacademy.com.br
+$1
+2
+*3
+$9
+PEXPIREAT
+$13
+defense_cache
+$13
+1777087001328
+*5
+$4
+XADD
+$15
+stream:level_12
+$15
+1777000601329-0
+$3
+url
+$74
+https://blog.dsacademy.com.br/firecrawl-e-web-scraping-inteligente-com-ia/
+*1
+$5
+MULTI
+*14
+$6
+XCLAIM
+$15
+stream:level_12
+$11
+workers_l12
+$17
+soldado_L12_Ghost
+$1
+0
+$15
+1777000601329-0
+$4
+TIME
+$13
+1777000601329
+$10
+RETRYCOUNT
+$1
+1
+$5
+FORCE
+$6
+JUSTID
+$6
+LASTID
+$15
+1777000601329-0
+*7
+$6
+XGROUP
+$5
+SETID
+$15
+stream:level_12
+$11
+workers_l12
+$15
+1777000601329-0
+$11
+ENTRIESREAD
+$1
+1
+*1
+$4
+EXEC
+*11
+$4
+XADD
+$16
+stream:dataclear
+$15
+1777000602761-0
+$3
+url
+$74
+https://blog.dsacademy.com.br/firecrawl-e-web-scraping-inteligente-com-ia/
+$12
+html_content
+$157096
+<!DOCTYPE html>
+<html lang="pt-BR" >
+   <head>
+      <meta charset="UTF-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+      <link rel="pingback" href=" https://blog.dsacademy.com.br/xmlrpc.php ">      <style type="text/css">
+/*--------------------------------------------------------------
+    Common
+--------------------------------------------------------------*/
+.header-sidebar {
+    background-color: #c47d54;
+}
+.widget .custom-social-icons li > a
+{
+    color: #c47d54 !important;
+}
+.search-box-outer .dropdown-menu {
+    border-top: solid 1px #c47d54;
+}
+.search-form input[type="submit"] {
+    background: #c47d54 none repeat scroll 0 0 !important;
+    border: 1px solid #c47d54 !important;
+}
+.woocommerce ul.products li.product .onsale, .products span.onsale, .woocommerce span.onsale {
+    background: #c47d54;
+}
+.woocommerce ul.products li.product .onsale, .products span.onsale {
+    background: #c47d54;
+    border: 2px solid #c47d54;
+}
+.woocommerce-loop-product__title:hover {
+    color: #c47d54;
+}
+.woocommerce ul.products li.product .button, .owl-item .item .cart .add_to_cart_button {
+    background: #c47d54;
+}
+.woocommerce nav.woocommerce-pagination ul li a:focus, .woocommerce nav.woocommerce-pagination ul li a:hover, .woocommerce nav.woocommerce-pagination ul li span.current {
+    background-color: #c47d54 !important;
+}
+.woocommerce ul.products li.product .onsale, .woocommerce span.onsale {
+    background: #c47d54 !important;
+}
+button, input[type="button"], input[type="submit"] {
+    background-color: #c47d54 !important;
+}
+.checkout-button.button.alt.wc-forward
+{
+    background-color: #c47d54 !important;
+}
+.navbar-custom .nav > li > a:focus,
+.navbar-custom .nav > li > a:hover,
+.navbar-custom .nav .open > a,
+.navbar-custom .nav .open > a:focus,
+.navbar-custom .nav .open > a:hover,
+.navbar-custom .dropdown-menu > li > a:focus,
+.navbar-custom .dropdown-menu > li > a:hover,
+.dropdown-menu>.active> li>a:focus,
+.dropdown-menu>.active> li>a:hover,
+.navbar-custom .nav .dropdown-menu>.active>a{
+    color: #c47d54;
+}
+.btn-default:focus{background: #c47d54;}
+.search-box-outer .dropdown-menu {
+    border-top: solid 1px #c47d54;
+}
+.btn-animate.slidbtn {
+    background: #c47d54;
+}
+.slider-caption .btn-combo .btn-default:hover {
+    background-color: #c47d54;
+    border: unset;
+}
+.btn-animate.border:before, .btn-animate.border:after {
+    background: #c47d54;
+}
+.owl-carousel .owl-prev:hover, .owl-carousel .owl-prev:focus {
+    background-color: #c47d54;
+}
+.owl-carousel .owl-next:hover, .owl-carousel .owl-next:focus {
+    background-color: #c47d54;
+}
+.call-to-action, .call-to-action-one {
+    background-color: #c47d54;
+}
+.services .post-thumbnail a {
+    color: #c47d54;
+}
+.services .post:before {
+    border-bottom-color: #c47d54;
+}
+.text-default {
+    color: #c47d54;
+}
+.btn-animate.border {
+    border: 2px solid #c47d54 !important;
+}
+.portfolio-filters li.active a:before, .portfolio-filters li a:before {
+    background-color: #c47d54;
+}
+.portfolio .post {
+    background-color: #c47d54;
+}
+.bg-default {
+    background-color: #c47d54;
+}
+.products .onsale {
+    background: #c47d54;
+    border: 2px solid #c47d54;
+}
+.owl-theme .owl-dots .owl-dot.active span, .owl-theme .owl-dots .owl-dot:hover span {
+    background: #c47d54;
+}
+.team-grid .social-links li a:hover,
+.team-grid .social-links li a:focus {
+    color: #c47d54 !important;
+}
+.pricing-title-bg.default {
+    background-color: #c47d54;
+}
+.pricing-plans .price {
+    color: #c47d54;
+}
+.btn-bg-default {
+    background: #c47d54 !important;
+}
+.entry-meta .cat-links a, .entry-meta .tag-links a {
+    color: #c47d54 !important;
+}
+.site-info {
+    background-color: #c47d54;
+}
+.scroll-up a:hover, .scroll-up a:focus {
+    background: #c47d54;
+}
+.cart-header > a .cart-total {
+    background: #c47d54;
+}
+.woocommerce p.stars a {
+    color: #c47d54;
+}
+.woocommerce .star-rating::before {
+    color: #c47d54;
+}
+.woocommerce .star-rating span::before {
+    color: #c47d54;
+}
+.woocommerce-message, .woocommerce-info {
+    border-top-color: #c47d54 !important;
+}
+.woocommerce-message::before, .woocommerce-info::before {
+    color: #c47d54;
+}
+body .woocommerce #respond input#submit, body .woocommerce a.button, body .woocommerce button.button, body .woocommerce input.button {
+    background-color: #c47d54 ;
+    color: #fff !important;
+    line-height: 1.4
+}
+.page-breadcrumb.text-center span a:hover {
+    color: #c47d54;
+}
+.page-breadcrumb.text-center .breadcrumb_last {
+    color: #c47d54 !important;
+}
+.widget a:hover, .widget a:focus, .widget .post .entry-title a:hover, .widget .post .entry-title a:focus ,  .sidebar .entry-meta .cat-links a:hover, .sidebar .entry-meta .cat-links a:focus, .sidebar .entry-meta .tag-links a:hover, .sidebar .entry-meta .tag-links a:focus{
+    color: #c47d54 !important;
+}
+.entry-meta a:hover, .entry-meta a:focus, .item-meta a:hover, .item-meta a:focus {
+    color: #c47d54 !important;
+}
+.btn-default, .btn-animate.light, .btn-animate.dark {
+    background: #c47d54;
+}
+.pagination a:hover, .pagination a.active { background-color: #c47d54 !important; color: #fff !important;  }
+.entry-header .entry-title a:hover {
+    color: #c47d54;
+}
+
+/*404 page*/
+.error-404 h1 > i {
+    color: #c47d54;
+}
+
+/*comments*/
+.reply a {
+    background-color: #c47d54;
+    border: 1px solid #c47d54;
+}
+
+.navbar-custom .open .nav li.active a, .navbar-custom .open .nav li.active a:hover, .navbar-custom .open .nav li.active a:focus, .navbar-custom .open .nav li a:hover {
+    color: #c47d54;
+}
+.navbar .nav .nav-item:hover .nav-link, .navbar .nav .nav-item.active .nav-link {
+    color: #c47d54;
+}
+.navbar .search-box-outer .dropdown-menu
+{
+  border-top: solid 1px #c47d54;
+}
+
+/*contact template*/
+.contact .subtitle {
+    color: #c47d54;
+}
+
+.contact-form {
+    border-top: 4px solid #c47d54;
+}
+
+.contact-icon {
+    background-color: #c47d54;
+}
+.testimonial .testmonial-block .name a:hover
+{
+    color: #c47d54;
+}
+blockquote {
+    border-left: 3px solid #c47d54;
+}
+.portfolio-filters .nav-item .active, .portfolio-filters .nav-item.active a
+{
+    color: #c47d54;
+}
+.dropdown-item.active, .dropdown-item:active
+{
+    background-color: #c47d54 !important;
+}
+.woocommerce .widget_price_filter .ui-slider .ui-slider-range
+{
+    background-color: #c47d54 !important;
+}
+.woocommerce .widget_price_filter .ui-slider .ui-slider-handle
+{
+    background-color: #c47d54 !important;
+}
+.dropdown-item:hover
+{
+    background-color: #c47d54;
+     color: #fff;
+}
+#shop #shop-carousel .product-price a:hover
+{
+    color: #c47d54;
+}
+
+.site-footer .footer-sidebar .entry-meta .cat-links a, .site-footer .footer-sidebar .entry-meta .tag-links a {
+    color: #c47d54 !important;
+}
+
+.navbar a.bg-light:hover,.dropdown-item:hover
+{
+    background-color: transparent !important;
+    color:#c47d54 !important;
+}
+
+
+.woocommerce-page .entry-content a:hover, .woocommerce-page .entry-content a:focus {
+     color: #c47d54 ! important;
+}
+
+.woocommerce-message {
+    border-top-color:#c47d54 !important;
+}
+woocommerce-message::before {
+    color:#c47d54 !important;
+}
+.woocommerce-info::before {
+    color:#c47d54 !important;
+}
+.pagination a:hover, .pagination a.active, .page-numbers.current {
+    background-color: #c47d54 ! important;
+}
+.row.section-module.Blogs-detail .blog .post .entry-content a:hover {
+    color:#c47d54 !important;
+}
+.entry-content a:hover, .entry-content a:focus {
+		color:#c47d54 !important;
+}
+.header-sidebar {
+		background-color: #c47d54 !important;
+}
+.widget .head-contact-info li a:hover,.widget .head-contact-info li a:focus {
+  color: #fff !important;
+}
+.widget .custom-social-icons li a.facebook, .widget .custom-social-icons li a.twitter, .custom-social-icons li a.linkedin, .custom-social-icons li a.skype, .custom-social-icons li a.dribbble, .custom-social-icons li a.youtube, .custom-social-icons li a.vimeo, .custom-social-icons li a.pagelines, .custom-social-icons li a.instagram { color: #333333 !important; }
+.widget .custom-social-icons li a.facebook:hover { color: #4c66a4 !important; }
+.widget .custom-social-icons li a.twitter:hover { color: #15b4c9 !important; }
+.custom-social-icons li a.linkedin:hover { color: #006599 !important; }
+.custom-social-icons li a.skype:hover { color: #40beee !important; }
+.custom-social-icons li a.dribbble:hover { color: #c7366f !important; }
+.custom-social-icons li a.youtube:hover { color: #cc2423 !important; }
+.custom-social-icons li a.vimeo:hover { color: #20b9eb !important; }
+.custom-social-icons li a.pagelines:hover { color: #364146 !important; }
+.custom-social-icons li a.instagram:hover { color: #8a3ab9 !important; }
+
+body .team-grid .details .name, body .team-grid .details .position, body .team-grid .details a {
+    color: #ffffff;
+}
+body .wp-block-cart-cross-sells-product__product-add-to-cart .add_to_cart_button:hover {
+    color: #fff !important;
+}
+.page-breadcrumb.text-center span.post-post.current-item {
+   color: #c47d54 !important;
+}
+nav.rank-math-breadcrumb span, .navxt-breadcrumb .current-item {
+    color:#c47d54 !important;
+}
+nav.rank-math-breadcrumb a:hover,.page-breadcrumb.text-center.navxt-breadcrumb span:hover {color: #c47d54 !important;}
+.woocommerce-page .wc-block-components-checkout-place-order-button, .woocommerce-page .wc-block-cart__submit-button {
+    background-color: #c47d54 !important;
+}
+.woocommerce-page .cross-sells-product .wp-block-cart-cross-sells-product__product-add-to-cart .add_to_cart_button{
+    background-color: #c47d54 !important;
+}
+.woocommerce-page .wc-block-components-totals-coupon__content .wc-block-components-totals-coupon__button,
+.wp-block-cart-cross-sells-product__product-add-to-cart .add_to_cart_button {
+    border-radius: 0;
+    background-color: #c47d54 !important;
+}
+body.woocommerce-page .single_add_to_cart_button{
+    background-color: #c47d54 !important;
+}
+</style>
+<meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1' />
+
+	<!-- This site is optimized with the Yoast SEO plugin v27.4 - https://yoast.com/product/yoast-seo-wordpress/ -->
+	<title>Firecrawl e Web Scraping Inteligente com IA - Data Science Academy</title>
+	<meta name="description" content="Neste post, vamos explorar o que é o Firecrawl, suas principais características, vantagens em relação a outras ferramentas, limitações e alguns casos de uso práticos." />
+	<link rel="canonical" href="https://blog.dsacademy.com.br/firecrawl-e-web-scraping-inteligente-com-ia/" />
+	<meta property="og:locale" content="pt_BR" />
+	<meta property="og:type" content="article" />
+	<meta property="og:title" content="Firecrawl e Web Scraping Inteligente com IA - Data Science Academy" />
+	<meta property="og:description" content="Neste post, vamos explorar o que é o Firecrawl, suas principais características, vantagens em relação a outras ferramentas, limitações e alguns casos de uso práticos." />
+	<meta property="og:url" content="https://blog.dsacademy.com.br/firecrawl-e-web-scraping-inteligente-com-ia/" />
+	<meta property="og:site_name" content="Data Science Academy" />
+	<meta property="article:published_time" content="2025-04-13T14:46:50+00:00" />
+	<meta property="og:image" content="https://blog.dsacademy.com.br/wp-content/uploads/2025/04/Firecrawl-e-Web-Scraping-Inteligente-com-IA.jpg" />
+	<meta property="og:image:width" content="1032" />
+	<meta property="og:image:height" content="852" />
+	<meta property="og:image:type" content="image/jpeg" />
+	<meta name="author" content="Equipe DSA" />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:creator" content="@dsacademybr" />
+	<meta name="twitter:label1" content="Escrito por" />
+	<meta name="twitter:data1" content="Equipe DSA" />
+	<meta name="twitter:label2" content="Est. tempo de leitura" />
+	<meta name="twitter:data2" content="12 minutos" />
+	<script type="application/ld+json" class="yoast-schema-graph">{"@context":"https:\/\/schema.org","@graph":[{"@type":"Article","@id":"https:\/\/blog.dsacademy.com.br\/firecrawl-e-web-scraping-inteligente-com-ia\/#article","isPartOf":{"@id":"https:\/\/blog.dsacademy.com.br\/firecrawl-e-web-scraping-inteligente-com-ia\/"},"author":{"name":"Equipe DSA","@id":"https:\/\/blog.dsacademy.com.br\/#\/schema\/person\/e59a3b1f6d20f3694e8e599d15b94baf"},"headline":"Firecrawl e Web Scraping Inteligente com IA","datePublished":"2025-04-13T14:46:50+00:00","mainEntityOfPage":{"@id":"https:\/\/blog.dsacademy.com.br\/firecrawl-e-web-scraping-inteligente-com-ia\/"},"wordCount":2224,"commentCount":0,"publisher":{"@id":"https:\/\/blog.dsacademy.com.br\/#organization"},"image":{"@id":"https:\/\/blog.dsacademy.com.br\/firecrawl-e-web-scraping-inteligente-com-ia\/#primaryimage"},"thumbnailUrl":"https:\/\/i0.wp.com\/blog.dsacademy.com.br\/wp-content\/uploads\/2025\/04\/Firecrawl-e-Web-Scraping-Inteligente-com-IA.jpg?fit=1032%2C852&ssl=1","keywords":["Firecrawl","Web Scraping"],"articleSection":["Web Scraping"],"inLanguage":"pt-BR","potentialAction":[{"@type":"CommentAction","name":"Comment","target":["https:\/\/blog.dsacademy.com.br\/firecrawl-e-web-scraping-inteligente-com-ia\/#respond"]}]},{"@type":"WebPage","@id":"https:\/\/blog.dsacademy.com.br\/firecrawl-e-web-scraping-inteligente-com-ia\/","url":"https:\/\/blog.dsacademy.com.br\/firecrawl-e-web-scraping-inteligente-com-ia\/","name":"Firecrawl e Web Scraping Inteligente com IA - Data Science Academy","isPartOf":{"@id":"https:\/\/blog.dsacademy.com.br\/#website"},"primaryImageOfPage":{"@id":"https:\/\/blog.dsacademy.com.br\/firecrawl-e-web-scraping-inteligente-com-ia\/#primaryimage"},"image":{"@id":"https:\/\/blog.dsacademy.com.br\/firecrawl-e-web-scraping-inteligente-com-ia\/#primaryimage"},"thumbnailUrl":"https:\/\/i0.wp.com\/blog.dsacademy.com.br\/wp-content\/uploads\/2025\/04\/Firecrawl-e-Web-Scraping-Inteligente-com-IA.jpg?fit=1032%2C852&ssl=1","datePublished":"2025-04-13T14:46:50+00:00","description":"Neste post, vamos explorar o que é o Firecrawl, suas principais características, vantagens em relação a outras ferramentas, limitações e alguns casos de uso práticos.","breadcrumb":{"@id":"https:\/\/blog.dsacademy.com.br\/firecrawl-e-web-scraping-inteligente-com-ia\/#breadcrumb"},"inLanguage":"pt-BR","potentialAction":[{"@type":"ReadAction","target":["https:\/\/blog.dsacademy.com.br\/firecrawl-e-web-scraping-inteligente-com-ia\/"]}]},{"@type":"ImageObject","inLanguage":"pt-BR","@id":"https:\/\/blog.dsacademy.com.br\/firecrawl-e-web-scraping-inteligente-com-ia\/#primaryimage","url":"https:\/\/i0.wp.com\/blog.dsacademy.com.br\/wp-content\/uploads\/2025\/04\/Firecrawl-e-Web-Scraping-Inteligente-com-IA.jpg?fit=1032%2C852&ssl=1","contentUrl":"https:\/\/i0.wp.com\/blog.dsacademy.com.br\/wp-content\/uploads\/2025\/04\/Firecrawl-e-Web-Scraping-Inteligente-com-IA.jpg?fit=1032%2C852&ssl=1","width":1032,"height":852,"caption":"Firecrawl e Web Scraping Inteligente com IA"},{"@type":"BreadcrumbList","@id":"https:\/\/blog.dsacademy.com.br\/firecrawl-e-web-scraping-inteligente-com-ia\/#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Início","item":"https:\/\/blog.dsacademy.com.br\/"},{"@type":"ListItem","position":2,"name":"Firecrawl e Web Scraping Inteligente com IA"}]},{"@type":"WebSite","@id":"https:\/\/blog.dsacademy.com.br\/#website","url":"https:\/\/blog.dsacademy.com.br\/","name":"Data Science Academy","description":"Sua carreira elevada a outro nível","publisher":{"@id":"https:\/\/blog.dsacademy.com.br\/#organization"},"potentialAction":[{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https:\/\/blog.dsacademy.com.br\/?s={search_term_string}"},"query-input":{"@type":"PropertyValueSpecification","valueRequired":true,"valueName":"search_term_string"}}],"inLanguage":"pt-BR"},{"@type":"Organization","@id":"https:\/\/blog.dsacademy.com.br\/#organization","name":"Data Science Academy","url":"https:\/\/blog.dsacademy.com.br\/","logo":{"@type":"ImageObject","inLanguage":"pt-BR","@id":"https:\/\/blog.dsacademy.com.br\/#\/schema\/logo\/image\/","url":"https:\/\/i0.wp.com\/blog.dsacademy.com.br\/wp-content\/uploads\/2021\/06\/cropped-LogoDSA2019-Bola-Transp.png?fit=49%2C45&ssl=1","contentUrl":"https:\/\/i0.wp.com\/blog.dsacademy.com.br\/wp-content\/uploads\/2021\/06\/cropped-LogoDSA2019-Bola-Transp.png?fit=49%2C45&ssl=1","width":49,"height":45,"caption":"Data Science Academy"},"image":{"@id":"https:\/\/blog.dsacademy.com.br\/#\/schema\/logo\/image\/"}},{"@type":"Person","@id":"https:\/\/blog.dsacademy.com.br\/#\/schema\/person\/e59a3b1f6d20f3694e8e599d15b94baf","name":"Equipe DSA","image":{"@type":"ImageObject","inLanguage":"pt-BR","@id":"https:\/\/secure.gravatar.com\/avatar\/43f146e0d0b69d2f430faed15c749993c8c96844f43bc483be7049fc5a9bc45f?s=96&r=g","url":"https:\/\/secure.gravatar.com\/avatar\/43f146e0d0b69d2f430faed15c749993c8c96844f43bc483be7049fc5a9bc45f?s=96&r=g","contentUrl":"https:\/\/secure.gravatar.com\/avatar\/43f146e0d0b69d2f430faed15c749993c8c96844f43bc483be7049fc5a9bc45f?s=96&r=g","caption":"Equipe DSA"},"sameAs":["https:\/\/www.datascienceacademy.com.br","https:\/\/www.linkedin.com\/company\/data-science-academy","https:\/\/x.com\/dsacademybr","https:\/\/www.youtube.com\/@DataScienceAcademy"],"url":"https:\/\/blog.dsacademy.com.br\/author\/dsadm1n\/"}]}</script>
+	<!-- / Yoast SEO plugin. -->
+
+
+<link rel='dns-prefetch' href='//static.addtoany.com' />
+<link rel='dns-prefetch' href='//secure.gravatar.com' />
+<link rel='dns-prefetch' href='//stats.wp.com' />
+<link rel='dns-prefetch' href='//fonts.googleapis.com' />
+<link rel='dns-prefetch' href='//v0.wordpress.com' />
+<link rel='preconnect' href='//i0.wp.com' />
+<link rel='preconnect' href='//c0.wp.com' />
+<link href='//hb.wpmucdn.com' rel='preconnect' />
+<link href='http://fonts.googleapis.com' rel='preconnect' />
+<link href='//fonts.gstatic.com' crossorigin='' rel='preconnect' />
+<link rel="alternate" type="application/rss+xml" title="Feed para Data Science Academy &raquo;" href="https://blog.dsacademy.com.br/feed/" />
+<link rel="alternate" type="application/rss+xml" title="Feed de comentários para Data Science Academy &raquo;" href="https://blog.dsacademy.com.br/comments/feed/" />
+<link rel="alternate" type="application/rss+xml" title="Feed de comentários para Data Science Academy &raquo; Firecrawl e Web Scraping Inteligente com IA" href="https://blog.dsacademy.com.br/firecrawl-e-web-scraping-inteligente-com-ia/feed/" />
+<link rel="alternate" title="oEmbed (JSON)" type="application/json+oembed" href="https://blog.dsacademy.com.br/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fblog.dsacademy.com.br%2Ffirecrawl-e-web-scraping-inteligente-com-ia%2F" />
+<link rel="alternate" title="oEmbed (XML)" type="text/xml+oembed" href="https://blog.dsacademy.com.br/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fblog.dsacademy.com.br%2Ffirecrawl-e-web-scraping-inteligente-com-ia%2F&#038;format=xml" />
+		<!-- This site uses the Google Analytics by MonsterInsights plugin v10.1.3 - Using Analytics tracking - https://www.monsterinsights.com/ -->
+		<!-- Note: MonsterInsights is not currently configured on this site. The site owner needs to authenticate with Google Analytics in the MonsterInsights settings panel. -->
+					<!-- No tracking code set -->
+				<!-- / Google Analytics by MonsterInsights -->
+		<style id='superb-addons-variable-fallbacks-inline-css' type='text/css'>
+:root{--wp--preset--color--primary:#1f7cec;--wp--preset--color--primary-hover:#3993ff;--wp--preset--color--base:#fff;--wp--preset--color--featured:#0a284b;--wp--preset--color--contrast-light:#fff;--wp--preset--color--contrast-dark:#000;--wp--preset--color--mono-1:#0d3c74;--wp--preset--color--mono-2:#64748b;--wp--preset--color--mono-3:#e2e8f0;--wp--preset--color--mono-4:#f8fafc;--wp--preset--spacing--superbspacing-xxsmall:clamp(5px,1vw,10px);--wp--preset--spacing--superbspacing-xsmall:clamp(10px,2vw,20px);--wp--preset--spacing--superbspacing-small:clamp(20px,4vw,40px);--wp--preset--spacing--superbspacing-medium:clamp(30px,6vw,60px);--wp--preset--spacing--superbspacing-large:clamp(40px,8vw,80px);--wp--preset--spacing--superbspacing-xlarge:clamp(50px,10vw,100px);--wp--preset--spacing--superbspacing-xxlarge:clamp(60px,12vw,120px);--wp--preset--font-size--superbfont-tiny:clamp(10px,0.625rem + ((1vw - 3.2px) * 0.227),12px);--wp--preset--font-size--superbfont-xxsmall:clamp(12px,0.75rem + ((1vw - 3.2px) * 0.227),14px);--wp--preset--font-size--superbfont-xsmall:clamp(16px,1rem + ((1vw - 3.2px) * 1),16px);--wp--preset--font-size--superbfont-small:clamp(16px,1rem + ((1vw - 3.2px) * 0.227),18px);--wp--preset--font-size--superbfont-medium:clamp(18px,1.125rem + ((1vw - 3.2px) * 0.227),20px);--wp--preset--font-size--superbfont-large:clamp(24px,1.5rem + ((1vw - 3.2px) * 0.909),32px);--wp--preset--font-size--superbfont-xlarge:clamp(32px,2rem + ((1vw - 3.2px) * 1.818),48px);--wp--preset--font-size--superbfont-xxlarge:clamp(40px,2.5rem + ((1vw - 3.2px) * 2.727),64px)}.has-primary-color{color:var(--wp--preset--color--primary)!important}.has-primary-hover-color{color:var(--wp--preset--color--primary-hover)!important}.has-base-color{color:var(--wp--preset--color--base)!important}.has-featured-color{color:var(--wp--preset--color--featured)!important}.has-contrast-light-color{color:var(--wp--preset--color--contrast-light)!important}.has-contrast-dark-color{color:var(--wp--preset--color--contrast-dark)!important}.has-mono-1-color{color:var(--wp--preset--color--mono-1)!important}.has-mono-2-color{color:var(--wp--preset--color--mono-2)!important}.has-mono-3-color{color:var(--wp--preset--color--mono-3)!important}.has-mono-4-color{color:var(--wp--preset--color--mono-4)!important}.has-primary-background-color{background-color:var(--wp--preset--color--primary)!important}.has-primary-hover-background-color{background-color:var(--wp--preset--color--primary-hover)!important}.has-base-background-color{background-color:var(--wp--preset--color--base)!important}.has-featured-background-color{background-color:var(--wp--preset--color--featured)!important}.has-contrast-light-background-color{background-color:var(--wp--preset--color--contrast-light)!important}.has-contrast-dark-background-color{background-color:var(--wp--preset--color--contrast-dark)!important}.has-mono-1-background-color{background-color:var(--wp--preset--color--mono-1)!important}.has-mono-2-background-color{background-color:var(--wp--preset--color--mono-2)!important}.has-mono-3-background-color{background-color:var(--wp--preset--color--mono-3)!important}.has-mono-4-background-color{background-color:var(--wp--preset--color--mono-4)!important}.has-superbfont-tiny-font-size{font-size:var(--wp--preset--font-size--superbfont-tiny)!important}.has-superbfont-xxsmall-font-size{font-size:var(--wp--preset--font-size--superbfont-xxsmall)!important}.has-superbfont-xsmall-font-size{font-size:var(--wp--preset--font-size--superbfont-xsmall)!important}.has-superbfont-small-font-size{font-size:var(--wp--preset--font-size--superbfont-small)!important}.has-superbfont-medium-font-size{font-size:var(--wp--preset--font-size--superbfont-medium)!important}.has-superbfont-large-font-size{font-size:var(--wp--preset--font-size--superbfont-large)!important}.has-superbfont-xlarge-font-size{font-size:var(--wp--preset--font-size--superbfont-xlarge)!important}.has-superbfont-xxlarge-font-size{font-size:var(--wp--preset--font-size--superbfont-xxlarge)!important}
+/*# sourceURL=superb-addons-variable-fallbacks-inline-css */
+</style>
+<style id='wp-img-auto-sizes-contain-inline-css' type='text/css'>
+img:is([sizes=auto i],[sizes^="auto," i]){contain-intrinsic-size:3000px 1500px}
+/*# sourceURL=wp-img-auto-sizes-contain-inline-css */
+</style>
+<link rel='stylesheet' id='embed-pdf-viewer-css' href='https://blog.dsacademy.com.br/wp-content/plugins/embed-pdf-viewer/css/embed-pdf-viewer.css?ver=2.4.8' type='text/css' media='screen' />
+<link rel='stylesheet' id='jetpack_related-posts-css' href='https://c0.wp.com/p/jetpack/15.7.1/modules/related-posts/related-posts.css' type='text/css' media='all' />
+<link rel='stylesheet' id='cloudpress-theme-fonts-css' href='https://blog.dsacademy.com.br/wp-content/fonts/e643ccd39d8edb578e077a3e43e74117.css?ver=20201110' type='text/css' media='all' />
+<style id='wp-emoji-styles-inline-css' type='text/css'>
+
+	img.wp-smiley, img.emoji {
+		display: inline !important;
+		border: none !important;
+		box-shadow: none !important;
+		height: 1em !important;
+		width: 1em !important;
+		margin: 0 0.07em !important;
+		vertical-align: -0.1em !important;
+		background: none !important;
+		padding: 0 !important;
+	}
+/*# sourceURL=wp-emoji-styles-inline-css */
+</style>
+<link rel='stylesheet' id='wp-block-library-css' href='https://c0.wp.com/c/6.9.4/wp-includes/css/dist/block-library/style.min.css' type='text/css' media='all' />
+
+<style id='classic-theme-styles-inline-css' type='text/css'>
+/*! This file is auto-generated */
+.wp-block-button__link{color:#fff;background-color:#32373c;border-radius:9999px;box-shadow:none;text-decoration:none;padding:calc(.667em + 2px) calc(1.333em + 2px);font-size:1.125em}.wp-block-file__button{background:#32373c;color:#fff;text-decoration:none}
+/*# sourceURL=/wp-includes/css/classic-themes.min.css */
+</style>
+<style id='global-styles-inline-css' type='text/css'>
+:root{--wp--preset--aspect-ratio--square: 1;--wp--preset--aspect-ratio--4-3: 4/3;--wp--preset--aspect-ratio--3-4: 3/4;--wp--preset--aspect-ratio--3-2: 3/2;--wp--preset--aspect-ratio--2-3: 2/3;--wp--preset--aspect-ratio--16-9: 16/9;--wp--preset--aspect-ratio--9-16: 9/16;--wp--preset--color--black: #000000;--wp--preset--color--cyan-bluish-gray: #abb8c3;--wp--preset--color--white: #ffffff;--wp--preset--color--pale-pink: #f78da7;--wp--preset--color--vivid-red: #cf2e2e;--wp--preset--color--luminous-vivid-orange: #ff6900;--wp--preset--color--luminous-vivid-amber: #fcb900;--wp--preset--color--light-green-cyan: #7bdcb5;--wp--preset--color--vivid-green-cyan: #00d084;--wp--preset--color--pale-cyan-blue: #8ed1fc;--wp--preset--color--vivid-cyan-blue: #0693e3;--wp--preset--color--vivid-purple: #9b51e0;--wp--preset--gradient--vivid-cyan-blue-to-vivid-purple: linear-gradient(135deg,rgb(6,147,227) 0%,rgb(155,81,224) 100%);--wp--preset--gradient--light-green-cyan-to-vivid-green-cyan: linear-gradient(135deg,rgb(122,220,180) 0%,rgb(0,208,130) 100%);--wp--preset--gradient--luminous-vivid-amber-to-luminous-vivid-orange: linear-gradient(135deg,rgb(252,185,0) 0%,rgb(255,105,0) 100%);--wp--preset--gradient--luminous-vivid-orange-to-vivid-red: linear-gradient(135deg,rgb(255,105,0) 0%,rgb(207,46,46) 100%);--wp--preset--gradient--very-light-gray-to-cyan-bluish-gray: linear-gradient(135deg,rgb(238,238,238) 0%,rgb(169,184,195) 100%);--wp--preset--gradient--cool-to-warm-spectrum: linear-gradient(135deg,rgb(74,234,220) 0%,rgb(151,120,209) 20%,rgb(207,42,186) 40%,rgb(238,44,130) 60%,rgb(251,105,98) 80%,rgb(254,248,76) 100%);--wp--preset--gradient--blush-light-purple: linear-gradient(135deg,rgb(255,206,236) 0%,rgb(152,150,240) 100%);--wp--preset--gradient--blush-bordeaux: linear-gradient(135deg,rgb(254,205,165) 0%,rgb(254,45,45) 50%,rgb(107,0,62) 100%);--wp--preset--gradient--luminous-dusk: linear-gradient(135deg,rgb(255,203,112) 0%,rgb(199,81,192) 50%,rgb(65,88,208) 100%);--wp--preset--gradient--pale-ocean: linear-gradient(135deg,rgb(255,245,203) 0%,rgb(182,227,212) 50%,rgb(51,167,181) 100%);--wp--preset--gradient--electric-grass: linear-gradient(135deg,rgb(202,248,128) 0%,rgb(113,206,126) 100%);--wp--preset--gradient--midnight: linear-gradient(135deg,rgb(2,3,129) 0%,rgb(40,116,252) 100%);--wp--preset--font-size--small: 13px;--wp--preset--font-size--medium: 20px;--wp--preset--font-size--large: 36px;--wp--preset--font-size--x-large: 42px;--wp--preset--spacing--20: 0.44rem;--wp--preset--spacing--30: 0.67rem;--wp--preset--spacing--40: 1rem;--wp--preset--spacing--50: 1.5rem;--wp--preset--spacing--60: 2.25rem;--wp--preset--spacing--70: 3.38rem;--wp--preset--spacing--80: 5.06rem;--wp--preset--shadow--natural: 6px 6px 9px rgba(0, 0, 0, 0.2);--wp--preset--shadow--deep: 12px 12px 50px rgba(0, 0, 0, 0.4);--wp--preset--shadow--sharp: 6px 6px 0px rgba(0, 0, 0, 0.2);--wp--preset--shadow--outlined: 6px 6px 0px -3px rgb(255, 255, 255), 6px 6px rgb(0, 0, 0);--wp--preset--shadow--crisp: 6px 6px 0px rgb(0, 0, 0);}:where(.is-layout-flex){gap: 0.5em;}:where(.is-layout-grid){gap: 0.5em;}body .is-layout-flex{display: flex;}.is-layout-flex{flex-wrap: wrap;align-items: center;}.is-layout-flex > :is(*, div){margin: 0;}body .is-layout-grid{display: grid;}.is-layout-grid > :is(*, div){margin: 0;}:where(.wp-block-columns.is-layout-flex){gap: 2em;}:where(.wp-block-columns.is-layout-grid){gap: 2em;}:where(.wp-block-post-template.is-layout-flex){gap: 1.25em;}:where(.wp-block-post-template.is-layout-grid){gap: 1.25em;}.has-black-color{color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-color{color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-color{color: var(--wp--preset--color--white) !important;}.has-pale-pink-color{color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-color{color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-color{color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-color{color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-color{color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-color{color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-color{color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-color{color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-color{color: var(--wp--preset--color--vivid-purple) !important;}.has-black-background-color{background-color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-background-color{background-color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-background-color{background-color: var(--wp--preset--color--white) !important;}.has-pale-pink-background-color{background-color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-background-color{background-color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-background-color{background-color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-background-color{background-color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-background-color{background-color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-background-color{background-color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-background-color{background-color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-background-color{background-color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-background-color{background-color: var(--wp--preset--color--vivid-purple) !important;}.has-black-border-color{border-color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-border-color{border-color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-border-color{border-color: var(--wp--preset--color--white) !important;}.has-pale-pink-border-color{border-color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-border-color{border-color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-border-color{border-color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-border-color{border-color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-border-color{border-color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-border-color{border-color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-border-color{border-color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-border-color{border-color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-border-color{border-color: var(--wp--preset--color--vivid-purple) !important;}.has-vivid-cyan-blue-to-vivid-purple-gradient-background{background: var(--wp--preset--gradient--vivid-cyan-blue-to-vivid-purple) !important;}.has-light-green-cyan-to-vivid-green-cyan-gradient-background{background: var(--wp--preset--gradient--light-green-cyan-to-vivid-green-cyan) !important;}.has-luminous-vivid-amber-to-luminous-vivid-orange-gradient-background{background: var(--wp--preset--gradient--luminous-vivid-amber-to-luminous-vivid-orange) !important;}.has-luminous-vivid-orange-to-vivid-red-gradient-background{background: var(--wp--preset--gradient--luminous-vivid-orange-to-vivid-red) !important;}.has-very-light-gray-to-cyan-bluish-gray-gradient-background{background: var(--wp--preset--gradient--very-light-gray-to-cyan-bluish-gray) !important;}.has-cool-to-warm-spectrum-gradient-background{background: var(--wp--preset--gradient--cool-to-warm-spectrum) !important;}.has-blush-light-purple-gradient-background{background: var(--wp--preset--gradient--blush-light-purple) !important;}.has-blush-bordeaux-gradient-background{background: var(--wp--preset--gradient--blush-bordeaux) !important;}.has-luminous-dusk-gradient-background{background: var(--wp--preset--gradient--luminous-dusk) !important;}.has-pale-ocean-gradient-background{background: var(--wp--preset--gradient--pale-ocean) !important;}.has-electric-grass-gradient-background{background: var(--wp--preset--gradient--electric-grass) !important;}.has-midnight-gradient-background{background: var(--wp--preset--gradient--midnight) !important;}.has-small-font-size{font-size: var(--wp--preset--font-size--small) !important;}.has-medium-font-size{font-size: var(--wp--preset--font-size--medium) !important;}.has-large-font-size{font-size: var(--wp--preset--font-size--large) !important;}.has-x-large-font-size{font-size: var(--wp--preset--font-size--x-large) !important;}
+/*# sourceURL=global-styles-inline-css */
+</style>
+
+<link rel='stylesheet' id='spbcta-stylesheet-front-css' href='https://blog.dsacademy.com.br/wp-content/plugins/coupon-reveal-button/css/spbcta-stylesheet-front.css?ver=1.3.0' type='text/css' media='all' />
+<link rel='stylesheet' id='superb-addons-patterns-css' href='https://blog.dsacademy.com.br/wp-content/plugins/superb-blocks/assets/css/patterns.min.css?ver=3.7.1' type='text/css' media='all' />
+<link rel='stylesheet' id='superb-addons-enhancements-css' href='https://blog.dsacademy.com.br/wp-content/plugins/superb-blocks/assets/css/enhancements.min.css?ver=3.7.1' type='text/css' media='all' />
+<link rel='stylesheet' id='spbsm-stylesheet-css' href='https://blog.dsacademy.com.br/wp-content/plugins/superb-social-share-and-follow-buttons//assets/css/frontend.css?ver=110.0.0' type='text/css' media='all' />
+<link rel='stylesheet' id='spbsm-lato-font-css' href='https://fonts.googleapis.com/css?family=Lato%3A300%2C400%2C700&#038;display=swap&#038;ver=110.0.0' type='text/css' media='all' />
+<link rel='stylesheet' id='spbtbl-stylesheet-css' href='https://blog.dsacademy.com.br/wp-content/plugins/superb-tables/css/data-table.css?ver=1.2.0' type='text/css' media='all' />
+<link rel='stylesheet' id='bootstrap-css' href='https://blog.dsacademy.com.br/wp-content/themes/cloudpress/free/assets/css/bootstrap.min.css?ver=4.0.0' type='text/css' media='all' />
+<link rel='stylesheet' id='cloudpress-style-css' href='https://blog.dsacademy.com.br/wp-content/themes/cloudpress/free/style-free.css?ver=83e372b68c44984f8ca31234d6d1250d' type='text/css' media='all' />
+<link rel='stylesheet' id='cloudpress-font-awesome-css' href='https://blog.dsacademy.com.br/wp-content/themes/cloudpress/free/assets/css/font-awesome/css/all.min.css?ver=83e372b68c44984f8ca31234d6d1250d' type='text/css' media='all' />
+<link rel='stylesheet' id='owl-css' href='https://blog.dsacademy.com.br/wp-content/themes/cloudpress/free/assets/css/owl.carousel.css?ver=83e372b68c44984f8ca31234d6d1250d' type='text/css' media='all' />
+<link rel='stylesheet' id='jquery.smartmenus.bootstrap-4-css' href='https://blog.dsacademy.com.br/wp-content/themes/cloudpress/free/assets/css/jquery.smartmenus.bootstrap-4.css?ver=83e372b68c44984f8ca31234d6d1250d' type='text/css' media='all' />
+<link rel='stylesheet' id='wpdiscuz-frontend-css-css' href='https://blog.dsacademy.com.br/wp-content/plugins/wpdiscuz/themes/default/style.css?ver=7.6.54' type='text/css' media='all' />
+<style id='wpdiscuz-frontend-css-inline-css' type='text/css'>
+ #wpdcom .wpd-blog-administrator .wpd-comment-label{color:#ffffff;background-color:#00B38F;border:none}#wpdcom .wpd-blog-administrator .wpd-comment-author, #wpdcom .wpd-blog-administrator .wpd-comment-author a{color:#00B38F}#wpdcom.wpd-layout-1 .wpd-comment .wpd-blog-administrator .wpd-avatar img{border-color:#00B38F}#wpdcom.wpd-layout-2 .wpd-comment.wpd-reply .wpd-comment-wrap.wpd-blog-administrator{border-left:3px solid #00B38F}#wpdcom.wpd-layout-2 .wpd-comment .wpd-blog-administrator .wpd-avatar img{border-bottom-color:#00B38F}#wpdcom.wpd-layout-3 .wpd-blog-administrator .wpd-comment-subheader{border-top:1px dashed #00B38F}#wpdcom.wpd-layout-3 .wpd-reply .wpd-blog-administrator .wpd-comment-right{border-left:1px solid #00B38F}#wpdcom .wpd-blog-editor .wpd-comment-label{color:#ffffff;background-color:#00B38F;border:none}#wpdcom .wpd-blog-editor .wpd-comment-author, #wpdcom .wpd-blog-editor .wpd-comment-author a{color:#00B38F}#wpdcom.wpd-layout-1 .wpd-comment .wpd-blog-editor .wpd-avatar img{border-color:#00B38F}#wpdcom.wpd-layout-2 .wpd-comment.wpd-reply .wpd-comment-wrap.wpd-blog-editor{border-left:3px solid #00B38F}#wpdcom.wpd-layout-2 .wpd-comment .wpd-blog-editor .wpd-avatar img{border-bottom-color:#00B38F}#wpdcom.wpd-layout-3 .wpd-blog-editor .wpd-comment-subheader{border-top:1px dashed #00B38F}#wpdcom.wpd-layout-3 .wpd-reply .wpd-blog-editor .wpd-comment-right{border-left:1px solid #00B38F}#wpdcom .wpd-blog-author .wpd-comment-label{color:#ffffff;background-color:#00B38F;border:none}#wpdcom .wpd-blog-author .wpd-comment-author, #wpdcom .wpd-blog-author .wpd-comment-author a{color:#00B38F}#wpdcom.wpd-layout-1 .wpd-comment .wpd-blog-author .wpd-avatar img{border-color:#00B38F}#wpdcom.wpd-layout-2 .wpd-comment .wpd-blog-author .wpd-avatar img{border-bottom-color:#00B38F}#wpdcom.wpd-layout-3 .wpd-blog-author .wpd-comment-subheader{border-top:1px dashed #00B38F}#wpdcom.wpd-layout-3 .wpd-reply .wpd-blog-author .wpd-comment-right{border-left:1px solid #00B38F}#wpdcom .wpd-blog-contributor .wpd-comment-label{color:#ffffff;background-color:#00B38F;border:none}#wpdcom .wpd-blog-contributor .wpd-comment-author, #wpdcom .wpd-blog-contributor .wpd-comment-author a{color:#00B38F}#wpdcom.wpd-layout-1 .wpd-comment .wpd-blog-contributor .wpd-avatar img{border-color:#00B38F}#wpdcom.wpd-layout-2 .wpd-comment .wpd-blog-contributor .wpd-avatar img{border-bottom-color:#00B38F}#wpdcom.wpd-layout-3 .wpd-blog-contributor .wpd-comment-subheader{border-top:1px dashed #00B38F}#wpdcom.wpd-layout-3 .wpd-reply .wpd-blog-contributor .wpd-comment-right{border-left:1px solid #00B38F}#wpdcom .wpd-blog-subscriber .wpd-comment-label{color:#ffffff;background-color:#00B38F;border:none}#wpdcom .wpd-blog-subscriber .wpd-comment-author, #wpdcom .wpd-blog-subscriber .wpd-comment-author a{color:#00B38F}#wpdcom.wpd-layout-2 .wpd-comment .wpd-blog-subscriber .wpd-avatar img{border-bottom-color:#00B38F}#wpdcom.wpd-layout-3 .wpd-blog-subscriber .wpd-comment-subheader{border-top:1px dashed #00B38F}#wpdcom .wpd-blog-wpseo_manager .wpd-comment-label{color:#ffffff;background-color:#00B38F;border:none}#wpdcom .wpd-blog-wpseo_manager .wpd-comment-author, #wpdcom .wpd-blog-wpseo_manager .wpd-comment-author a{color:#00B38F}#wpdcom.wpd-layout-1 .wpd-comment .wpd-blog-wpseo_manager .wpd-avatar img{border-color:#00B38F}#wpdcom.wpd-layout-2 .wpd-comment .wpd-blog-wpseo_manager .wpd-avatar img{border-bottom-color:#00B38F}#wpdcom.wpd-layout-3 .wpd-blog-wpseo_manager .wpd-comment-subheader{border-top:1px dashed #00B38F}#wpdcom.wpd-layout-3 .wpd-reply .wpd-blog-wpseo_manager .wpd-comment-right{border-left:1px solid #00B38F}#wpdcom .wpd-blog-wpseo_editor .wpd-comment-label{color:#ffffff;background-color:#00B38F;border:none}#wpdcom .wpd-blog-wpseo_editor .wpd-comment-author, #wpdcom .wpd-blog-wpseo_editor .wpd-comment-author a{color:#00B38F}#wpdcom.wpd-layout-1 .wpd-comment .wpd-blog-wpseo_editor .wpd-avatar img{border-color:#00B38F}#wpdcom.wpd-layout-2 .wpd-comment .wpd-blog-wpseo_editor .wpd-avatar img{border-bottom-color:#00B38F}#wpdcom.wpd-layout-3 .wpd-blog-wpseo_editor .wpd-comment-subheader{border-top:1px dashed #00B38F}#wpdcom.wpd-layout-3 .wpd-reply .wpd-blog-wpseo_editor .wpd-comment-right{border-left:1px solid #00B38F}#wpdcom .wpd-blog-customer .wpd-comment-label{color:#ffffff;background-color:#00B38F;border:none}#wpdcom .wpd-blog-customer .wpd-comment-author, #wpdcom .wpd-blog-customer .wpd-comment-author a{color:#00B38F}#wpdcom.wpd-layout-1 .wpd-comment .wpd-blog-customer .wpd-avatar img{border-color:#00B38F}#wpdcom.wpd-layout-2 .wpd-comment .wpd-blog-customer .wpd-avatar img{border-bottom-color:#00B38F}#wpdcom.wpd-layout-3 .wpd-blog-customer .wpd-comment-subheader{border-top:1px dashed #00B38F}#wpdcom.wpd-layout-3 .wpd-reply .wpd-blog-customer .wpd-comment-right{border-left:1px solid #00B38F}#wpdcom .wpd-blog-shop_manager .wpd-comment-label{color:#ffffff;background-color:#00B38F;border:none}#wpdcom .wpd-blog-shop_manager .wpd-comment-author, #wpdcom .wpd-blog-shop_manager .wpd-comment-author a{color:#00B38F}#wpdcom.wpd-layout-1 .wpd-comment .wpd-blog-shop_manager .wpd-avatar img{border-color:#00B38F}#wpdcom.wpd-layout-2 .wpd-comment .wpd-blog-shop_manager .wpd-avatar img{border-bottom-color:#00B38F}#wpdcom.wpd-layout-3 .wpd-blog-shop_manager .wpd-comment-subheader{border-top:1px dashed #00B38F}#wpdcom.wpd-layout-3 .wpd-reply .wpd-blog-shop_manager .wpd-comment-right{border-left:1px solid #00B38F}#wpdcom .wpd-blog-post_author .wpd-comment-label{color:#ffffff;background-color:#00B38F;border:none}#wpdcom .wpd-blog-post_author .wpd-comment-author, #wpdcom .wpd-blog-post_author .wpd-comment-author a{color:#00B38F}#wpdcom .wpd-blog-post_author .wpd-avatar img{border-color:#00B38F}#wpdcom.wpd-layout-1 .wpd-comment .wpd-blog-post_author .wpd-avatar img{border-color:#00B38F}#wpdcom.wpd-layout-2 .wpd-comment.wpd-reply .wpd-comment-wrap.wpd-blog-post_author{border-left:3px solid #00B38F}#wpdcom.wpd-layout-2 .wpd-comment .wpd-blog-post_author .wpd-avatar img{border-bottom-color:#00B38F}#wpdcom.wpd-layout-3 .wpd-blog-post_author .wpd-comment-subheader{border-top:1px dashed #00B38F}#wpdcom.wpd-layout-3 .wpd-reply .wpd-blog-post_author .wpd-comment-right{border-left:1px solid #00B38F}#wpdcom .wpd-blog-guest .wpd-comment-label{color:#ffffff;background-color:#00B38F;border:none}#wpdcom .wpd-blog-guest .wpd-comment-author, #wpdcom .wpd-blog-guest .wpd-comment-author a{color:#00B38F}#wpdcom.wpd-layout-3 .wpd-blog-guest .wpd-comment-subheader{border-top:1px dashed #00B38F}#comments, #respond, .comments-area, #wpdcom{}#wpdcom .ql-editor > *{color:#777777}#wpdcom .ql-editor::before{}#wpdcom .ql-toolbar{border:1px solid #DDDDDD;border-top:none}#wpdcom .ql-container{border:1px solid #DDDDDD;border-bottom:none}#wpdcom .wpd-form-row .wpdiscuz-item input[type="text"], #wpdcom .wpd-form-row .wpdiscuz-item input[type="email"], #wpdcom .wpd-form-row .wpdiscuz-item input[type="url"], #wpdcom .wpd-form-row .wpdiscuz-item input[type="color"], #wpdcom .wpd-form-row .wpdiscuz-item input[type="date"], #wpdcom .wpd-form-row .wpdiscuz-item input[type="datetime"], #wpdcom .wpd-form-row .wpdiscuz-item input[type="datetime-local"], #wpdcom .wpd-form-row .wpdiscuz-item input[type="month"], #wpdcom .wpd-form-row .wpdiscuz-item input[type="number"], #wpdcom .wpd-form-row .wpdiscuz-item input[type="time"], #wpdcom textarea, #wpdcom select{border:1px solid #DDDDDD;color:#777777}#wpdcom .wpd-form-row .wpdiscuz-item textarea{border:1px solid #DDDDDD}#wpdcom input::placeholder, #wpdcom textarea::placeholder, #wpdcom input::-moz-placeholder, #wpdcom textarea::-webkit-input-placeholder{}#wpdcom .wpd-comment-text{color:#777777}#wpdcom .wpd-thread-head .wpd-thread-info{border-bottom:2px solid #00B38F}#wpdcom .wpd-thread-head .wpd-thread-info.wpd-reviews-tab svg{fill:#00B38F}#wpdcom .wpd-thread-head .wpdiscuz-user-settings{border-bottom:2px solid #00B38F}#wpdcom .wpd-thread-head .wpdiscuz-user-settings:hover{color:#00B38F}#wpdcom .wpd-comment .wpd-follow-link:hover{color:#00B38F}#wpdcom .wpd-comment-status .wpd-sticky{color:#00B38F}#wpdcom .wpd-thread-filter .wpdf-active{color:#00B38F;border-bottom-color:#00B38F}#wpdcom .wpd-comment-info-bar{border:1px dashed #33c3a6;background:#e6f8f4}#wpdcom .wpd-comment-info-bar .wpd-current-view i{color:#00B38F}#wpdcom .wpd-filter-view-all:hover{background:#00B38F}#wpdcom .wpdiscuz-item .wpdiscuz-rating > label{color:#DDDDDD}#wpdcom .wpdiscuz-item .wpdiscuz-rating:not(:checked) > label:hover, .wpdiscuz-rating:not(:checked) > label:hover ~ label{}#wpdcom .wpdiscuz-item .wpdiscuz-rating > input ~ label:hover, #wpdcom .wpdiscuz-item .wpdiscuz-rating > input:not(:checked) ~ label:hover ~ label, #wpdcom .wpdiscuz-item .wpdiscuz-rating > input:not(:checked) ~ label:hover ~ label{color:#FFED85}#wpdcom .wpdiscuz-item .wpdiscuz-rating > input:checked ~ label:hover, #wpdcom .wpdiscuz-item .wpdiscuz-rating > input:checked ~ label:hover, #wpdcom .wpdiscuz-item .wpdiscuz-rating > label:hover ~ input:checked ~ label, #wpdcom .wpdiscuz-item .wpdiscuz-rating > input:checked + label:hover ~ label, #wpdcom .wpdiscuz-item .wpdiscuz-rating > input:checked ~ label:hover ~ label, .wpd-custom-field .wcf-active-star, #wpdcom .wpdiscuz-item .wpdiscuz-rating > input:checked ~ label{color:#FFD700}#wpd-post-rating .wpd-rating-wrap .wpd-rating-stars svg .wpd-star{fill:#DDDDDD}#wpd-post-rating .wpd-rating-wrap .wpd-rating-stars svg .wpd-active{fill:#FFD700}#wpd-post-rating .wpd-rating-wrap .wpd-rate-starts svg .wpd-star{fill:#DDDDDD}#wpd-post-rating .wpd-rating-wrap .wpd-rate-starts:hover svg .wpd-star{fill:#FFED85}#wpd-post-rating.wpd-not-rated .wpd-rating-wrap .wpd-rate-starts svg:hover ~ svg .wpd-star{fill:#DDDDDD}.wpdiscuz-post-rating-wrap .wpd-rating .wpd-rating-wrap .wpd-rating-stars svg .wpd-star{fill:#DDDDDD}.wpdiscuz-post-rating-wrap .wpd-rating .wpd-rating-wrap .wpd-rating-stars svg .wpd-active{fill:#FFD700}#wpdcom .wpd-comment .wpd-follow-active{color:#ff7a00}#wpdcom .page-numbers{color:#555;border:#555 1px solid}#wpdcom span.current{background:#555}#wpdcom.wpd-layout-1 .wpd-new-loaded-comment > .wpd-comment-wrap > .wpd-comment-right{background:#FFFAD6}#wpdcom.wpd-layout-2 .wpd-new-loaded-comment.wpd-comment > .wpd-comment-wrap > .wpd-comment-right{background:#FFFAD6}#wpdcom.wpd-layout-2 .wpd-new-loaded-comment.wpd-comment.wpd-reply > .wpd-comment-wrap > .wpd-comment-right{background:transparent}#wpdcom.wpd-layout-2 .wpd-new-loaded-comment.wpd-comment.wpd-reply > .wpd-comment-wrap{background:#FFFAD6}#wpdcom.wpd-layout-3 .wpd-new-loaded-comment.wpd-comment > .wpd-comment-wrap > .wpd-comment-right{background:#FFFAD6}#wpdcom .wpd-follow:hover i, #wpdcom .wpd-unfollow:hover i, #wpdcom .wpd-comment .wpd-follow-active:hover i{color:#00B38F}#wpdcom .wpdiscuz-readmore{cursor:pointer;color:#00B38F}.wpd-custom-field .wcf-pasiv-star, #wpcomm .wpdiscuz-item .wpdiscuz-rating > label{color:#DDDDDD}.wpd-wrapper .wpd-list-item.wpd-active{border-top:3px solid #00B38F}#wpdcom.wpd-layout-2 .wpd-comment.wpd-reply.wpd-unapproved-comment .wpd-comment-wrap{border-left:3px solid #FFFAD6}#wpdcom.wpd-layout-3 .wpd-comment.wpd-reply.wpd-unapproved-comment .wpd-comment-right{border-left:1px solid #FFFAD6}#wpdcom .wpd-prim-button{background-color:#07B290;color:#FFFFFF}#wpdcom .wpd_label__check i.wpdicon-on{color:#07B290;border:1px solid #83d9c8}#wpd-bubble-wrapper #wpd-bubble-all-comments-count{color:#1DB99A}#wpd-bubble-wrapper > div{background-color:#1DB99A}#wpd-bubble-wrapper > #wpd-bubble #wpd-bubble-add-message{background-color:#1DB99A}#wpd-bubble-wrapper > #wpd-bubble #wpd-bubble-add-message::before{border-left-color:#1DB99A;border-right-color:#1DB99A}#wpd-bubble-wrapper.wpd-right-corner > #wpd-bubble #wpd-bubble-add-message::before{border-left-color:#1DB99A;border-right-color:#1DB99A}.wpd-inline-icon-wrapper path.wpd-inline-icon-first{fill:#1DB99A}.wpd-inline-icon-count{background-color:#1DB99A}.wpd-inline-icon-count::before{border-right-color:#1DB99A}.wpd-inline-form-wrapper::before{border-bottom-color:#1DB99A}.wpd-inline-form-question{background-color:#1DB99A}.wpd-inline-form{background-color:#1DB99A}.wpd-last-inline-comments-wrapper{border-color:#1DB99A}.wpd-last-inline-comments-wrapper::before{border-bottom-color:#1DB99A}.wpd-last-inline-comments-wrapper .wpd-view-all-inline-comments{background:#1DB99A}.wpd-last-inline-comments-wrapper .wpd-view-all-inline-comments:hover,.wpd-last-inline-comments-wrapper .wpd-view-all-inline-comments:active,.wpd-last-inline-comments-wrapper .wpd-view-all-inline-comments:focus{background-color:#1DB99A}#wpdcom .ql-snow .ql-tooltip[data-mode="link"]::before{content:"Digite o link:"}#wpdcom .ql-snow .ql-tooltip.ql-editing a.ql-action::after{content:"Guardar"}.comments-area{width:auto}
+/*# sourceURL=wpdiscuz-frontend-css-inline-css */
+</style>
+<link rel='stylesheet' id='wpdiscuz-fa-css' href='https://blog.dsacademy.com.br/wp-content/plugins/wpdiscuz/assets/third-party/font-awesome-5.13.0/css/fa.min.css?ver=7.6.54' type='text/css' media='all' />
+<link rel='stylesheet' id='wpdiscuz-combo-css-css' href='https://blog.dsacademy.com.br/wp-content/plugins/wpdiscuz/assets/css/wpdiscuz-combo.min.css?ver=83e372b68c44984f8ca31234d6d1250d' type='text/css' media='all' />
+<link rel='stylesheet' id='addtoany-css' href='https://blog.dsacademy.com.br/wp-content/plugins/add-to-any/addtoany.min.css?ver=1.16' type='text/css' media='all' />
+<link rel='stylesheet' id='__EPYT__style-css' href='https://blog.dsacademy.com.br/wp-content/plugins/youtube-embed-plus/styles/ytprefs.min.css?ver=14.2.6' type='text/css' media='all' />
+<style id='__EPYT__style-inline-css' type='text/css'>
+
+                .epyt-gallery-thumb {
+                        width: 33.333%;
+                }
+                
+/*# sourceURL=__EPYT__style-inline-css */
+</style>
+<link rel='stylesheet' id='sharedaddy-css' href='https://c0.wp.com/p/jetpack/15.7.1/modules/sharedaddy/sharing.css' type='text/css' media='all' />
+<link rel='stylesheet' id='social-logos-css' href='https://c0.wp.com/p/jetpack/15.7.1/_inc/build/social-logos/social-logos.css' type='text/css' media='all' />
+<script type="text/javascript" src="https://c0.wp.com/c/6.9.4/wp-includes/js/jquery/jquery.min.js" id="jquery-core-js"></script>
+<script type="text/javascript" src="https://c0.wp.com/c/6.9.4/wp-includes/js/jquery/jquery-migrate.min.js" id="jquery-migrate-js"></script>
+<script type="text/javascript" id="jetpack_related-posts-js-extra">
+/* <![CDATA[ */
+var related_posts_js_options = {"post_heading":"h4"};
+//# sourceURL=jetpack_related-posts-js-extra
+/* ]]> */
+</script>
+<script type="text/javascript" src="https://c0.wp.com/p/jetpack/15.7.1/_inc/build/related-posts/related-posts.min.js" id="jetpack_related-posts-js"></script>
+<script type="text/javascript" id="addtoany-core-js-before">
+/* <![CDATA[ */
+window.a2a_config=window.a2a_config||{};a2a_config.callbacks=[];a2a_config.overlays=[];a2a_config.templates={};a2a_localize = {
+	Share: "Share",
+	Save: "Save",
+	Subscribe: "Subscribe",
+	Email: "Email",
+	Bookmark: "Bookmark",
+	ShowAll: "Show all",
+	ShowLess: "Show less",
+	FindServices: "Find service(s)",
+	FindAnyServiceToAddTo: "Instantly find any service to add to",
+	PoweredBy: "Powered by",
+	ShareViaEmail: "Share via email",
+	SubscribeViaEmail: "Subscribe via email",
+	BookmarkInYourBrowser: "Bookmark in your browser",
+	BookmarkInstructions: "Press Ctrl+D or \u2318+D to bookmark this page",
+	AddToYourFavorites: "Add to your favorites",
+	SendFromWebOrProgram: "Send from any email address or email program",
+	EmailProgram: "Email program",
+	More: "More&#8230;",
+	ThanksForSharing: "Thanks for sharing!",
+	ThanksForFollowing: "Thanks for following!"
+};
+
+
+//# sourceURL=addtoany-core-js-before
+/* ]]> */
+</script>
+<script type="text/javascript" defer src="https://static.addtoany.com/menu/page.js" id="addtoany-core-js"></script>
+<script type="text/javascript" defer src="https://blog.dsacademy.com.br/wp-content/plugins/add-to-any/addtoany.min.js?ver=1.1" id="addtoany-jquery-js"></script>
+<script type="text/javascript" id="__ytprefs__-js-extra">
+/* <![CDATA[ */
+var _EPYT_ = {"ajaxurl":"https://blog.dsacademy.com.br/wp-admin/admin-ajax.php","security":"0e713b522e","gallery_scrolloffset":"20","eppathtoscripts":"https://blog.dsacademy.com.br/wp-content/plugins/youtube-embed-plus/scripts/","eppath":"https://blog.dsacademy.com.br/wp-content/plugins/youtube-embed-plus/","epresponsiveselector":"[\"iframe.__youtube_prefs_widget__\"]","epdovol":"1","version":"14.2.6","evselector":"iframe.__youtube_prefs__[src], iframe[src*=\"youtube.com/embed/\"], iframe[src*=\"youtube-nocookie.com/embed/\"]","ajax_compat":"","maxres_facade":"eager","ytapi_load":"light","pause_others":"","stopMobileBuffer":"1","facade_mode":"","not_live_on_channel":""};
+//# sourceURL=__ytprefs__-js-extra
+/* ]]> */
+</script>
+<script type="text/javascript" src="https://blog.dsacademy.com.br/wp-content/plugins/youtube-embed-plus/scripts/ytprefs.min.js?ver=14.2.6" id="__ytprefs__-js"></script>
+<link rel="https://api.w.org/" href="https://blog.dsacademy.com.br/wp-json/" /><link rel="alternate" title="JSON" type="application/json" href="https://blog.dsacademy.com.br/wp-json/wp/v2/posts/11286" /><link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://blog.dsacademy.com.br/xmlrpc.php?rsd" />
+
+<link rel='shortlink' href='https://wp.me/pcZKp4-2W2' />
+			<!-- DO NOT COPY THIS SNIPPET! Start of Page Analytics Tracking for HubSpot WordPress plugin v11.3.45-->
+			<script class="hsq-set-content-id" data-content-id="blog-post">
+				var _hsq = _hsq || [];
+				_hsq.push(["setContentType", "blog-post"]);
+			</script>
+			<!-- DO NOT COPY THIS SNIPPET! End of Page Analytics Tracking for HubSpot WordPress plugin -->
+				<style>img#wpstats{display:none}</style>
+		<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-MHDCCCC');</script>
+<!-- End Google Tag Manager --><link rel="icon" href="https://i0.wp.com/blog.dsacademy.com.br/wp-content/uploads/2016/02/cropped-Logo-128x128.png?fit=32%2C32&#038;ssl=1" sizes="32x32" />
+<link rel="icon" href="https://i0.wp.com/blog.dsacademy.com.br/wp-content/uploads/2016/02/cropped-Logo-128x128.png?fit=192%2C192&#038;ssl=1" sizes="192x192" />
+<link rel="apple-touch-icon" href="https://i0.wp.com/blog.dsacademy.com.br/wp-content/uploads/2016/02/cropped-Logo-128x128.png?fit=180%2C180&#038;ssl=1" />
+<meta name="msapplication-TileImage" content="https://i0.wp.com/blog.dsacademy.com.br/wp-content/uploads/2016/02/cropped-Logo-128x128.png?fit=270%2C270&#038;ssl=1" />
+   </head>
+   <body class="wp-singular post-template-default single single-post postid-11286 single-format-standard wp-custom-logo wp-theme-cloudpress">
+    <!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MHDCCCC"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->      <div id="page" class="site">
+      <a class="skip-link screen-reader-text" href="#wrapper">Pular para o conteúdo</a>
+    <nav class="navbar navbar-expand-lg navbar-light">
+   <div class="container">
+      <a href="https://blog.dsacademy.com.br/" class="navbar-brand" rel="home"><img width="49" height="45" src="https://i0.wp.com/blog.dsacademy.com.br/wp-content/uploads/2021/06/cropped-LogoDSA2019-Bola-Transp.png?fit=49%2C45&amp;ssl=1" class="custom-logo" alt="Data Science Academy" decoding="async" data-attachment-id="5772" data-permalink="https://blog.dsacademy.com.br/cropped-logodsa2019-bola-transp-png/" data-orig-file="https://i0.wp.com/blog.dsacademy.com.br/wp-content/uploads/2021/06/cropped-LogoDSA2019-Bola-Transp.png?fit=49%2C45&amp;ssl=1" data-orig-size="49,45" data-comments-opened="1" data-image-meta="{&quot;aperture&quot;:&quot;0&quot;,&quot;credit&quot;:&quot;&quot;,&quot;camera&quot;:&quot;&quot;,&quot;caption&quot;:&quot;&quot;,&quot;created_timestamp&quot;:&quot;0&quot;,&quot;copyright&quot;:&quot;&quot;,&quot;focal_length&quot;:&quot;0&quot;,&quot;iso&quot;:&quot;0&quot;,&quot;shutter_speed&quot;:&quot;0&quot;,&quot;title&quot;:&quot;&quot;,&quot;orientation&quot;:&quot;0&quot;}" data-image-title="cropped-LogoDSA2019-Bola-Transp.png" data-image-description="&lt;p&gt;https://blog.dsacademy.com.br/wp-content/uploads/2021/06/cropped-LogoDSA2019-Bola-Transp.png&lt;/p&gt;
+" data-image-caption="" data-large-file="https://i0.wp.com/blog.dsacademy.com.br/wp-content/uploads/2021/06/cropped-LogoDSA2019-Bola-Transp.png?fit=49%2C45&amp;ssl=1" /></a><div class="custom-logo-link-url">
+      <h3 class="site-title"><a href="https://blog.dsacademy.com.br/">Data Science Academy</a></h3>
+      <div class="site-description">Sua carreira elevada a outro nível</div>
+   </div>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Alternar navegação">
+      <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNavDropdown">
+         <!-- Right Nav -->
+         <div class="ms-auto">
+            <div class="menu-menu-1-container"><ul id="menu-menu-1" class="nav navbar-nav me-auto "><li id="menu-item-20" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-20 nav-item"><a class="nav-link"  href="https://www.datascienceacademy.com.br">Home</a></li>
+<li id="menu-item-30" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-30 nav-item"><a class="nav-link"  href="https://www.deeplearningbook.com.br/">Deep Learning Book</a></li>
+<li id="menu-item-25" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-25 nav-item"><a class="nav-link"  href="https://blog.dsacademy.com.br">Blog</a></li>
+<li id="menu-item-24" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-24 nav-item"><a class="nav-link"  href="https://www.datascienceacademy.com.br/todoscursosdsa">Todos os Cursos</a></li>
+<li id="menu-item-31" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-31 nav-item"><a class="nav-link"  href="http://www.datascienceacademy.com.br/?msg=not-logged-in">Login</a></li>
+</ul></div>         </div>
+      </div>
+   </div>
+</nav>	
+		<section class="page-title-section">		
+			<div class="overlay"></div>	
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-12 col-md-12">
+                                         
+							<div class="page-title text-center text-white">
+											                    	<h1 class="text-white">Firecrawl e Web Scraping Inteligente com IA</h1>
+			                    			                </div>	
+						                    </div>
+				</div>
+			</div>	
+		</section>
+	    <div id="wrapper">
+
+<section class="site-content">
+    <div class="container">
+        <div class="row section-module Blogs-detail">	
+                <div class="col-md-8 col-sm-8 col-xs-12">                    <div class="blog blog-detail">
+                        <article class="post">
+   <div class="post-content-detail">
+          <div class="entry-meta">
+                  <span class="entry-date">
+         <a href="https://blog.dsacademy.com.br//1970/01"><time>abril 13, 2025</time></a>
+         </span>
+                  <span class="cat-links"><a href="https://blog.dsacademy.com.br/categoria/web-scraping/" rel="category tag">Web Scraping</a></span>
+               </div>
+        
+      <header class="entry-header">
+         <h3 class="entry-title">Firecrawl e Web Scraping Inteligente com IA</h3>
+      </header>
+   </div>
+
+      <figure class="post-thumbnail">
+      <img width="1032" height="852" src="https://i0.wp.com/blog.dsacademy.com.br/wp-content/uploads/2025/04/Firecrawl-e-Web-Scraping-Inteligente-com-IA.jpg?fit=1032%2C852&amp;ssl=1" class="img-fluid wp-post-image" alt="Firecrawl e Web Scraping Inteligente com IA" decoding="async" fetchpriority="high" srcset="https://i0.wp.com/blog.dsacademy.com.br/wp-content/uploads/2025/04/Firecrawl-e-Web-Scraping-Inteligente-com-IA.jpg?w=1032&amp;ssl=1 1032w, https://i0.wp.com/blog.dsacademy.com.br/wp-content/uploads/2025/04/Firecrawl-e-Web-Scraping-Inteligente-com-IA.jpg?resize=300%2C248&amp;ssl=1 300w, https://i0.wp.com/blog.dsacademy.com.br/wp-content/uploads/2025/04/Firecrawl-e-Web-Scraping-Inteligente-com-IA.jpg?resize=1024%2C845&amp;ssl=1 1024w, https://i0.wp.com/blog.dsacademy.com.br/wp-content/uploads/2025/04/Firecrawl-e-Web-Scraping-Inteligente-com-IA.jpg?resize=768%2C634&amp;ssl=1 768w" sizes="(max-width: 1032px) 100vw, 1032px" data-attachment-id="11289" data-permalink="https://blog.dsacademy.com.br/firecrawl-e-web-scraping-inteligente-com-ia/firecrawl-e-web-scraping-inteligente-com-ia/" data-orig-file="https://i0.wp.com/blog.dsacademy.com.br/wp-content/uploads/2025/04/Firecrawl-e-Web-Scraping-Inteligente-com-IA.jpg?fit=1032%2C852&amp;ssl=1" data-orig-size="1032,852" data-comments-opened="1" data-image-meta="{&quot;aperture&quot;:&quot;0&quot;,&quot;credit&quot;:&quot;&quot;,&quot;camera&quot;:&quot;&quot;,&quot;caption&quot;:&quot;&quot;,&quot;created_timestamp&quot;:&quot;0&quot;,&quot;copyright&quot;:&quot;&quot;,&quot;focal_length&quot;:&quot;0&quot;,&quot;iso&quot;:&quot;0&quot;,&quot;shutter_speed&quot;:&quot;0&quot;,&quot;title&quot;:&quot;&quot;,&quot;orientation&quot;:&quot;0&quot;}" data-image-title="Firecrawl e Web Scraping Inteligente com IA" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/blog.dsacademy.com.br/wp-content/uploads/2025/04/Firecrawl-e-Web-Scraping-Inteligente-com-IA.jpg?fit=696%2C574&amp;ssl=1" />                       
+   </figure>
+      <div class="post-content ">
+      <div class="entry-content">
+         <p style="text-align: justify;"><span style="color: #000000;">Web scraping (raspagem de dados da web) evoluiu muito nos últimos anos e o Firecrawl representa uma nova geração de ferramentas para esse tipo de tarefa. Construído com foco em Inteligência Artificial (IA), o Firecrawl permite extrair dados de sites de forma mais simples e resiliente, muitas vezes bastando descrever em linguagem natural o que se deseja coletar. </span></p>
+<p style="text-align: justify;"><span style="color: #000000;">Neste post, vamos explorar o que é o Firecrawl, suas principais características, vantagens em relação a outras ferramentas, limitações e alguns casos de uso práticos.</span></p>
+<p style="text-align: justify;"><span style="color: #000000;">De 14/04/2025 a 14/06/2025 vamos disponibilizar o módulo bônus de DuckDB e Firecrawl Para Database e Web Scraping Analytics. Esse módulo será gratuito e exclusivo para alunos das Formações 4.0 e Programas de Pós-Graduação da DSA (O módulo vai contar com um projeto de automação com Agentes de IA. Imperdível!).</span></p>
+<h3 style="text-align: left;"><span style="color: #000000;">Principais Características do Firecrawl</span></h3>
+<p style="text-align: justify;"><span style="color: #000000;">Extração orientada por IA: Diferentemente de scrapers tradicionais que exigem selecionar elementos HTML específicos, o Firecrawl utiliza <a style="color: #000000;" href="https://www.datascienceacademy.com.br/bundle/formacao-processamento-de-linguagem-natural-4" target="_blank" rel="noopener">Processamento de Linguagem Natural</a> (PLN) para identificar e extrair automaticamente o conteúdo relevante de uma página. Isso reduz a necessidade de ajustes manuais em seletores CSS ou XPath e torna o processo menos frágil a mudanças de layout dos sites.</span></p>
+<p style="text-align: justify;"><span style="color: #000000;">Renderização de conteúdo dinâmico: Muitos sites modernos carregam dados via JavaScript no navegador. O Firecrawl lida com isso nativamente, pois ele renderiza JavaScript das páginas para capturar conteúdo dinâmico que ferramentas simples não conseguiriam ver. Além disso, oferece automação de navegador, permitindo simular cliques, preenchimento de formulários e outras interações para extrair dados após essas ações. Também é possível realizar capturas de tela durante o processo para auditoria ou debug.</span></p>
+<p style="text-align: justify;"><span style="color: #000000;">Crawling de sites inteiros: Com o endpoint /crawl, a ferramenta consegue navegar por todas as páginas acessíveis de um site, seguindo links internos a partir de uma URL base. Você pode configurar filtros para incluir ou excluir certos caminhos, definir profundidade de navegação e limitar o número de páginas coletadas. Não é necessário fornecer um sitemap, pois o Firecrawl descobre as páginas sozinho.</span></p>
+<p style="text-align: justify;"><span style="color: #000000;">Dados limpos e estruturados: O Firecrawl converte o HTML bruto em formatos úteis. Por padrão, ele retorna o conteúdo em Markdown limpo, filtrando menus de navegação, rodapés e outros ruídos, focando no conteúdo principal. Alternativamente, pode entregar JSON estruturado conforme um esquema definido pelo usuário. Por exemplo, você pode definir campos (título, preço, descrição, etc.) e pedir para o Firecrawl extraí-los diretamente – ele usará sua engine de IA para preencher esses campos com os dados da página. Isso facilita integrar os resultados em bancos de dados ou em análises posteriores sem precisar limpar os dados manualmente.</span></p>
+<h3 style="text-align: left;"><span style="color: #000000;">Vantagens em Comparação a Outras Ferramentas</span></h3>
+<p style="text-align: justify;"><span style="color: #000000;">Menos necessidade de código manual: Ferramentas tradicionais de scraping, como BeautifulSoup ou Scrapy, exigem que o desenvolvedor identifique elementos HTML específicos (por classes, IDs, seletores) e atualize o código sempre que o site mudar. Com o Firecrawl, grande parte dessa lógica é abstraída pela IA. Você pode descrever o que quer em linguagem natural ou usar um esquema de dados, e a ferramenta entende semanticamente o conteúdo, extraindo mesmo que detalhes estruturais do HTML mudem. Isso significa menos manutenção: se o site alterar a marcação mas mantiver o mesmo conteúdo conceitual, é provável que o Firecrawl ainda consiga encontrar as informações, enquanto um scraper tradicional quebraria facilmente com seletores “quebradiços”.</span></p>
+<p style="text-align: justify;"><span style="color: #000000;">Solução completa e integrada: Uma grande vantagem do Firecrawl é oferecer vários recursos em uma única plataforma. Em vez de combinar múltiplas ferramentas (por exemplo, um Selenium/Playwright para renderizar JS, um serviço de proxies para rodar múltiplas instâncias sem bloqueio, um parser para extrair texto e outra etapa para formatar os dados), o Firecrawl já engloba tudo isso através de sua API. Isso reduz a complexidade de arquitetar uma solução de scraping do zero. Além disso, a resposta já vem em formato tratado (Markdown/JSON), eliminando passos de limpeza de HTML que seriam necessários com bibliotecas mais simples. Você economiza tempo de desenvolvimento e evita retrabalho.</span></p>
+<p style="text-align: justify;"><span style="color: #000000;">Suporte a páginas dinâmicas e assets variados: Diferente de algumas ferramentas mais básicas (como BeautifulSoup, que não consegue lidar com conteúdo gerado por JavaScript), o Firecrawl extrai dados de sites dinâmicos sem configurações adicionais. Ele também suporta casos especiais, como PDFs incorporados. Por padrão, já extrai texto de PDFs encontrados nas páginas. Essa versatilidade significa que o Firecrawl pode lidar com uma gama maior de sites e formatos, comparado a soluções tradicionais que exigiriam extensões ou adaptações para cada caso.</span></p>
+<p style="text-align: justify;"><span style="color: #000000;">Escalabilidade e desempenho: Para projetos que precisam raspar grande volume de páginas, muitas ferramentas esbarram em limites de desempenho ou infraestrutura. O Firecrawl foi pensado com performance em mente. Ele consegue orquestrar múltiplos navegadores em paralelo, respeitando limites e caches para ser eficiente em tarefas em lote. A plataforma oferece planos que suportam milhões de páginas, com recursos como cache (evitando refazer scraping de conteúdo já coletado recentemente) e agendamento de atualizações periódicas (para manter dados sincronizados). Em comparação, escalar uma solução própria pode demandar configurar filas, múltiplos IPs, servidores, etc., enquanto o Firecrawl busca simplificar essa jornada (bastando eventualmente subir de plano ou ajustar parâmetros).</span></p>
+<p style="text-align: justify;"><span style="color: #000000;">Pronto para IA e análise de dados: A formatação padronizada em Markdown ou JSON estruturado é uma mão na roda para quem vai usar os dados com modelos de linguagem ou ferramentas de análise. Como o conteúdo já vem limpo e em texto simples, economiza tokens e esforço ao alimentar modelos de IA. Ferramentas comuns devolveriam HTML cru e exigiriam transformar esse HTML em texto útil. O Firecrawl já faz isso e com atenção em manter o contexto (por exemplo, marcando cabeçalhos, listas, trechos de código no Markdown). Essa orientação a dados prontos para LLMs é um diferencial importante da ferramenta em relação a scrapers genéricos.</span></p>
+<h3 style="text-align: left;"><span style="color: #000000;">Limitações e Desafios</span></h3>
+<p style="text-align: justify;"><span style="color: #000000;">Nenhuma ferramenta é perfeita para todos os cenários e o Firecrawl também apresenta alguns pontos de atenção.</span></p>
+<p style="text-align: justify;"><span style="color: #000000;">CAPTCHAs e bloqueios avançados: Embora o Firecrawl use proxies e técnicas furtivas para evitar bloqueios, desafios como CAPTCHAs ainda podem ser problemáticos. A ferramenta tenta solucionar automaticamente quando possível, mas nem sempre terá sucesso completo. Sites com medidas anti-bot muito rigorosas (por exemplo, alguns protegidos pelo Cloudflare IUAM/Turnstile) podem não ser totalmente acessíveis. A equipe do Firecrawl continua aprimorando esses mecanismos, mas usuários devem estar cientes de que casos extremos podem exigir intervenção manual ou soluções especializadas.</span></p>
+<p style="text-align: justify;"><span style="color: #000000;">Custos e limites de uso: Por ser oferecido como um serviço hospedado (SaaS) com modelo de créditos, há limites de requisições e possivelmente custos envolvidos para volumes grandes. O Firecrawl possui uma camada gratuita generosa para começar (créditos iniciais) e planos pagos conforme a escala de uso. Em projetos muito extensos, é preciso avaliar se os custos por página (especialmente com recursos avançados como extração estruturada ou renderização pesada) são viáveis. Grandes empresas que precisem raspagem massiva e contínua talvez considerem soluções customizadas ou especializadas em larga escala, caso Firecrawl não atenda a requisitos específicos de custo-benefício. A boa notícia é que existe flexibilidade: pode-se optar pela versão self-hosted open source para evitar custos recorrentes, mas, nesse caso, será necessário gerenciar infraestrutura, proxies e atualizações por conta própria.</span></p>
+<p style="text-align: justify;"><span style="color: #000000;">Fase de maturidade da ferramenta: O Firecrawl é relativamente novo e está em evolução. A versão de código aberto, por exemplo, ainda está recebendo módulos e refinamentos. Isso significa que podem existir bugs ou comportamentos não totalmente lapidados. A documentação e a comunidade de suporte, embora ativas, ainda são menores que a de projetos mais consolidados como Scrapy. Portanto, em casos de uso muito críticos, pode ser importante fazer testes abrangentes e talvez ter uma solução de backup. Dito isso, a plataforma vem avançando rápido com apoio da comunidade e já conta com apoio de investidores, indicando comprometimento com a continuidade do projeto.</span></p>
+<p style="text-align: justify;"><span style="color: #000000;">Menos controle granular em alguns casos: Ao abstrair muita coisa via IA, o Firecrawl tira um pouco do controle direto do desenvolvedor. Em scrapers tradicionais, você escolhe exatamente quais elementos pegar; no Firecrawl, você confia que a IA vai interpretar corretamente sua solicitação. Na maioria das vezes isso funciona bem, mas pode acontecer de a ferramenta interpretar de forma diferente do esperado em sites muito específicos ou conteúdos ambíguos. Nesses casos, o usuário talvez precise ajustar a descrição/prompt de extração ou complementar com alguma lógica adicional. É um trade-off: facilidade vs. controle total. Para a maioria dos profissionais, a redução de esforço compensa, mas é bom ter em mente essa diferença de abordagem.</span></p>
+<h3 style="text-align: left;"><span style="color: #000000;">Casos de Uso Práticos</span></h3>
+<p style="text-align: justify;"><span style="color: #000000;">O Firecrawl vem sendo aplicado em diversos cenários de negócios e projetos de dados. Listamos abaixo alguns exemplos práticos.</span></p>
+<p style="text-align: justify;"><span style="color: #000000;">Monitoramento de preços no e-commerce: Lojas online podem usar o Firecrawl para acompanhar preços e estoque de produtos dos concorrentes automaticamente. A ferramenta pode raspar páginas de produtos e extrair preços, descontos e disponibilidade em tempo real, alimentando sistemas internos para ajuste dinâmico de preços. Por eliminar a necessidade de programar um scraper separado para cada site, o Firecrawl agiliza a montagem de painéis de inteligência de preços.</span></p>
+<p style="text-align: justify;"><span style="color: #000000;">Agregação de notícias e conteúdos: Empresas de mídia, blogs ou plataformas de conteúdo podem empregar o Firecrawl para coletar manchetes, artigos ou posts de múltiplas fontes num fluxo unificado. Com a extração inteligente, é possível pegar apenas os títulos e resumos, por exemplo, de vários sites de notícias sem escrever código específico para cada um. Isso viabiliza a criação de agregadores ou newsletters de forma mais automatizada, ou mesmo alimentar modelos de PLN para resumir as notícias do dia.</span></p>
+<p style="text-align: justify;"><span style="color: #000000;">Pesquisa de mercado e análise de sentimento: Em projetos de Marketing e Data Science, é comum coletar opiniões de usuários em reviews, redes sociais e fóruns. O Firecrawl pode facilitar essa tarefa extraindo comentários e avaliações de sites especializados ou páginas de produtos/serviços. Depois de obter os textos, <a style="color: #000000;" href="https://www.datascienceacademy.com.br/bundle/formacao-cientista-de-dados-4" target="_blank" rel="noopener">Cientistas de Dados</a> podem rodar algoritmos de análise de sentimento ou outras técnicas de PLN para obter insights sobre a percepção do público – por exemplo, entender pontos fortes e fracos citados em reviews de um produto.</span></p>
+<p style="text-align: justify;"><span style="color: #000000;">Agregadores de vagas de emprego: Plataformas de RH ou pesquisadores podem utilizar o Firecrawl para unificar vagas de trabalho de diferentes sites automaticamente. A ferramenta consegue navegar em quadros de emprego, extrair detalhes das vagas (título, empresa, localização, salário, requisitos) e gerar um dataset consolidado. Isso alimenta a construção de portais agregadores ou estudos sobre tendências de contratação em certos setores.</span></p>
+<p style="text-align: justify;"><span style="color: #000000;">Bases de conhecimento e chatbots corporativos: Uma aplicação emergente é integrar o Firecrawl com sistemas de IA Generativa e armazenar os dados no DuckDB para análise. Por exemplo, empresas podem raspar sua própria documentação, FAQs e posts de blog usando o Firecrawl e então alimentar esse conteúdo em um modelo de linguagem para criar um chatbot interno ou armazenar no DuckDB para modelagem preditiva. Ferramentas como LangChain já se integram ao Firecrawl, permitindo que você descreva que dados quer de um conjunto de URLs e utilize essas informações em modelos de perguntas e respostas ou assistentes virtuais. Assim, torna-se possível montar rapidamente um bot que “leu” todo o site da empresa ou toda a documentação de um produto e consegue responder dúvidas dos usuários com base nesse conteúdo.</span></p>
+<p style="text-align: justify;"><span style="color: #000000;">Esses casos de uso mostram a versatilidade do Firecrawl. Desde tarefas tradicionais de raspagem (como preços e vagas) até alimentar pipelines de IA e Machine Learning, a ferramenta atua como um hub que conecta a web (fonte de dados) aos aplicativos inteligentes.</span></p>
+<h3 style="text-align: left;"><span style="color: #000000;">Conclusão</span></h3>
+<p style="text-align: justify;"><span style="color: #000000;">O Firecrawl surge como uma solução inovadora ao combinar web scraping com Inteligência Artificial para simplificar a extração de dados online. Com recursos robustos de renderização de JavaScript e crawling completo de sites até extração por descrição em linguagem natural, ele reduz a barreira para profissionais obterem dados da web de forma rápida e confiável. As vantagens em relação às abordagens tradicionais são claras em termos de produtividade e manutenção reduzida, embora seja importante estar ciente das limitações, especialmente em cenários muito complexos ou especializados.</span></p>
+<p style="text-align: justify;"><span style="color: #000000;">Lembre-se de sempre checar o arquivo robots.txt do web site que pretende fazer web scraping e verificar se é permitido.</span></p>
+<p style="text-align: justify;"><span style="color: #000000;">Equipe DSA</span></p>
+<p style="text-align: justify;"><span style="color: #000000;">Referências:</span></p>
+<p style="text-align: justify;"><span style="color: #000000;"><a style="color: #000000;" href="https://www.firecrawl.dev/blog/beautifulsoup4-vs-scrapy-comparison" target="_blank" rel="noopener">BeautifulSoup4 vs. Scrapy &#8211; A Comprehensive Comparison for Web Scraping in Python</a></span></p>
+<div class="sharedaddy sd-sharing-enabled"><div class="robots-nocontent sd-block sd-social sd-social-icon sd-sharing"><h3 class="sd-title">Compartilhe isso:</h3><div class="sd-content"><ul><li class="share-twitter"><a rel="nofollow noopener noreferrer"
+				data-shared="sharing-twitter-11286"
+				class="share-twitter sd-button share-icon no-text"
+				href="https://blog.dsacademy.com.br/firecrawl-e-web-scraping-inteligente-com-ia/?share=twitter"
+				target="_blank"
+				aria-labelledby="sharing-twitter-11286"
+				>
+				<span id="sharing-twitter-11286" hidden>Compartilhar no X(abre em nova janela)</span>
+				<span>18+</span>
+			</a></li><li class="share-facebook"><a rel="nofollow noopener noreferrer"
+				data-shared="sharing-facebook-11286"
+				class="share-facebook sd-button share-icon no-text"
+				href="https://blog.dsacademy.com.br/firecrawl-e-web-scraping-inteligente-com-ia/?share=facebook"
+				target="_blank"
+				aria-labelledby="sharing-facebook-11286"
+				>
+				<span id="sharing-facebook-11286" hidden>Compartilhar no Facebook(abre em nova janela)</span>
+				<span>Facebook</span>
+			</a></li><li class="share-linkedin"><a rel="nofollow noopener noreferrer"
+				data-shared="sharing-linkedin-11286"
+				class="share-linkedin sd-button share-icon no-text"
+				href="https://blog.dsacademy.com.br/firecrawl-e-web-scraping-inteligente-com-ia/?share=linkedin"
+				target="_blank"
+				aria-labelledby="sharing-linkedin-11286"
+				>
+				<span id="sharing-linkedin-11286" hidden>Compartilhar no LinkedIn(abre em nova janela)</span>
+				<span>LinkedIn</span>
+			</a></li><li class="share-tumblr"><a rel="nofollow noopener noreferrer"
+				data-shared="sharing-tumblr-11286"
+				class="share-tumblr sd-button share-icon no-text"
+				href="https://blog.dsacademy.com.br/firecrawl-e-web-scraping-inteligente-com-ia/?share=tumblr"
+				target="_blank"
+				aria-labelledby="sharing-tumblr-11286"
+				>
+				<span id="sharing-tumblr-11286" hidden>Compartilhar no Tumblr(abre em nova janela)</span>
+				<span>Tumblr</span>
+			</a></li><li class="share-pinterest"><a rel="nofollow noopener noreferrer"
+				data-shared="sharing-pinterest-11286"
+				class="share-pinterest sd-button share-icon no-text"
+				href="https://blog.dsacademy.com.br/firecrawl-e-web-scraping-inteligente-com-ia/?share=pinterest"
+				target="_blank"
+				aria-labelledby="sharing-pinterest-11286"
+				>
+				<span id="sharing-pinterest-11286" hidden>Compartilhar no Pinterest(abre em nova janela)</span>
+				<span>Pinterest</span>
+			</a></li><li class="share-jetpack-whatsapp"><a rel="nofollow noopener noreferrer"
+				data-shared="sharing-whatsapp-11286"
+				class="share-jetpack-whatsapp sd-button share-icon no-text"
+				href="https://blog.dsacademy.com.br/firecrawl-e-web-scraping-inteligente-com-ia/?share=jetpack-whatsapp"
+				target="_blank"
+				aria-labelledby="sharing-whatsapp-11286"
+				>
+				<span id="sharing-whatsapp-11286" hidden>Compartilhar no WhatsApp(abre em nova janela)</span>
+				<span>WhatsApp</span>
+			</a></li><li class="share-end"></li></ul></div></div></div>
+<div id='jp-relatedposts' class='jp-relatedposts' >
+	<h3 class="jp-relatedposts-headline"><em>Relacionado</em></h3>
+</div><div class="addtoany_share_save_container addtoany_content addtoany_content_bottom"><div class="a2a_kit a2a_kit_size_32 addtoany_list" data-a2a-url="https://blog.dsacademy.com.br/firecrawl-e-web-scraping-inteligente-com-ia/" data-a2a-title="Firecrawl e Web Scraping Inteligente com IA"><a class="a2a_button_facebook" href="https://www.addtoany.com/add_to/facebook?linkurl=https%3A%2F%2Fblog.dsacademy.com.br%2Ffirecrawl-e-web-scraping-inteligente-com-ia%2F&amp;linkname=Firecrawl%20e%20Web%20Scraping%20Inteligente%20com%20IA" title="Facebook" rel="nofollow noopener" target="_blank"></a><a class="a2a_button_twitter" href="https://www.addtoany.com/add_to/twitter?linkurl=https%3A%2F%2Fblog.dsacademy.com.br%2Ffirecrawl-e-web-scraping-inteligente-com-ia%2F&amp;linkname=Firecrawl%20e%20Web%20Scraping%20Inteligente%20com%20IA" title="Twitter" rel="nofollow noopener" target="_blank"></a><a class="a2a_button_pinterest" href="https://www.addtoany.com/add_to/pinterest?linkurl=https%3A%2F%2Fblog.dsacademy.com.br%2Ffirecrawl-e-web-scraping-inteligente-com-ia%2F&amp;linkname=Firecrawl%20e%20Web%20Scraping%20Inteligente%20com%20IA" title="Pinterest" rel="nofollow noopener" target="_blank"></a><a class="a2a_button_email" href="https://www.addtoany.com/add_to/email?linkurl=https%3A%2F%2Fblog.dsacademy.com.br%2Ffirecrawl-e-web-scraping-inteligente-com-ia%2F&amp;linkname=Firecrawl%20e%20Web%20Scraping%20Inteligente%20com%20IA" title="Email" rel="nofollow noopener" target="_blank"></a><a class="a2a_button_tumblr" href="https://www.addtoany.com/add_to/tumblr?linkurl=https%3A%2F%2Fblog.dsacademy.com.br%2Ffirecrawl-e-web-scraping-inteligente-com-ia%2F&amp;linkname=Firecrawl%20e%20Web%20Scraping%20Inteligente%20com%20IA" title="Tumblr" rel="nofollow noopener" target="_blank"></a><a class="a2a_button_linkedin" href="https://www.addtoany.com/add_to/linkedin?linkurl=https%3A%2F%2Fblog.dsacademy.com.br%2Ffirecrawl-e-web-scraping-inteligente-com-ia%2F&amp;linkname=Firecrawl%20e%20Web%20Scraping%20Inteligente%20com%20IA" title="LinkedIn" rel="nofollow noopener" target="_blank"></a><a class="a2a_button_whatsapp" href="https://www.addtoany.com/add_to/whatsapp?linkurl=https%3A%2F%2Fblog.dsacademy.com.br%2Ffirecrawl-e-web-scraping-inteligente-com-ia%2F&amp;linkname=Firecrawl%20e%20Web%20Scraping%20Inteligente%20com%20IA" title="WhatsApp" rel="nofollow noopener" target="_blank"></a><a class="a2a_dd addtoany_share_save addtoany_share" href="https://www.addtoany.com/share"></a></div></div>               </div>
+   </div>
+</article>    <div class="wpdiscuz_top_clearing"></div>
+    <div id='comments' class='comments-area'><div id='respond' style='width: 0;height: 0;clear: both;margin: 0;padding: 0;'></div>    <div id="wpdcom" class="wpdiscuz_unauth wpd-default wpd-layout-1 wpd-comments-open">
+                    <div class="wc_social_plugin_wrapper">
+                            </div>
+            <div class="wpd-form-wrap">
+                <div class="wpd-form-head">
+                                            <div class="wpd-sbs-toggle">
+                            <i class="far fa-envelope"></i> <span
+                                class="wpd-sbs-title">Inscrever-se</span>
+                            <i class="fas fa-caret-down"></i>
+                        </div>
+                                            <div class="wpd-auth">
+                                                <div class="wpd-login">
+                                                    </div>
+                    </div>
+                </div>
+                                                    <div class="wpdiscuz-subscribe-bar wpdiscuz-hidden">
+                                                    <form action="https://blog.dsacademy.com.br/wp-admin/admin-ajax.php?action=wpdAddSubscription"
+                                  method="post" id="wpdiscuz-subscribe-form">
+                                <div class="wpdiscuz-subscribe-form-intro">Notificar de </div>
+                                <div class="wpdiscuz-subscribe-form-option"
+                                     style="width:40%;">
+                                    <select class="wpdiscuz_select" name="wpdiscuzSubscriptionType">
+                                                                                    <option value="post">novos comentários de acompanhamento</option>
+                                                                                                                                <option
+                                                value="all_comment" >novas respostas aos meus comentários</option>
+                                                                                </select>
+                                </div>
+                                                                    <div class="wpdiscuz-item wpdiscuz-subscribe-form-email">
+                                        <input class="email" type="email" name="wpdiscuzSubscriptionEmail"
+                                               required="required" value=""
+                                               placeholder="Email"/>
+                                    </div>
+                                                                    <div class="wpdiscuz-subscribe-form-button">
+                                    <input id="wpdiscuz_subscription_button" class="wpd-prim-button wpd_not_clicked"
+                                           type="submit"
+                                           value="&rsaquo;"
+                                           name="wpdiscuz_subscription_button"/>
+                                </div>
+                                <input type="hidden" id="wpdiscuz_subscribe_form_nonce" name="wpdiscuz_subscribe_form_nonce" value="0370066f45" /><input type="hidden" name="_wp_http_referer" value="/firecrawl-e-web-scraping-inteligente-com-ia/" />                            </form>
+                                                </div>
+                            <div
+            class="wpd-form wpd-form-wrapper wpd-main-form-wrapper" id='wpd-main-form-wrapper-0_0'>
+                                        <form  method="post" enctype="multipart/form-data" data-uploading="false" class="wpd_comm_form wpd_main_comm_form"                >
+                                        <div class="wpd-field-comment">
+                        <div class="wpdiscuz-item wc-field-textarea">
+                            <div class="wpdiscuz-textarea-wrap ">
+                                                                                                        <div class="wpd-avatar">
+                                        <img alt='guest' src='https://secure.gravatar.com/avatar/51607f76ccbb0f90fe8d2b823771dc6ae1b6fcd952b6ee0c039e6d443949ad94?s=56&#038;r=g' srcset='https://secure.gravatar.com/avatar/51607f76ccbb0f90fe8d2b823771dc6ae1b6fcd952b6ee0c039e6d443949ad94?s=112&#038;r=g 2x' class='avatar avatar-56 photo' height='56' width='56' loading='lazy' decoding='async'/>                                    </div>
+                                                <div id="wpd-editor-wraper-0_0" style="display: none;">
+                <div id="wpd-editor-char-counter-0_0"
+                     class="wpd-editor-char-counter"></div>
+                <label style="display: none;" for="wc-textarea-0_0">Label</label>
+                <textarea id="wc-textarea-0_0" name="wc_comment"
+                          class="wc_comment wpd-field"></textarea>
+                <div id="wpd-editor-0_0"></div>
+                        <div id="wpd-editor-toolbar-0_0">
+                            <button title="Negrito"
+                        class="ql-bold"  ></button>
+                                <button title="Itálico"
+                        class="ql-italic"  ></button>
+                                <button title="Sublinhado"
+                        class="ql-underline"  ></button>
+                                <button title="Fixar"
+                        class="ql-strike"  ></button>
+                                <button title="Lista ordenada"
+                        class="ql-list" value='ordered' ></button>
+                                <button title="Lista não ordenada"
+                        class="ql-list" value='bullet' ></button>
+                                <button title="Bloco de citação"
+                        class="ql-blockquote"  ></button>
+                                <button title="Bloco de código"
+                        class="ql-code-block"  ></button>
+                                <button title="Link"
+                        class="ql-link"  ></button>
+                                <button title="Código fonte"
+                        class="ql-sourcecode"  data-wpde_button_name='sourcecode'>{}</button>
+                                <button title="Spoiler"
+                        class="ql-spoiler"  data-wpde_button_name='spoiler'>[+]</button>
+                            <div class="wpd-editor-buttons-right">
+                <span class='wmu-upload-wrap' wpd-tooltip='Anexe uma imagem a este comentário' wpd-tooltip-position='left'><label class='wmu-add'><i class='far fa-image'></i><input style='display:none;' class='wmu-add-files' type='file' name='wmu_files'  accept='image/*'/></label></span>            </div>
+        </div>
+                    </div>
+                                        </div>
+                        </div>
+                    </div>
+                    <div class="wpd-form-foot" style='display:none;'>
+                        <div class="wpdiscuz-textarea-foot">
+                                                        <div class="wpdiscuz-button-actions"><div class='wmu-action-wrap'><div class='wmu-tabs wmu-images-tab wmu-hide'></div><div class='wmu-tabs wmu-videos-tab wmu-hide'></div><div class='wmu-tabs wmu-files-tab wmu-hide'></div></div></div>
+                        </div>
+                                <div class="wpd-form-row">
+                    <div class="wpd-form-col-left">
+                        <div class="wpdiscuz-item wc_name-wrapper wpd-has-icon">
+                                    <div class="wpd-field-icon"><i
+                            class="fas fa-user"></i>
+                    </div>
+                                    <input id="wc_name-0_0" value="" required='required' aria-required='true'                       class="wc_name wpd-field" type="text"
+                       name="wc_name"
+                       placeholder="Nome*"
+                       maxlength="50" pattern='.{3,50}'                       title="">
+                <label for="wc_name-0_0"
+                       class="wpdlb">Nome*</label>
+                            </div>
+                        <div class="wpdiscuz-item wc_email-wrapper wpd-has-icon">
+                                    <div class="wpd-field-icon"><i
+                            class="fas fa-at"></i>
+                    </div>
+                                    <input id="wc_email-0_0" value="" required='required' aria-required='true'                       class="wc_email wpd-field" type="email"
+                       name="wc_email"
+                       placeholder="Email*"/>
+                <label for="wc_email-0_0"
+                       class="wpdlb">Email*</label>
+                            </div>
+                            <div class="wpdiscuz-item wc_website-wrapper wpd-has-icon">
+                                            <div class="wpd-field-icon"><i
+                                class="fas fa-link"></i>
+                        </div>
+                                        <input id="wc_website-0_0" value=""
+                           class="wc_website wpd-field" type="text"
+                           name="wc_website"
+                           placeholder="Website"/>
+                    <label for="wc_website-0_0"
+                           class="wpdlb">Website</label>
+                                    </div>
+                        </div>
+                <div class="wpd-form-col-right">
+                    <div class="wc-field-submit">
+                                                <label class="wpd_label"
+                           wpd-tooltip="Notificar sobre novas respostas a este comentário">
+                        <input id="wc_notification_new_comment-0_0"
+                               class="wc_notification_new_comment-0_0 wpd_label__checkbox"
+                               value="comment" type="checkbox"
+                               name="wpdiscuz_notification_type" />
+                        <span class="wpd_label__text">
+                                <span class="wpd_label__check">
+                                    <i class="fas fa-bell wpdicon wpdicon-on"></i>
+                                    <i class="fas fa-bell-slash wpdicon wpdicon-off"></i>
+                                </span>
+                            </span>
+                    </label>
+                            <input id="wpd-field-submit-0_0"
+                   class="wc_comm_submit wpd_not_clicked wpd-prim-button" type="submit"
+                   name="submit" value="Publicar Comentário."
+                   aria-label="Publicar Comentário."/>
+        </div>
+                </div>
+                    <div class="clearfix"></div>
+        </div>
+                            </div>
+                                        <input type="hidden" class="wpdiscuz_unique_id" value="0_0"
+                           name="wpdiscuz_unique_id">
+                                    </form>
+                        </div>
+                <div id="wpdiscuz_hidden_secondary_form" style="display: none;">
+                    <div
+            class="wpd-form wpd-form-wrapper wpd-secondary-form-wrapper" id='wpd-secondary-form-wrapper-wpdiscuzuniqueid' style='display: none;'>
+                            <div class="wpd-secondary-forms-social-content"></div>
+                <div class="clearfix"></div>
+                                        <form  method="post" enctype="multipart/form-data" data-uploading="false" class="wpd_comm_form wpd-secondary-form-wrapper"                >
+                                        <div class="wpd-field-comment">
+                        <div class="wpdiscuz-item wc-field-textarea">
+                            <div class="wpdiscuz-textarea-wrap ">
+                                                                                                        <div class="wpd-avatar">
+                                        <img alt='guest' src='https://secure.gravatar.com/avatar/4e84e22776aee1210e2f759ec07931f6dacb10c02464ef3cae577dd97e80bcdc?s=56&#038;r=g' srcset='https://secure.gravatar.com/avatar/4e84e22776aee1210e2f759ec07931f6dacb10c02464ef3cae577dd97e80bcdc?s=112&#038;r=g 2x' class='avatar avatar-56 photo' height='56' width='56' loading='lazy' decoding='async'/>                                    </div>
+                                                <div id="wpd-editor-wraper-wpdiscuzuniqueid" style="display: none;">
+                <div id="wpd-editor-char-counter-wpdiscuzuniqueid"
+                     class="wpd-editor-char-counter"></div>
+                <label style="display: none;" for="wc-textarea-wpdiscuzuniqueid">Label</label>
+                <textarea id="wc-textarea-wpdiscuzuniqueid" name="wc_comment"
+                          class="wc_comment wpd-field"></textarea>
+                <div id="wpd-editor-wpdiscuzuniqueid"></div>
+                        <div id="wpd-editor-toolbar-wpdiscuzuniqueid">
+                            <button title="Negrito"
+                        class="ql-bold"  ></button>
+                                <button title="Itálico"
+                        class="ql-italic"  ></button>
+                                <button title="Sublinhado"
+                        class="ql-underline"  ></button>
+                                <button title="Fixar"
+                        class="ql-strike"  ></button>
+                                <button title="Lista ordenada"
+                        class="ql-list" value='ordered' ></button>
+                                <button title="Lista não ordenada"
+                        class="ql-list" value='bullet' ></button>
+                                <button title="Bloco de citação"
+                        class="ql-blockquote"  ></button>
+                                <button title="Bloco de código"
+                        class="ql-code-block"  ></button>
+                                <button title="Link"
+                        class="ql-link"  ></button>
+                                <button title="Código fonte"
+                        class="ql-sourcecode"  data-wpde_button_name='sourcecode'>{}</button>
+                                <button title="Spoiler"
+                        class="ql-spoiler"  data-wpde_button_name='spoiler'>[+]</button>
+                            <div class="wpd-editor-buttons-right">
+                <span class='wmu-upload-wrap' wpd-tooltip='Anexe uma imagem a este comentário' wpd-tooltip-position='left'><label class='wmu-add'><i class='far fa-image'></i><input style='display:none;' class='wmu-add-files' type='file' name='wmu_files'  accept='image/*'/></label></span>            </div>
+        </div>
+                    </div>
+                                        </div>
+                        </div>
+                    </div>
+                    <div class="wpd-form-foot" style='display:none;'>
+                        <div class="wpdiscuz-textarea-foot">
+                                                        <div class="wpdiscuz-button-actions"><div class='wmu-action-wrap'><div class='wmu-tabs wmu-images-tab wmu-hide'></div><div class='wmu-tabs wmu-videos-tab wmu-hide'></div><div class='wmu-tabs wmu-files-tab wmu-hide'></div></div></div>
+                        </div>
+                                <div class="wpd-form-row">
+                    <div class="wpd-form-col-left">
+                        <div class="wpdiscuz-item wc_name-wrapper wpd-has-icon">
+                                    <div class="wpd-field-icon"><i
+                            class="fas fa-user"></i>
+                    </div>
+                                    <input id="wc_name-wpdiscuzuniqueid" value="" required='required' aria-required='true'                       class="wc_name wpd-field" type="text"
+                       name="wc_name"
+                       placeholder="Nome*"
+                       maxlength="50" pattern='.{3,50}'                       title="">
+                <label for="wc_name-wpdiscuzuniqueid"
+                       class="wpdlb">Nome*</label>
+                            </div>
+                        <div class="wpdiscuz-item wc_email-wrapper wpd-has-icon">
+                                    <div class="wpd-field-icon"><i
+                            class="fas fa-at"></i>
+                    </div>
+                                    <input id="wc_email-wpdiscuzuniqueid" value="" required='required' aria-required='true'                       class="wc_email wpd-field" type="email"
+                       name="wc_email"
+                       placeholder="Email*"/>
+                <label for="wc_email-wpdiscuzuniqueid"
+                       class="wpdlb">Email*</label>
+                            </div>
+                            <div class="wpdiscuz-item wc_website-wrapper wpd-has-icon">
+                                            <div class="wpd-field-icon"><i
+                                class="fas fa-link"></i>
+                        </div>
+                                        <input id="wc_website-wpdiscuzuniqueid" value=""
+                           class="wc_website wpd-field" type="text"
+                           name="wc_website"
+                           placeholder="Website"/>
+                    <label for="wc_website-wpdiscuzuniqueid"
+                           class="wpdlb">Website</label>
+                                    </div>
+                        </div>
+                <div class="wpd-form-col-right">
+                    <div class="wc-field-submit">
+                                                <label class="wpd_label"
+                           wpd-tooltip="Notificar sobre novas respostas a este comentário">
+                        <input id="wc_notification_new_comment-wpdiscuzuniqueid"
+                               class="wc_notification_new_comment-wpdiscuzuniqueid wpd_label__checkbox"
+                               value="comment" type="checkbox"
+                               name="wpdiscuz_notification_type" />
+                        <span class="wpd_label__text">
+                                <span class="wpd_label__check">
+                                    <i class="fas fa-bell wpdicon wpdicon-on"></i>
+                                    <i class="fas fa-bell-slash wpdicon wpdicon-off"></i>
+                                </span>
+                            </span>
+                    </label>
+                            <input id="wpd-field-submit-wpdiscuzuniqueid"
+                   class="wc_comm_submit wpd_not_clicked wpd-prim-button" type="submit"
+                   name="submit" value="Publicar Comentário."
+                   aria-label="Publicar Comentário."/>
+        </div>
+                </div>
+                    <div class="clearfix"></div>
+        </div>
+                            </div>
+                                        <input type="hidden" class="wpdiscuz_unique_id" value="wpdiscuzuniqueid"
+                           name="wpdiscuz_unique_id">
+                                    </form>
+                        </div>
+                </div>
+                    </div>
+                        <div id="wpd-threads" class="wpd-thread-wrapper">
+                <div class="wpd-thread-head">
+                    <div class="wpd-thread-info "
+                         data-comments-count="0">
+                        <span class='wpdtc' title='0'>0</span> Comentários                    </div>
+                                        <div class="wpd-space"></div>
+                    <div class="wpd-thread-filter">
+                                                    <div class="wpd-filter wpdf-reacted wpd_not_clicked wpdiscuz-hidden"
+                                 wpd-tooltip="Comentário mais reagido">
+                                <i class="fas fa-bolt"></i></div>
+                                                        <div class="wpd-filter wpdf-hottest wpd_not_clicked wpdiscuz-hidden"
+                                 wpd-tooltip="Tópico de comentários mais quente">
+                                <i class="fas fa-fire"></i></div>
+                                                        <div class="wpd-filter wpdf-sorting wpdiscuz-hidden">
+                                                                        <span class="wpdiscuz-sort-button wpdiscuz-date-sort-asc wpdiscuz-sort-button-active"
+                                              data-sorting="oldest">mais antigos</span>
+                                                                        <i class="fas fa-sort-down"></i>
+                                <div class="wpdiscuz-sort-buttons">
+                                                                            <span class="wpdiscuz-sort-button wpdiscuz-date-sort-desc"
+                                              data-sorting="newest">mais recentes</span>
+                                                                                <span class="wpdiscuz-sort-button wpdiscuz-vote-sort-up"
+                                              data-sorting="by_vote">Mais votado</span>
+                                                                        </div>
+                            </div>
+                                                </div>
+                </div>
+                <div class="wpd-comment-info-bar">
+                    <div class="wpd-current-view"><i
+                            class="fas fa-quote-left"></i> Feedbacks embutidos                    </div>
+                    <div class="wpd-filter-view-all">Ver todos os comentários</div>
+                </div>
+                                <div class="wpd-thread-list">
+                    <!-- // From wpDiscuz's Caches // -->                    <div class="wpdiscuz-comment-pagination">
+                                            </div>
+                </div>
+            </div>
+                </div>
+        </div>
+    <div id="wpdiscuz-loading-bar"
+         class="wpdiscuz-loading-bar-unauth"></div>
+    <div id="wpdiscuz-comment-message"
+         class="wpdiscuz-comment-message-unauth"></div>
+                        </div>	
+                </div>	
+                	<div class="col-md-4 col-sm-4 col-xs-12">
+        <div class="sidebar padding-left-30">
+            <aside id="search-1" class="widget widget_search"><h3 class="widget-title">Busca</h3><form method="get" id="searchform" class="search-form" action="https://blog.dsacademy.com.br/">
+	<label><input class="search-field" type="text" value="" name="s" id="s" placeholder="Busca"></label>
+	<label><input type="submit" class="search-submit" value="Busca"></label>
+</form></aside><aside id="categories-4" class="widget widget_categories"><h3 class="widget-title">Categorias</h3>
+			<ul>
+					<li class="cat-item cat-item-794"><a href="https://blog.dsacademy.com.br/categoria/agentes-de-ia/">Agentes de IA</a> (34)
+</li>
+	<li class="cat-item cat-item-961"><a href="https://blog.dsacademy.com.br/categoria/agentops/">AgentOps</a> (1)
+</li>
+	<li class="cat-item cat-item-1021"><a href="https://blog.dsacademy.com.br/categoria/ai-data-engineer/">AI Data Engineer</a> (8)
+</li>
+	<li class="cat-item cat-item-1057"><a href="https://blog.dsacademy.com.br/categoria/ai-software-engineer/">AI Software Engineer</a> (3)
+</li>
+	<li class="cat-item cat-item-1013"><a href="https://blog.dsacademy.com.br/categoria/aiops/">AIOps</a> (1)
+</li>
+	<li class="cat-item cat-item-664"><a href="https://blog.dsacademy.com.br/categoria/airbyte/">Airbyte</a> (2)
+</li>
+	<li class="cat-item cat-item-957"><a href="https://blog.dsacademy.com.br/categoria/alta-disponibilidade/">Alta Disponibilidade</a> (2)
+</li>
+	<li class="cat-item cat-item-710"><a href="https://blog.dsacademy.com.br/categoria/amazon-emr/">Amazon EMR</a> (1)
+</li>
+	<li class="cat-item cat-item-508"><a href="https://blog.dsacademy.com.br/categoria/analise-de-dados/">Análise de Dados</a> (13)
+</li>
+	<li class="cat-item cat-item-409"><a href="https://blog.dsacademy.com.br/categoria/analise-de-negocios/">Análise de Negócios</a> (9)
+</li>
+	<li class="cat-item cat-item-784"><a href="https://blog.dsacademy.com.br/categoria/analise-exploratoria-de-dados/">Análise Exploratória de Dados</a> (1)
+</li>
+	<li class="cat-item cat-item-514"><a href="https://blog.dsacademy.com.br/categoria/analista-de-dados/">Analista de Dados</a> (8)
+</li>
+	<li class="cat-item cat-item-23"><a href="https://blog.dsacademy.com.br/categoria/analytics/">Analytics</a> (53)
+</li>
+	<li class="cat-item cat-item-639"><a href="https://blog.dsacademy.com.br/categoria/analytics-engineer/">Analytics Engineer</a> (8)
+</li>
+	<li class="cat-item cat-item-868"><a href="https://blog.dsacademy.com.br/categoria/apache-airflow/">Apache Airflow</a> (1)
+</li>
+	<li class="cat-item cat-item-669"><a href="https://blog.dsacademy.com.br/categoria/apache-beam/">Apache Beam</a> (1)
+</li>
+	<li class="cat-item cat-item-885"><a href="https://blog.dsacademy.com.br/categoria/apache-doris/">Apache Doris</a> (1)
+</li>
+	<li class="cat-item cat-item-1027"><a href="https://blog.dsacademy.com.br/categoria/apache-hop/">Apache Hop</a> (1)
+</li>
+	<li class="cat-item cat-item-673"><a href="https://blog.dsacademy.com.br/categoria/apache-kafka/">Apache Kafka</a> (1)
+</li>
+	<li class="cat-item cat-item-666"><a href="https://blog.dsacademy.com.br/categoria/apache-nifi/">Apache NiFi</a> (1)
+</li>
+	<li class="cat-item cat-item-420"><a href="https://blog.dsacademy.com.br/categoria/apache-spark/">Apache Spark</a> (14)
+</li>
+	<li class="cat-item cat-item-972"><a href="https://blog.dsacademy.com.br/categoria/apis/">APIs</a> (1)
+</li>
+	<li class="cat-item cat-item-791"><a href="https://blog.dsacademy.com.br/categoria/aprendizado-continuo/">Aprendizado Contínuo</a> (1)
+</li>
+	<li class="cat-item cat-item-609"><a href="https://blog.dsacademy.com.br/categoria/arquiteto-de-dados/">Arquiteto de Dados</a> (10)
+</li>
+	<li class="cat-item cat-item-895"><a href="https://blog.dsacademy.com.br/categoria/arquiteto-de-solucoes/">Arquiteto de Soluções</a> (1)
+</li>
+	<li class="cat-item cat-item-748"><a href="https://blog.dsacademy.com.br/categoria/arquiteto-rpa/">Arquiteto RPA</a> (1)
+</li>
+	<li class="cat-item cat-item-320"><a href="https://blog.dsacademy.com.br/categoria/arquitetura-de-dados/">Arquitetura de Dados</a> (36)
+</li>
+	<li class="cat-item cat-item-940"><a href="https://blog.dsacademy.com.br/categoria/arquitetura-medalhao/">Arquitetura Medalhão</a> (5)
+</li>
+	<li class="cat-item cat-item-947"><a href="https://blog.dsacademy.com.br/categoria/atestado-de-capacidade-tecnica/">Atestado de Capacidade Técnica</a> (1)
+</li>
+	<li class="cat-item cat-item-521"><a href="https://blog.dsacademy.com.br/categoria/automacao/">Automação</a> (4)
+</li>
+	<li class="cat-item cat-item-948"><a href="https://blog.dsacademy.com.br/categoria/automacao-de-processos/">Automação de Processos</a> (2)
+</li>
+	<li class="cat-item cat-item-432"><a href="https://blog.dsacademy.com.br/categoria/aws-amazon-web-service/">AWS (Amazon Web Service)</a> (2)
+</li>
+	<li class="cat-item cat-item-15"><a href="https://blog.dsacademy.com.br/categoria/banco-de-dados/">Banco de Dados</a> (9)
+</li>
+	<li class="cat-item cat-item-1067"><a href="https://blog.dsacademy.com.br/categoria/banco-de-dados-nosql/">Banco de Dados NoSQL</a> (1)
+</li>
+	<li class="cat-item cat-item-964"><a href="https://blog.dsacademy.com.br/categoria/bancos-de-dados-vetoriais/">Bancos de Dados Vetoriais</a> (3)
+</li>
+	<li class="cat-item cat-item-9"><a href="https://blog.dsacademy.com.br/categoria/bibliografia/">Bibliografia</a> (11)
+</li>
+	<li class="cat-item cat-item-2"><a href="https://blog.dsacademy.com.br/categoria/big-data/">Big Data</a> (33)
+</li>
+	<li class="cat-item cat-item-705"><a href="https://blog.dsacademy.com.br/categoria/bigquery/">BigQuery</a> (1)
+</li>
+	<li class="cat-item cat-item-144"><a href="https://blog.dsacademy.com.br/categoria/blockchain/">Blockchain</a> (8)
+</li>
+	<li class="cat-item cat-item-130"><a href="https://blog.dsacademy.com.br/categoria/business/">Business</a> (15)
+</li>
+	<li class="cat-item cat-item-1060"><a href="https://blog.dsacademy.com.br/categoria/business-analytics/">Business Analytics</a> (1)
+</li>
+	<li class="cat-item cat-item-916"><a href="https://blog.dsacademy.com.br/categoria/business-process-automation-bpa/">Business Process Automation (BPA)</a> (2)
+</li>
+	<li class="cat-item cat-item-1077"><a href="https://blog.dsacademy.com.br/categoria/cache-semantico/">Cache Semântico</a> (1)
+</li>
+	<li class="cat-item cat-item-851"><a href="https://blog.dsacademy.com.br/categoria/camada-semantica/">Câmada Semântica</a> (1)
+</li>
+	<li class="cat-item cat-item-21"><a href="https://blog.dsacademy.com.br/categoria/carreira/">Carreira</a> (161)
+</li>
+	<li class="cat-item cat-item-822"><a href="https://blog.dsacademy.com.br/categoria/casos-de-uso/">Casos de Uso</a> (1)
+</li>
+	<li class="cat-item cat-item-512"><a href="https://blog.dsacademy.com.br/categoria/certificacao/">Certificação</a> (1)
+</li>
+	<li class="cat-item cat-item-637"><a href="https://blog.dsacademy.com.br/categoria/chatgpt/">ChatGPT</a> (8)
+</li>
+	<li class="cat-item cat-item-485"><a href="https://blog.dsacademy.com.br/categoria/cientista-de-dados/">Cientista de Dados</a> (19)
+</li>
+	<li class="cat-item cat-item-108"><a href="https://blog.dsacademy.com.br/categoria/cloud-computing/">Cloud Computing</a> (14)
+</li>
+	<li class="cat-item cat-item-818"><a href="https://blog.dsacademy.com.br/categoria/comparativo-tecnico/">Comparativo Técnico</a> (2)
+</li>
+	<li class="cat-item cat-item-1004"><a href="https://blog.dsacademy.com.br/categoria/computacao-quantica/">Computação Quântica</a> (1)
+</li>
+	<li class="cat-item cat-item-910"><a href="https://blog.dsacademy.com.br/categoria/context-engineering/">Context Engineering</a> (1)
+</li>
+	<li class="cat-item cat-item-1018"><a href="https://blog.dsacademy.com.br/categoria/crisp-dm/">CRISP-DM</a> (1)
+</li>
+	<li class="cat-item cat-item-677"><a href="https://blog.dsacademy.com.br/categoria/curso-gratuito/">Curso Gratuito</a> (11)
+</li>
+	<li class="cat-item cat-item-599"><a href="https://blog.dsacademy.com.br/categoria/cyber-security/">Cyber Security</a> (2)
+</li>
+	<li class="cat-item cat-item-955"><a href="https://blog.dsacademy.com.br/categoria/cybersecurity/">Cybersecurity</a> (10)
+</li>
+	<li class="cat-item cat-item-630"><a href="https://blog.dsacademy.com.br/categoria/dados-disponiveis-publicamente/">Dados Disponíveis Publicamente</a> (2)
+</li>
+	<li class="cat-item cat-item-932"><a href="https://blog.dsacademy.com.br/categoria/data-drift/">Data Drift</a> (5)
+</li>
+	<li class="cat-item cat-item-737"><a href="https://blog.dsacademy.com.br/categoria/data-driven/">Data Driven</a> (1)
+</li>
+	<li class="cat-item cat-item-135"><a href="https://blog.dsacademy.com.br/categoria/data-lake/">Data Lake</a> (3)
+</li>
+	<li class="cat-item cat-item-541"><a href="https://blog.dsacademy.com.br/categoria/data-lakehouse/">Data Lakehouse</a> (6)
+</li>
+	<li class="cat-item cat-item-560"><a href="https://blog.dsacademy.com.br/categoria/data-lineage/">Data Lineage</a> (2)
+</li>
+	<li class="cat-item cat-item-769"><a href="https://blog.dsacademy.com.br/categoria/data-mining/">Data Mining</a> (1)
+</li>
+	<li class="cat-item cat-item-632"><a href="https://blog.dsacademy.com.br/categoria/data-observability/">Data Observability</a> (2)
+</li>
+	<li class="cat-item cat-item-563"><a href="https://blog.dsacademy.com.br/categoria/data-quality/">Data Quality</a> (2)
+</li>
+	<li class="cat-item cat-item-1"><a href="https://blog.dsacademy.com.br/categoria/data-science/">Data Science</a> (212)
+</li>
+	<li class="cat-item cat-item-569"><a href="https://blog.dsacademy.com.br/categoria/data-science-academy/">Data Science Academy</a> (12)
+</li>
+	<li class="cat-item cat-item-604"><a href="https://blog.dsacademy.com.br/categoria/data-warehouse/">Data Warehouse</a> (3)
+</li>
+	<li class="cat-item cat-item-647"><a href="https://blog.dsacademy.com.br/categoria/database-administrator/">Database Administrator</a> (3)
+</li>
+	<li class="cat-item cat-item-758"><a href="https://blog.dsacademy.com.br/categoria/database-analytics/">Database Analytics</a> (1)
+</li>
+	<li class="cat-item cat-item-1064"><a href="https://blog.dsacademy.com.br/categoria/database-engineer/">Database Engineer</a> (1)
+</li>
+	<li class="cat-item cat-item-428"><a href="https://blog.dsacademy.com.br/categoria/databricks/">Databricks</a> (9)
+</li>
+	<li class="cat-item cat-item-330"><a href="https://blog.dsacademy.com.br/categoria/dataops/">DataOps</a> (6)
+</li>
+	<li class="cat-item cat-item-869"><a href="https://blog.dsacademy.com.br/categoria/dbt-data-build-tool/">dbt (Data Build Tool)</a> (2)
+</li>
+	<li class="cat-item cat-item-57"><a href="https://blog.dsacademy.com.br/categoria/deep-learning/">Deep Learning</a> (11)
+</li>
+	<li class="cat-item cat-item-1074"><a href="https://blog.dsacademy.com.br/categoria/delta-lake/">Delta Lake</a> (1)
+</li>
+	<li class="cat-item cat-item-1079"><a href="https://blog.dsacademy.com.br/categoria/deploy/">Deploy</a> (1)
+</li>
+	<li class="cat-item cat-item-783"><a href="https://blog.dsacademy.com.br/categoria/desenvolvimento-pessoal/">Desenvolvimento Pessoal</a> (1)
+</li>
+	<li class="cat-item cat-item-355"><a href="https://blog.dsacademy.com.br/categoria/desenvolvimento-web/">Desenvolvimento Web</a> (1)
+</li>
+	<li class="cat-item cat-item-876"><a href="https://blog.dsacademy.com.br/categoria/desvendando-a-profissao/">Desvendando a Profissão</a> (8)
+</li>
+	<li class="cat-item cat-item-873"><a href="https://blog.dsacademy.com.br/categoria/dia-a-dia/">Dia a Dia</a> (7)
+</li>
+	<li class="cat-item cat-item-595"><a href="https://blog.dsacademy.com.br/categoria/docker/">Docker</a> (2)
+</li>
+	<li class="cat-item cat-item-845"><a href="https://blog.dsacademy.com.br/categoria/duckdb/">DuckDB</a> (5)
+</li>
+	<li class="cat-item cat-item-676"><a href="https://blog.dsacademy.com.br/categoria/e-books/">E-Books</a> (1)
+</li>
+	<li class="cat-item cat-item-716"><a href="https://blog.dsacademy.com.br/categoria/econometria/">Econometria</a> (1)
+</li>
+	<li class="cat-item cat-item-460"><a href="https://blog.dsacademy.com.br/categoria/edge-computing/">Edge Computing</a> (1)
+</li>
+	<li class="cat-item cat-item-870"><a href="https://blog.dsacademy.com.br/categoria/engenharia-analitica/">Engenharia Analítica</a> (2)
+</li>
+	<li class="cat-item cat-item-826"><a href="https://blog.dsacademy.com.br/categoria/engenharia-de-confiabilidade-de-dados/">Engenharia de Confiabilidade de Dados</a> (1)
+</li>
+	<li class="cat-item cat-item-114"><a href="https://blog.dsacademy.com.br/categoria/engenharia-de-dados/">Engenharia de Dados</a> (42)
+</li>
+	<li class="cat-item cat-item-1022"><a href="https://blog.dsacademy.com.br/categoria/engenharia-de-dados-para-ia/">Engenharia de Dados Para IA</a> (1)
+</li>
+	<li class="cat-item cat-item-434"><a href="https://blog.dsacademy.com.br/categoria/engenharia-de-software/">Engenharia de Software</a> (2)
+</li>
+	<li class="cat-item cat-item-756"><a href="https://blog.dsacademy.com.br/categoria/engenharias/">Engenharias</a> (5)
+</li>
+	<li class="cat-item cat-item-729"><a href="https://blog.dsacademy.com.br/categoria/engenheiro-dataops/">Engenheiro DataOps</a> (4)
+</li>
+	<li class="cat-item cat-item-562"><a href="https://blog.dsacademy.com.br/categoria/engenheiro-de-dados/">Engenheiro de Dados</a> (14)
+</li>
+	<li class="cat-item cat-item-619"><a href="https://blog.dsacademy.com.br/categoria/engenheiro-de-ia/">Engenheiro de IA</a> (13)
+</li>
+	<li class="cat-item cat-item-506"><a href="https://blog.dsacademy.com.br/categoria/engenheiro-de-machine-learning/">Engenheiro de Machine Learning</a> (9)
+</li>
+	<li class="cat-item cat-item-3"><a href="https://blog.dsacademy.com.br/categoria/estatistica/">Estatística</a> (7)
+</li>
+	<li class="cat-item cat-item-665"><a href="https://blog.dsacademy.com.br/categoria/etl/">ETL</a> (5)
+</li>
+	<li class="cat-item cat-item-580"><a href="https://blog.dsacademy.com.br/categoria/eventos-e-parcerias/">Eventos e Parcerias</a> (2)
+</li>
+	<li class="cat-item cat-item-712"><a href="https://blog.dsacademy.com.br/categoria/financas-e-engenharia-financeira/">Finanças e Engenharia Financeira</a> (2)
+</li>
+	<li class="cat-item cat-item-618"><a href="https://blog.dsacademy.com.br/categoria/formacoes-dsa/">Formações DSA</a> (1)
+</li>
+	<li class="cat-item cat-item-998"><a href="https://blog.dsacademy.com.br/categoria/github/">Github</a> (1)
+</li>
+	<li class="cat-item cat-item-375"><a href="https://blog.dsacademy.com.br/categoria/governanca-de-dados/">Governança de Dados</a> (14)
+</li>
+	<li class="cat-item cat-item-592"><a href="https://blog.dsacademy.com.br/categoria/guia-de-carreira/">Guia de Carreira</a> (13)
+</li>
+	<li class="cat-item cat-item-918"><a href="https://blog.dsacademy.com.br/categoria/guia-definitivo/">Guia Definitivo</a> (30)
+</li>
+	<li class="cat-item cat-item-989"><a href="https://blog.dsacademy.com.br/categoria/hard-skills/">Hard Skills</a> (1)
+</li>
+	<li class="cat-item cat-item-202"><a href="https://blog.dsacademy.com.br/categoria/hardware/">Hardware</a> (1)
+</li>
+	<li class="cat-item cat-item-1075"><a href="https://blog.dsacademy.com.br/categoria/ia-aplicada-ao-servico-publico/">IA Aplicada ao Serviço Público</a> (1)
+</li>
+	<li class="cat-item cat-item-720"><a href="https://blog.dsacademy.com.br/categoria/ia-generativa/">IA Generativa</a> (5)
+</li>
+	<li class="cat-item cat-item-878"><a href="https://blog.dsacademy.com.br/categoria/ia-preditiva/">IA Preditiva</a> (1)
+</li>
+	<li class="cat-item cat-item-606"><a href="https://blog.dsacademy.com.br/categoria/infraestrutura-como-codigo-iac/">Infraestrutura Como Código (IaC)</a> (1)
+</li>
+	<li class="cat-item cat-item-56"><a href="https://blog.dsacademy.com.br/categoria/inteligencia-artificial/">Inteligência Artificial</a> (139)
+</li>
+	<li class="cat-item cat-item-249"><a href="https://blog.dsacademy.com.br/categoria/inteligencia-artificial-em-medicina/">Inteligência Artificial em Medicina</a> (15)
+</li>
+	<li class="cat-item cat-item-486"><a href="https://blog.dsacademy.com.br/categoria/inteligencia-artificial-em-vendas/">Inteligência Artificial em Vendas</a> (1)
+</li>
+	<li class="cat-item cat-item-937"><a href="https://blog.dsacademy.com.br/categoria/inteligencia-artificial-explicavel-xai/">Inteligência Artificial Explicável (XAI)</a> (1)
+</li>
+	<li class="cat-item cat-item-743"><a href="https://blog.dsacademy.com.br/categoria/inteligencia-artificial-generativa/">Inteligência Artificial Generativa</a> (14)
+</li>
+	<li class="cat-item cat-item-304"><a href="https://blog.dsacademy.com.br/categoria/inteligencia-artificial-no-direito/">Inteligência Artificial no Direito</a> (12)
+</li>
+	<li class="cat-item cat-item-1011"><a href="https://blog.dsacademy.com.br/categoria/kaggle/">Kaggle</a> (1)
+</li>
+	<li class="cat-item cat-item-858"><a href="https://blog.dsacademy.com.br/categoria/kubernetes/">Kubernetes</a> (1)
+</li>
+	<li class="cat-item cat-item-685"><a href="https://blog.dsacademy.com.br/categoria/langchain/">LangChain</a> (5)
+</li>
+	<li class="cat-item cat-item-900"><a href="https://blog.dsacademy.com.br/categoria/langflow/">LangFlow</a> (3)
+</li>
+	<li class="cat-item cat-item-830"><a href="https://blog.dsacademy.com.br/categoria/langgraph/">LangGraph</a> (2)
+</li>
+	<li class="cat-item cat-item-680"><a href="https://blog.dsacademy.com.br/categoria/large-language-models-llms/">Large Language Models (LLMs)</a> (20)
+</li>
+	<li class="cat-item cat-item-771"><a href="https://blog.dsacademy.com.br/categoria/lgpd/">LGPD</a> (1)
+</li>
+	<li class="cat-item cat-item-520"><a href="https://blog.dsacademy.com.br/categoria/linguagem-julia/">Linguagem Julia</a> (1)
+</li>
+	<li class="cat-item cat-item-140"><a href="https://blog.dsacademy.com.br/categoria/linguagem-python/">Linguagem Python</a> (18)
+</li>
+	<li class="cat-item cat-item-35"><a href="https://blog.dsacademy.com.br/categoria/linguagem-r/">Linguagem R</a> (4)
+</li>
+	<li class="cat-item cat-item-654"><a href="https://blog.dsacademy.com.br/categoria/linguagem-rust/">Linguagem Rust</a> (1)
+</li>
+	<li class="cat-item cat-item-777"><a href="https://blog.dsacademy.com.br/categoria/linguagem-scala/">Linguagem Scala</a> (1)
+</li>
+	<li class="cat-item cat-item-104"><a href="https://blog.dsacademy.com.br/categoria/linguagem-sql/">Linguagem SQL</a> (2)
+</li>
+	<li class="cat-item cat-item-832"><a href="https://blog.dsacademy.com.br/categoria/llm-distillation/">LLM Distillation</a> (1)
+</li>
+	<li class="cat-item cat-item-854"><a href="https://blog.dsacademy.com.br/categoria/llm-ensemble/">LLM Ensemble</a> (1)
+</li>
+	<li class="cat-item cat-item-852"><a href="https://blog.dsacademy.com.br/categoria/llm-routing/">LLM Routing</a> (1)
+</li>
+	<li class="cat-item cat-item-37"><a href="https://blog.dsacademy.com.br/categoria/machine-learning/">Machine Learning</a> (60)
+</li>
+	<li class="cat-item cat-item-688"><a href="https://blog.dsacademy.com.br/categoria/machine-unlearning/">Machine Unlearning</a> (1)
+</li>
+	<li class="cat-item cat-item-358"><a href="https://blog.dsacademy.com.br/categoria/marketing-digital/">Marketing Digital</a> (4)
+</li>
+	<li class="cat-item cat-item-625"><a href="https://blog.dsacademy.com.br/categoria/matematica/">Matemática</a> (1)
+</li>
+	<li class="cat-item cat-item-197"><a href="https://blog.dsacademy.com.br/categoria/microsoft/">Microsoft</a> (3)
+</li>
+	<li class="cat-item cat-item-627"><a href="https://blog.dsacademy.com.br/categoria/microsoft-excel/">Microsoft Excel</a> (2)
+</li>
+	<li class="cat-item cat-item-807"><a href="https://blog.dsacademy.com.br/categoria/microsoft-fabric/">Microsoft Fabric</a> (3)
+</li>
+	<li class="cat-item cat-item-993"><a href="https://blog.dsacademy.com.br/categoria/minio/">MinIO</a> (1)
+</li>
+	<li class="cat-item cat-item-855"><a href="https://blog.dsacademy.com.br/categoria/mixture-of-agents-moa/">Mixture-of-Agents (MoA)</a> (1)
+</li>
+	<li class="cat-item cat-item-515"><a href="https://blog.dsacademy.com.br/categoria/mlops/">MLOps</a> (8)
+</li>
+	<li class="cat-item cat-item-890"><a href="https://blog.dsacademy.com.br/categoria/model-context-protocol/">Model Context Protocol</a> (2)
+</li>
+	<li class="cat-item cat-item-588"><a href="https://blog.dsacademy.com.br/categoria/modelagem-de-dados/">Modelagem de Dados</a> (2)
+</li>
+	<li class="cat-item cat-item-945"><a href="https://blog.dsacademy.com.br/categoria/modelagem-preditiva/">Modelagem Preditiva</a> (1)
+</li>
+	<li class="cat-item cat-item-963"><a href="https://blog.dsacademy.com.br/categoria/modelos-de-embeddings/">Modelos de Embeddings</a> (1)
+</li>
+	<li class="cat-item cat-item-717"><a href="https://blog.dsacademy.com.br/categoria/modern-data-stack/">Modern Data Stack</a> (2)
+</li>
+	<li class="cat-item cat-item-1068"><a href="https://blog.dsacademy.com.br/categoria/mongodb/">MongoDB</a> (1)
+</li>
+	<li class="cat-item cat-item-899"><a href="https://blog.dsacademy.com.br/categoria/n8n/">n8n</a> (4)
+</li>
+	<li class="cat-item cat-item-1070"><a href="https://blog.dsacademy.com.br/categoria/neo4j/">Neo4j</a> (1)
+</li>
+	<li class="cat-item cat-item-1055"><a href="https://blog.dsacademy.com.br/categoria/oracle/">Oracle</a> (2)
+</li>
+	<li class="cat-item cat-item-1062"><a href="https://blog.dsacademy.com.br/categoria/oracle-ai-database-engineer/">Oracle AI Database Engineer</a> (1)
+</li>
+	<li class="cat-item cat-item-1030"><a href="https://blog.dsacademy.com.br/categoria/orquestracao/">Orquestração</a> (1)
+</li>
+	<li class="cat-item cat-item-919"><a href="https://blog.dsacademy.com.br/categoria/otimizacao-de-hiperparametros/">Otimização de Hiperparâmetros</a> (1)
+</li>
+	<li class="cat-item cat-item-980"><a href="https://blog.dsacademy.com.br/categoria/padrao-react-reason-act/">Padrão ReAct (Reason + Act)</a> (1)
+</li>
+	<li class="cat-item cat-item-701"><a href="https://blog.dsacademy.com.br/categoria/pipeline-de-dados/">Pipeline de Dados</a> (3)
+</li>
+	<li class="cat-item cat-item-702"><a href="https://blog.dsacademy.com.br/categoria/plataforma-de-dados/">Plataforma de Dados</a> (5)
+</li>
+	<li class="cat-item cat-item-897"><a href="https://blog.dsacademy.com.br/categoria/plataformas-no-code-e-low-code/">Plataformas No-Code e Low-Code</a> (8)
+</li>
+	<li class="cat-item cat-item-155"><a href="https://blog.dsacademy.com.br/categoria/podcast/">Podcast</a> (1)
+</li>
+	<li class="cat-item cat-item-484"><a href="https://blog.dsacademy.com.br/categoria/por-onde-comecar/">Por Onde Começar</a> (9)
+</li>
+	<li class="cat-item cat-item-576"><a href="https://blog.dsacademy.com.br/categoria/portfolio-de-projetos/">Portfólio de Projetos</a> (9)
+</li>
+	<li class="cat-item cat-item-761"><a href="https://blog.dsacademy.com.br/categoria/pos-graduacao/">Pós-Graduação</a> (39)
+</li>
+	<li class="cat-item cat-item-386"><a href="https://blog.dsacademy.com.br/categoria/power-bi/">Power BI</a> (5)
+</li>
+	<li class="cat-item cat-item-611"><a href="https://blog.dsacademy.com.br/categoria/processamento-de-linguagem-natural/">Processamento de Linguagem Natural</a> (6)
+</li>
+	<li class="cat-item cat-item-78"><a href="https://blog.dsacademy.com.br/categoria/programacao/">Programação</a> (2)
+</li>
+	<li class="cat-item cat-item-908"><a href="https://blog.dsacademy.com.br/categoria/project-based-learning-pbl/">Project-Based Learning &#8211; PBL</a> (1)
+</li>
+	<li class="cat-item cat-item-678"><a href="https://blog.dsacademy.com.br/categoria/prompt-engineering/">Prompt Engineering</a> (3)
+</li>
+	<li class="cat-item cat-item-13"><a href="https://blog.dsacademy.com.br/categoria/python/">Python</a> (5)
+</li>
+	<li class="cat-item cat-item-1069"><a href="https://blog.dsacademy.com.br/categoria/redis/">Redis</a> (1)
+</li>
+	<li class="cat-item cat-item-914"><a href="https://blog.dsacademy.com.br/categoria/reinforcement-learning/">Reinforcement Learning</a> (1)
+</li>
+	<li class="cat-item cat-item-1000"><a href="https://blog.dsacademy.com.br/categoria/responsible-ai/">Responsible AI</a> (1)
+</li>
+	<li class="cat-item cat-item-739"><a href="https://blog.dsacademy.com.br/categoria/retrieval-augmented-generation-rag/">Retrieval-Augmented Generation (RAG)</a> (11)
+</li>
+	<li class="cat-item cat-item-209"><a href="https://blog.dsacademy.com.br/categoria/rpa-robotic-process-automation/">RPA (Robotic Process Automation)</a> (17)
+</li>
+	<li class="cat-item cat-item-116"><a href="https://blog.dsacademy.com.br/categoria/sas/">SAS</a> (1)
+</li>
+	<li class="cat-item cat-item-958"><a href="https://blog.dsacademy.com.br/categoria/seguranca/">Segurança</a> (4)
+</li>
+	<li class="cat-item cat-item-1016"><a href="https://blog.dsacademy.com.br/categoria/semantic-cache/">Semantic Cache</a> (1)
+</li>
+	<li class="cat-item cat-item-613"><a href="https://blog.dsacademy.com.br/categoria/series-temporais/">Séries Temporais</a> (2)
+</li>
+	<li class="cat-item cat-item-516"><a href="https://blog.dsacademy.com.br/categoria/small-data/">Small Data</a> (1)
+</li>
+	<li class="cat-item cat-item-806"><a href="https://blog.dsacademy.com.br/categoria/small-language-models/">Small Language Models</a> (1)
+</li>
+	<li class="cat-item cat-item-809"><a href="https://blog.dsacademy.com.br/categoria/snowflake/">Snowflake</a> (2)
+</li>
+	<li class="cat-item cat-item-571"><a href="https://blog.dsacademy.com.br/categoria/soft-skills/">Soft Skills</a> (5)
+</li>
+	<li class="cat-item cat-item-1040"><a href="https://blog.dsacademy.com.br/categoria/spec-driven-development/">Spec-Driven Development</a> (5)
+</li>
+	<li class="cat-item cat-item-1056"><a href="https://blog.dsacademy.com.br/categoria/sql-server/">SQL Server</a> (2)
+</li>
+	<li class="cat-item cat-item-906"><a href="https://blog.dsacademy.com.br/categoria/storytelling/">Storytelling</a> (1)
+</li>
+	<li class="cat-item cat-item-554"><a href="https://blog.dsacademy.com.br/categoria/streaming-de-dados/">Streaming de Dados</a> (1)
+</li>
+	<li class="cat-item cat-item-285"><a href="https://blog.dsacademy.com.br/categoria/tecnologia/">Tecnologia</a> (1)
+</li>
+	<li class="cat-item cat-item-489"><a href="https://blog.dsacademy.com.br/categoria/tendencias/">Tendências</a> (4)
+</li>
+	<li class="cat-item cat-item-655"><a href="https://blog.dsacademy.com.br/categoria/tensorflow/">TensorFlow</a> (1)
+</li>
+	<li class="cat-item cat-item-605"><a href="https://blog.dsacademy.com.br/categoria/terraform/">Terraform</a> (1)
+</li>
+	<li class="cat-item cat-item-567"><a href="https://blog.dsacademy.com.br/categoria/trabalho-remoto/">Trabalho Remoto</a> (1)
+</li>
+	<li class="cat-item cat-item-621"><a href="https://blog.dsacademy.com.br/categoria/trilha-de-aprendizagem/">Trilha de Aprendizagem</a> (26)
+</li>
+	<li class="cat-item cat-item-1007"><a href="https://blog.dsacademy.com.br/categoria/vibe-coding/">Vibe Coding</a> (2)
+</li>
+	<li class="cat-item cat-item-602"><a href="https://blog.dsacademy.com.br/categoria/visao-computacional/">Visão Computacional</a> (4)
+</li>
+	<li class="cat-item cat-item-205"><a href="https://blog.dsacademy.com.br/categoria/visualizacao-de-dados/">Visualização de Dados</a> (4)
+</li>
+	<li class="cat-item cat-item-558"><a href="https://blog.dsacademy.com.br/categoria/web-3-0/">Web 3.0</a> (1)
+</li>
+	<li class="cat-item cat-item-141"><a href="https://blog.dsacademy.com.br/categoria/web-scraping/">Web Scraping</a> (5)
+</li>
+			</ul>
+
+			</aside>	
+        </div>
+    </div>
+        </div>
+    </div>
+</section>
+<footer class="site-footer">
+                        <!--Site Info-->
+                                                <div class="site-info">
+                                <div class="site-branding">
+                                                                 © 2026 Data Science Academy                             </div>
+                        </div>
+                                        <!--/Site Info-->
+        </footer>
+	
+</div>
+<!--/Wrapper-->
+<script type="speculationrules">
+{"prefetch":[{"source":"document","where":{"and":[{"href_matches":"/*"},{"not":{"href_matches":["/wp-*.php","/wp-admin/*","/wp-content/uploads/*","/wp-content/*","/wp-content/plugins/*","/wp-content/themes/cloudpress/*","/*\\?(.+)"]}},{"not":{"selector_matches":"a[rel~=\"nofollow\"]"}},{"not":{"selector_matches":".no-prefetch, .no-prefetch a"}}]},"eagerness":"conservative"}]}
+</script>
+	<div style="display:none">
+			<div class="grofile-hash-map-c757be9a961c147a84ebf59d18dcaa9b">
+		</div>
+		<div class="grofile-hash-map-bca07be61d599c02f400526ffeeba646">
+		</div>
+		</div>
+		<span id='wpdUserContentInfoAnchor' style='display:none;' rel='#wpdUserContentInfo' data-wpd-lity>wpDiscuz</span><div id='wpdUserContentInfo' style='overflow:auto;background:#FDFDF6;padding:20px;width:600px;max-width:100%;border-radius:6px;' class='lity-hide'></div><div id='wpd-bubble-wrapper'><span id='wpd-bubble-all-comments-count' style='display:none;' title='0'>0</span><div id='wpd-bubble-count'><svg xmlns='https://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><path class='wpd-bubble-count-first' d='M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z'/><path class='wpd-bubble-count-second' d='M0 0h24v24H0z' /></svg><span class='wpd-new-comments-count'>0</span></div><div id='wpd-bubble'><svg xmlns='https://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><path class='wpd-bubble-plus-first' d='M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z'/><path class='wpd-bubble-plus-second' d='M0 0h24v24H0z' /></svg><div id='wpd-bubble-add-message'>Adoraria saber sua opinião, comente.<span id='wpd-bubble-add-message-close'><a href='#'>x</a></span></div></div><div id='wpd-bubble-notification'><svg xmlns='https://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><path class='wpd-bubble-notification-first' d='M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z'/><path class='wpd-bubble-notification-second' d='M0 0h24v24H0z' /></svg><div id='wpd-bubble-notification-message'><div id='wpd-bubble-author'><div><span id='wpd-bubble-author-avatar'></span><span id='wpd-bubble-author-name'></span><span id='wpd-bubble-comment-date'>(<span class='wpd-bubble-spans'></span>)</span></div><span id='wpd-bubble-comment-close'><a href='#'>x</a></span></div><div id='wpd-bubble-comment'><span id='wpd-bubble-comment-text'></span><span id='wpd-bubble-comment-reply-link'>| <a href='#'>Responder</a></span></div></div></div></div><div id='wpd-editor-source-code-wrapper-bg'></div><div id='wpd-editor-source-code-wrapper'><textarea id='wpd-editor-source-code'></textarea><button id='wpd-insert-source-code'>Insert</button><input type='hidden' id='wpd-editor-uid' /></div>
+	<script type="text/javascript">
+		window.WPCOM_sharing_counts = {"https://blog.dsacademy.com.br/firecrawl-e-web-scraping-inteligente-com-ia/":11286};
+	</script>
+							<script>
+	/(trident|msie)/i.test(navigator.userAgent)&&document.getElementById&&window.addEventListener&&window.addEventListener("hashchange",function(){var t,e=location.hash.substring(1);/^[A-z0-9_-]+$/.test(e)&&(t=document.getElementById(e))&&(/^(?:a|select|input|button|textarea)$/i.test(t.tagName)||(t.tabIndex=-1),t.focus())},!1);
+	</script>
+	<script type="text/javascript" id="ce4wp_form_submit-js-extra">
+/* <![CDATA[ */
+var ce4wp_form_submit_data = {"siteUrl":"https://blog.dsacademy.com.br","url":"https://blog.dsacademy.com.br/wp-admin/admin-ajax.php","nonce":"274a3939ee","listNonce":"d51bcb965b","activatedNonce":"7dab529b12"};
+//# sourceURL=ce4wp_form_submit-js-extra
+/* ]]> */
+</script>
+<script type="text/javascript" src="https://blog.dsacademy.com.br/wp-content/plugins/creative-mail-by-constant-contact/assets/js/block/submit.js?ver=1715031511" id="ce4wp_form_submit-js"></script>
+<script type="text/javascript" src="https://blog.dsacademy.com.br/wp-content/plugins/coupon-reveal-button/js/spbcta-nm.js?ver=1.3.0" id="spbcta-nm-script-js"></script>
+<script type="text/javascript" src="https://blog.dsacademy.com.br/wp-content/themes/cloudpress/free/assets/js/bootstrap.bundle.min.js?ver=83e372b68c44984f8ca31234d6d1250d" id="bootstrap-js"></script>
+<script type="text/javascript" src="https://blog.dsacademy.com.br/wp-content/themes/cloudpress/free/assets/js/owl.carousel.min.js?ver=83e372b68c44984f8ca31234d6d1250d" id="owl-js"></script>
+<script type="text/javascript" src="https://blog.dsacademy.com.br/wp-content/themes/cloudpress/free/assets/js/smartmenus/jquery.smartmenus.js?ver=83e372b68c44984f8ca31234d6d1250d" id="jquery-menu-js"></script>
+<script type="text/javascript" src="https://blog.dsacademy.com.br/wp-content/themes/cloudpress/free/assets/js/smartmenus/jquery.smartmenus.bootstrap-4.js?ver=83e372b68c44984f8ca31234d6d1250d" id="jquery-menu-bootstrap-js"></script>
+<script type="text/javascript" src="https://blog.dsacademy.com.br/wp-content/themes/cloudpress/free/assets/js/custom.js?ver=83e372b68c44984f8ca31234d6d1250d" id="cloudpress-custom-js-js"></script>
+<script type="text/javascript" src="https://c0.wp.com/c/6.9.4/wp-includes/js/comment-reply.min.js" id="comment-reply-js" async="async" data-wp-strategy="async" fetchpriority="low"></script>
+<script type="text/javascript" src="https://secure.gravatar.com/js/gprofiles.js?ver=202617" id="grofiles-cards-js"></script>
+<script type="text/javascript" id="wpgroho-js-extra">
+/* <![CDATA[ */
+var WPGroHo = {"my_hash":""};
+//# sourceURL=wpgroho-js-extra
+/* ]]> */
+</script>
+<script type="text/javascript" src="https://c0.wp.com/p/jetpack/15.7.1/modules/wpgroho.js" id="wpgroho-js"></script>
+<script type="text/javascript" id="wpdiscuz-combo-js-js-extra">
+/* <![CDATA[ */
+var wpdiscuzAjaxObj = {"wc_hide_replies_text":"Esconder Respostas","wc_show_replies_text":"Ver respostas","wc_msg_required_fields":"Preencha os campos obrigat\u00f3rios","wc_invalid_field":"A informa\u00e7\u00e3o de algum campo \u00e9 inv\u00e1lida","wc_error_empty_text":"por favor, preencha este campo para comentar","wc_error_url_text":"url \u00e9 inv\u00e1lida","wc_error_email_text":"endere\u00e7o de e-mail \u00e9 inv\u00e1lido","wc_invalid_captcha":"Captcha Inv\u00e1lida","wc_login_to_vote":"Voc\u00ea deve estar autenticado para votar","wc_deny_voting_from_same_ip":"Voc\u00ea n\u00e3o tem permiss\u00e3o para votar neste coment\u00e1rio","wc_self_vote":"N\u00e3o pode votar no seu coment\u00e1rio","wc_vote_only_one_time":"Voc\u00ea j\u00e1 votou para este coment\u00e1rio","wc_voting_error":"Erro ao votar","wc_banned_user":"Voc\u00ea est\u00e1 banido","wc_rate_limit_exceeded":"Too many requests. Please slow down.","wc_comment_edit_not_possible":"Este coment\u00e1rio n\u00e3o pode mais ser editado","wc_comment_not_updated":"Lamentamos, mas o coment\u00e1rio n\u00e3o foi atualizado","wc_comment_not_edited":"Voc\u00ea n\u00e3o fez altera\u00e7\u00f5es","wc_msg_input_min_length":"A entrada \u00e9 muito curta","wc_msg_input_max_length":"A entrada \u00e9 muito longa","wc_spoiler_title":"T\u00edtulo do spoiler","wc_cannot_rate_again":"Voc\u00ea n\u00e3o pode avaliar novamente","wc_not_allowed_to_rate":"Voc\u00ea n\u00e3o tem permiss\u00e3o para avaliar aqui","wc_confirm_rate_edit":"Are you sure you want to edit your rate?","wc_follow_user":"Siga esse usu\u00e1rio","wc_unfollow_user":"Deixar de seguir esse usu\u00e1rio","wc_follow_success":"Voc\u00ea come\u00e7ou a seguir o autor desse coment\u00e1rio","wc_follow_canceled":"Voc\u00ea parou de seguir o autor desse coment\u00e1rio.","wc_follow_email_confirm":"Verifique seu e-mail e confirme a solicita\u00e7\u00e3o de seguir usu\u00e1rio.","wc_follow_email_confirm_fail":"N\u00e3o foi poss\u00edvel enviar o e-mail de confirma\u00e7\u00e3o.","wc_follow_login_to_follow":"Acesse sua conta para seguir os usu\u00e1rios.","wc_follow_impossible":"Voc\u00ea n\u00e3o pode seguir este usu\u00e1rio.","wc_follow_not_added":"Seguir falhou. Tente novamente mais tarde.","is_user_logged_in":"","commentListLoadType":"0","commentListUpdateType":"0","commentListUpdateTimer":"30","liveUpdateGuests":"0","wordpressThreadCommentsDepth":"5","wordpressIsPaginate":"","commentTextMaxLength":"0","replyTextMaxLength":"0","commentTextMinLength":"1","replyTextMinLength":"1","storeCommenterData":"100000","socialLoginAgreementCheckbox":"0","enableFbLogin":"0","fbUseOAuth2":"0","enableFbShare":"0","facebookAppID":"","facebookUseOAuth2":"0","enableGoogleLogin":"0","googleClientID":"","googleClientSecret":"","cookiehash":"86604741492f4f50953c0dd31cbacf79","isLoadOnlyParentComments":"0","scrollToComment":"1","commentFormView":"collapsed","enableDropAnimation":"0","isNativeAjaxEnabled":"1","userInteractionCheck":"1","enableBubble":"1","bubbleLiveUpdate":"0","bubbleHintTimeout":"45","bubbleHintHideTimeout":"10","cookieHideBubbleHint":"wpdiscuz_hide_bubble_hint","bubbleHintShowOnce":"1","bubbleHintCookieExpires":"7","bubbleShowNewCommentMessage":"1","bubbleLocation":"content_left","firstLoadWithAjax":"0","wc_copied_to_clipboard":"Copiado para a \u00e1rea de transfer\u00eancia!","inlineFeedbackAttractionType":"blink","loadRichEditor":"1","wpDiscuzReCaptchaSK":"","wpDiscuzReCaptchaTheme":"light","wpDiscuzReCaptchaVersion":"2.0","wc_captcha_show_for_guest":"0","wc_captcha_show_for_members":"0","wpDiscuzIsShowOnSubscribeForm":"0","wmuEnabled":"1","wmuInput":"wmu_files","wmuMaxFileCount":"1","wmuMaxFileSize":"2097152","wmuPostMaxSize":"536870912","wmuIsLightbox":"1","wmuMimeTypes":{"jpg":"image/jpeg","jpeg":"image/jpeg","jpe":"image/jpeg","gif":"image/gif","png":"image/png","bmp":"image/bmp","tiff":"image/tiff","tif":"image/tiff","ico":"image/x-icon"},"wmuPhraseConfirmDelete":"Tem certeza que deseja excluir esse anexo?","wmuPhraseNotAllowedFile":"Tipo de arquivo n\u00e3o permitido","wmuPhraseMaxFileCount":"O n\u00famero m\u00e1ximo de arquivos enviados \u00e9 1","wmuPhraseMaxFileSize":"O tamanho m\u00e1ximo do arquivo para enviar \u00e9 2MB","wmuPhrasePostMaxSize":"O tamanho m\u00e1ximo do post \u00e9 512MB","wmuPhraseDoingUpload":"Envio em andamento! Aguarde.","msgEmptyFile":"File is empty. Please upload something more substantial. This error could also be caused by uploads being disabled in your php.ini or by post_max_size being defined as smaller than upload_max_filesize in php.ini.","msgPostIdNotExists":"O post ID n\u00e3o existe","msgUploadingNotAllowed":"Desculpe, o upload n\u00e3o \u00e9 permitido para este post","msgPermissionDenied":"Voc\u00ea n\u00e3o tem permiss\u00f5es suficientes para realizar esta a\u00e7\u00e3o","wmuKeyImages":"images","wmuSingleImageWidth":"auto","wmuSingleImageHeight":"200","wmuIconVideo":"https://blog.dsacademy.com.br/wp-content/plugins/wpdiscuz/assets/img/file-icons/video-audio-type.png","wmuIconFile":"https://blog.dsacademy.com.br/wp-content/plugins/wpdiscuz/assets/img/file-icons/file-type.png","previewTemplate":"\u003Cdiv class=\"wmu-preview [PREVIEW_TYPE_CLASS]\" title=\"[PREVIEW_TITLE]\" data-wmu-type=\"[PREVIEW_TYPE]\" data-wmu-attachment=\"[PREVIEW_ID]\" data-wmu-index=\"[PREVIEW_INDEX]\"\u003E\r\n    \u003Cdiv class=\"wmu-preview-remove\"\u003E\r\n        \u003Cimg class=\"wmu-preview-img\" src=\"[PREVIEW_ICON]\"\u003E\r\n        \u003Cdiv class=\"wmu-file-name\"\u003E[PREVIEW_FILENAME]\u003C/div\u003E\r\n        \u003Cdiv class=\"wmu-preview-delete\" title=\"Delete\"\u003E\u2715\u003C/div\u003E\r\n        \u003Clabel class=\"wmu-preview-replace\" title=\"Replace\"\u003E\u21bb\u003Cinput type=\"file\" style=\"display:none\" class=\"wmu-replace-input\"\u003E\u003C/label\u003E\r\n    \u003C/div\u003E\r\n\u003C/div\u003E\r\n","isUserRated":"0","version":"7.6.54","wc_post_id":"11286","isCookiesEnabled":"1","loadLastCommentId":"0","dataFilterCallbacks":[],"phraseFilters":[],"scrollSize":"32","url":"https://blog.dsacademy.com.br/wp-admin/admin-ajax.php","customAjaxUrl":"https://blog.dsacademy.com.br/wp-content/plugins/wpdiscuz/utils/ajax/wpdiscuz-ajax.php","bubbleUpdateUrl":"https://blog.dsacademy.com.br/wp-json/wpdiscuz/v1/update","restNonce":"b2964ea0ed","is_rate_editable":"0","menu_icon":"https://blog.dsacademy.com.br/wp-content/plugins/wpdiscuz/assets/img/plugin-icon/wpdiscuz-svg.svg","menu_icon_hover":"https://blog.dsacademy.com.br/wp-content/plugins/wpdiscuz/assets/img/plugin-icon/wpdiscuz-svg_hover.svg","isUpdateNonceWithAjax":"1","nonceName":"wpdiscuz_nonce","postAttachmentsAsGallery":"","wmuPhraseNotAllowedFileType":"File type is not allowed","is_email_field_required":"1"};
+var wpdiscuzUCObj = {"msgConfirmDeleteComment":"Tem certeza de que deseja excluir este coment\u00e1rio?","msgConfirmCancelSubscription":"Tem certeza de que deseja cancelar esta assinatura?","msgConfirmCancelFollow":"Tem certeza de que deseja deixar de seguir?","additionalTab":"0"};
+//# sourceURL=wpdiscuz-combo-js-js-extra
+/* ]]> */
+</script>
+<script type="text/javascript" id="wpdiscuz-combo-js-js-before">
+/* <![CDATA[ */
+        var wpdiscuzEditorOptions = {
+        modules: {
+        toolbar: "",
+        counter: {
+        uniqueID: "",
+        commentmaxcount : 0,
+        replymaxcount : 0,
+        commentmincount : 1,
+        replymincount : 1,
+        },
+                },
+        wc_be_the_first_text: "Seja o Primeiro a Comentar!",
+        wc_comment_join_text: "Entre na discuss\u00e3o",
+        theme: 'snow',
+        debug: 'error'
+        };
+        
+//# sourceURL=wpdiscuz-combo-js-js-before
+/* ]]> */
+</script>
+<script type="text/javascript" src="https://blog.dsacademy.com.br/wp-content/plugins/wpdiscuz/assets/js/wpdiscuz-combo.min.js?ver=7.6.54" id="wpdiscuz-combo-js-js"></script>
+<script type="text/javascript" src="https://blog.dsacademy.com.br/wp-content/plugins/youtube-embed-plus/scripts/fitvids.min.js?ver=14.2.6" id="__ytprefsfitvids__-js"></script>
+<script type="text/javascript" id="jetpack-stats-js-before">
+/* <![CDATA[ */
+_stq = window._stq || [];
+_stq.push([ "view", {"v":"ext","blog":"192032418","post":"11286","tz":"-3","srv":"blog.dsacademy.com.br","j":"1:15.7.1"} ]);
+_stq.push([ "clickTrackerInit", "192032418", "11286" ]);
+//# sourceURL=jetpack-stats-js-before
+/* ]]> */
+</script>
+<script type="text/javascript" src="https://stats.wp.com/e-202617.js" id="jetpack-stats-js" defer="defer" data-wp-strategy="defer"></script>
+<script type="text/javascript" id="sharing-js-js-extra">
+/* <![CDATA[ */
+var sharing_js_options = {"lang":"en","counts":"1","is_stats_active":"1"};
+//# sourceURL=sharing-js-js-extra
+/* ]]> */
+</script>
+<script type="text/javascript" src="https://c0.wp.com/p/jetpack/15.7.1/_inc/build/sharedaddy/sharing.min.js" id="sharing-js-js"></script>
+<script type="text/javascript" id="sharing-js-js-after">
+/* <![CDATA[ */
+var windowOpen;
+			( function () {
+				function matches( el, sel ) {
+					return !! (
+						el.matches && el.matches( sel ) ||
+						el.msMatchesSelector && el.msMatchesSelector( sel )
+					);
+				}
+
+				document.body.addEventListener( 'click', function ( event ) {
+					if ( ! event.target ) {
+						return;
+					}
+
+					var el;
+					if ( matches( event.target, 'a.share-twitter' ) ) {
+						el = event.target;
+					} else if ( event.target.parentNode && matches( event.target.parentNode, 'a.share-twitter' ) ) {
+						el = event.target.parentNode;
+					}
+
+					if ( el ) {
+						event.preventDefault();
+
+						// If there's another sharing window open, close it.
+						if ( typeof windowOpen !== 'undefined' ) {
+							windowOpen.close();
+						}
+						windowOpen = window.open( el.getAttribute( 'href' ), 'wpcomtwitter', 'menubar=1,resizable=1,width=600,height=350' );
+						return false;
+					}
+				} );
+			} )();
+var windowOpen;
+			( function () {
+				function matches( el, sel ) {
+					return !! (
+						el.matches && el.matches( sel ) ||
+						el.msMatchesSelector && el.msMatchesSelector( sel )
+					);
+				}
+
+				document.body.addEventListener( 'click', function ( event ) {
+					if ( ! event.target ) {
+						return;
+					}
+
+					var el;
+					if ( matches( event.target, 'a.share-facebook' ) ) {
+						el = event.target;
+					} else if ( event.target.parentNode && matches( event.target.parentNode, 'a.share-facebook' ) ) {
+						el = event.target.parentNode;
+					}
+
+					if ( el ) {
+						event.preventDefault();
+
+						// If there's another sharing window open, close it.
+						if ( typeof windowOpen !== 'undefined' ) {
+							windowOpen.close();
+						}
+						windowOpen = window.open( el.getAttribute( 'href' ), 'wpcomfacebook', 'menubar=1,resizable=1,width=600,height=400' );
+						return false;
+					}
+				} );
+			} )();
+var windowOpen;
+			( function () {
+				function matches( el, sel ) {
+					return !! (
+						el.matches && el.matches( sel ) ||
+						el.msMatchesSelector && el.msMatchesSelector( sel )
+					);
+				}
+
+				document.body.addEventListener( 'click', function ( event ) {
+					if ( ! event.target ) {
+						return;
+					}
+
+					var el;
+					if ( matches( event.target, 'a.share-linkedin' ) ) {
+						el = event.target;
+					} else if ( event.target.parentNode && matches( event.target.parentNode, 'a.share-linkedin' ) ) {
+						el = event.target.parentNode;
+					}
+
+					if ( el ) {
+						event.preventDefault();
+
+						// If there's another sharing window open, close it.
+						if ( typeof windowOpen !== 'undefined' ) {
+							windowOpen.close();
+						}
+						windowOpen = window.open( el.getAttribute( 'href' ), 'wpcomlinkedin', 'menubar=1,resizable=1,width=580,height=450' );
+						return false;
+					}
+				} );
+			} )();
+var windowOpen;
+			( function () {
+				function matches( el, sel ) {
+					return !! (
+						el.matches && el.matches( sel ) ||
+						el.msMatchesSelector && el.msMatchesSelector( sel )
+					);
+				}
+
+				document.body.addEventListener( 'click', function ( event ) {
+					if ( ! event.target ) {
+						return;
+					}
+
+					var el;
+					if ( matches( event.target, 'a.share-tumblr' ) ) {
+						el = event.target;
+					} else if ( event.target.parentNode && matches( event.target.parentNode, 'a.share-tumblr' ) ) {
+						el = event.target.parentNode;
+					}
+
+					if ( el ) {
+						event.preventDefault();
+
+						// If there's another sharing window open, close it.
+						if ( typeof windowOpen !== 'undefined' ) {
+							windowOpen.close();
+						}
+						windowOpen = window.open( el.getAttribute( 'href' ), 'wpcomtumblr', 'menubar=1,resizable=1,width=450,height=450' );
+						return false;
+					}
+				} );
+			} )();
+//# sourceURL=sharing-js-js-after
+/* ]]> */
+</script>
+<script id="wp-emoji-settings" type="application/json">
+{"baseUrl":"https://s.w.org/images/core/emoji/17.0.2/72x72/","ext":".png","svgUrl":"https://s.w.org/images/core/emoji/17.0.2/svg/","svgExt":".svg","source":{"concatemoji":"https://blog.dsacademy.com.br/wp-includes/js/wp-emoji-release.min.js?ver=83e372b68c44984f8ca31234d6d1250d"}}
+</script>
+<script type="module">
+/* <![CDATA[ */
+/*! This file is auto-generated */
+const a=JSON.parse(document.getElementById("wp-emoji-settings").textContent),o=(window._wpemojiSettings=a,"wpEmojiSettingsSupports"),s=["flag","emoji"];function i(e){try{var t={supportTests:e,timestamp:(new Date).valueOf()};sessionStorage.setItem(o,JSON.stringify(t))}catch(e){}}function c(e,t,n){e.clearRect(0,0,e.canvas.width,e.canvas.height),e.fillText(t,0,0);t=new Uint32Array(e.getImageData(0,0,e.canvas.width,e.canvas.height).data);e.clearRect(0,0,e.canvas.width,e.canvas.height),e.fillText(n,0,0);const a=new Uint32Array(e.getImageData(0,0,e.canvas.width,e.canvas.height).data);return t.every((e,t)=>e===a[t])}function p(e,t){e.clearRect(0,0,e.canvas.width,e.canvas.height),e.fillText(t,0,0);var n=e.getImageData(16,16,1,1);for(let e=0;e<n.data.length;e++)if(0!==n.data[e])return!1;return!0}function u(e,t,n,a){switch(t){case"flag":return n(e,"\ud83c\udff3\ufe0f\u200d\u26a7\ufe0f","\ud83c\udff3\ufe0f\u200b\u26a7\ufe0f")?!1:!n(e,"\ud83c\udde8\ud83c\uddf6","\ud83c\udde8\u200b\ud83c\uddf6")&&!n(e,"\ud83c\udff4\udb40\udc67\udb40\udc62\udb40\udc65\udb40\udc6e\udb40\udc67\udb40\udc7f","\ud83c\udff4\u200b\udb40\udc67\u200b\udb40\udc62\u200b\udb40\udc65\u200b\udb40\udc6e\u200b\udb40\udc67\u200b\udb40\udc7f");case"emoji":return!a(e,"\ud83e\u1fac8")}return!1}function f(e,t,n,a){let r;const o=(r="undefined"!=typeof WorkerGlobalScope&&self instanceof WorkerGlobalScope?new OffscreenCanvas(300,150):document.createElement("canvas")).getContext("2d",{willReadFrequently:!0}),s=(o.textBaseline="top",o.font="600 32px Arial",{});return e.forEach(e=>{s[e]=t(o,e,n,a)}),s}function r(e){var t=document.createElement("script");t.src=e,t.defer=!0,document.head.appendChild(t)}a.supports={everything:!0,everythingExceptFlag:!0},new Promise(t=>{let n=function(){try{var e=JSON.parse(sessionStorage.getItem(o));if("object"==typeof e&&"number"==typeof e.timestamp&&(new Date).valueOf()<e.timestamp+604800&&"object"==typeof e.supportTests)return e.supportTests}catch(e){}return null}();if(!n){if("undefined"!=typeof Worker&&"undefined"!=typeof OffscreenCanvas&&"undefined"!=typeof URL&&URL.createObjectURL&&"undefined"!=typeof Blob)try{var e="postMessage("+f.toString()+"("+[JSON.stringify(s),u.toString(),c.toString(),p.toString()].join(",")+"));",a=new Blob([e],{type:"text/javascript"});const r=new Worker(URL.createObjectURL(a),{name:"wpTestEmojiSupports"});return void(r.onmessage=e=>{i(n=e.data),r.terminate(),t(n)})}catch(e){}i(n=f(s,u,c,p))}t(n)}).then(e=>{for(const n in e)a.supports[n]=e[n],a.supports.everything=a.supports.everything&&a.supports[n],"flag"!==n&&(a.supports.everythingExceptFlag=a.supports.everythingExceptFlag&&a.supports[n]);var t;a.supports.everythingExceptFlag=a.supports.everythingExceptFlag&&!a.supports.flag,a.supports.everything||((t=a.source||{}).concatemoji?r(t.concatemoji):t.wpemoji&&t.twemoji&&(r(t.twemoji),r(t.wpemoji)))});
+//# sourceURL=https://blog.dsacademy.com.br/wp-includes/js/wp-emoji-loader.min.js
+/* ]]> */
+</script>
+	
+</body>
+</html>
+$14
+executor_level
+$12
+L12-curlcffi
+$6
+status
+$3
+200
+*1
+$5
+MULTI
+*14
+$6
+XCLAIM
+$16
+stream:dataclear
+$17
+workers_dataclear
+$22
+equipe_limpeza_Charlie
+$1
+0
+$15
+1777000602761-0
+$4
+TIME
+$13
+1777000602762
+$10
+RETRYCOUNT
+$1
+1
+$5
+FORCE
+$6
+JUSTID
+$6
+LASTID
+$15
+1777000602761-0
+*7
+$6
+XGROUP
+$5
+SETID
+$16
+stream:dataclear
+$17
+workers_dataclear
+$15
+1777000602761-0
+$11
+ENTRIESREAD
+$1
+2
+*1
+$4
+EXEC
+*4
+$4
+XACK
+$15
+stream:level_12
+$11
+workers_l12
+$15
+1777000601329-0
+*4
+$4
+XACK
+$16
+stream:dataclear
+$17
+workers_dataclear
+$15
+1777000602761-0

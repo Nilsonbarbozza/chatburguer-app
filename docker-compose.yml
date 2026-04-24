@@ -1,13 +1,66 @@
 version: '3.8'
 
 services:
+  # ═══════════════════════════════
+  # 1. CÉREBRO (Redis)
+  # ═══════════════════════════════
+  redis_batalhao:
+    image: redis:7-alpine
+    container_name: redis_batalhao
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./data/redis:/data
+    command: redis-server --appendonly yes
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+
+  # ═══════════════════════════════
+  # 2. MOTOR DE GUERRA (Crawler)
+  # ═══════════════════════════════
+  batalhao_motor:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: batalhao_motor
+    restart: unless-stopped
+    depends_on:
+      - redis_batalhao
+    env_file:
+      - .env
+    environment:
+      # Conexão interna Docker (container-to-container)
+      - REDIS_URL=redis://redis_batalhao:6379
+      # Governança de Concorrência (ajuste conforme sua RAM)
+      - BATALHAO_CONCURRENCY_L0=20
+      - BATALHAO_CONCURRENCY_L12=15
+      - BATALHAO_CONCURRENCY_L34=5
+    volumes:
+      # Persistência de Dados
+      - ./data/output:/app/data/output
+      # Pasta para arquivos de missão (.txt com URLs)
+      - ./missoes:/app/missoes
+    deploy:
+      resources:
+        limits:
+          cpus: '3.0'
+          memory: 6G
+
+  # ═══════════════════════════════
+  # 3. RAG / API (FastAPI) — Opcional
+  # ═══════════════════════════════
   neural-safety:
-    build: 
+    build:
       context: .
       dockerfile: Dockerfile
     image: neuralsafety/core:v1.0
     container_name: neuralsafety_engine
     restart: unless-stopped
+    # Sobrescreve o CMD padrão (Batalhão) para rodar o RAG
+    command: ["uvicorn", "rag_generator:app", "--host", "0.0.0.0", "--port", "8000"]
     ports:
       - "8000:8000"
     environment:
@@ -15,14 +68,12 @@ services:
     env_file:
       - .env
     volumes:
-      # Sincronização de Código em Tempo Real (Development/Hotfix Mode)
       - .:/app
-      # Garantia de Persistência de Dados no Volume Mapeado
       - ./data:/app/data
-    
-    # Governança de Recursos Enterprise
     deploy:
       resources:
         limits:
           cpus: '2.0'
           memory: 4G
+    # Descomente a linha abaixo para desativar o RAG quando não precisar
+    # profiles: ["rag"]
