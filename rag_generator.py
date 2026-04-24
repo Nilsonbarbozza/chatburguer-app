@@ -180,9 +180,9 @@ async def chat_endpoint(request: ChatRequest):
     Handles memory, query rewriting, retrieval and resilient generation.
     """
     try:
-        # 1. Query Rewriting (using history)
-        history = memory_manager.get_history_for_rewriting(request.session_id)
-        optimized_query = rag_service.rewrite_query(history, request.message)
+        # 1. Query Rewriting (using history + summary)
+        summary, history = memory_manager.get_history_for_rewriting(request.session_id)
+        optimized_query = rag_service.rewrite_query(history, request.message, summary=summary)
         
         # 2. Retrieval with Context Grounding
         context = rag_service.retrieve(request.collection, optimized_query)

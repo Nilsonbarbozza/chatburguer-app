@@ -49,12 +49,16 @@ class WorkerDataClear(WorkerBase):
             
             # Geração Canônica e Limpeza
             processed_context = self.cleaner.process(context)
-            final_payload = processed_context.get("dataset_entry")
+            
+            # Ajuste para suportar múltiplos documentos explodidos de uma única URL
+            final_entries = processed_context.get("dataset_entries", [])
 
-            if final_payload:
+            if final_entries:
                 # Dispara a gravação pro Data Lake com o Job ID correto
                 job_id = data.get("job_id", "batalhao_global")
-                await self.writer.write_jsonl(job_id, [final_payload])
+                # O DataLakeWriter já suporta receber uma lista de documentos
+                await self.writer.write_jsonl(job_id, final_entries)
+                logger.info(f"💾 [DataClear] {len(final_entries)} registros salvos no Data Lake para {url}")
                 return True
             else:
                 logger.error(f"[DataClear] Dataset VAZIO para {url}")

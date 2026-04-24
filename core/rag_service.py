@@ -36,15 +36,18 @@ class NeuralRAG:
         # Tokenizador para auditoria de custos (cl100k_base para modelos v3)
         self.tokenizer = tiktoken.get_encoding("cl100k_base")
         
-        self.system_prompt = """Você atua como um Engenheiro de Dados Sênior de Elite.
-A sua função é analisar os dados recuperados, extrair insights e substituir o pensamento humano na produtividade analítica, baseando-se ÚNICA E EXCLUSIVAMENTE no Contexto fornecido.
+        self.system_prompt = """Você é o NeuralSafety Engine, um Analista Estratégico de Inteligência e Engenheiro de Dados Nível Enterprise. 
+Sua missão é transformar dados brutos recuperados (Contexto) em leituras coerentes, profissionais e acionáveis, operando com a sofisticação da arquitetura Gemini/GPT-4.
 
-Sua arquitetura de resposta deve ser IRREPREENSÍVEL E RICA:
-1. Formatação Avançada: Use estruturação inteligente em Markdown, criando tópicos (bullet points) claros e destacando métricas vitais ou palavras-chave em **negrito**.
-2. Organização Visual: Construa tabelas em Markdown sempre que precisar apresentar dados comparativos, históricos ou quantitativos.
-3. Citação de Fontes: Sempre que a extração possuir links originais ou de produtos (ex: contendo '/itm/' ou links de cotações), incorpore-os naturalmente no texto final para validação.
-4. Anti-Alucinação Estrita: Sua inteligência analítica só se aplica ao que extraímos. Se a resposta da dúvida do usuário NÃO estiver contida nos documentos fornecidos, recuse-se a responder dizendo explicitamente: 'Não possuo informações suficientes no documento extraído para responder a isso.'
-5. Mantenha o padrão corporativo analítico de um relatório de alto valor. Não seja monótono, demonstre cruzamento inteligente de dados.
+--- SEU MODO DE OPERAÇÃO:
+1. ANÁLISE PROFUNDA (Deep Reading): Não responda de forma rasa. Cruze os dados disponíveis para gerar insights. Se encontrar números, datas ou links, utilize-os para fundamentar sua resposta.
+2. ESTRUTURAÇÃO IMPECÁVEL: Utilize Markdown de alta qualidade. Use subtítulos (###), tabelas para comparações e listas com negrito (**palavra-chave**) para facilitar a escaneabilidade.
+3. TOM CORPORATIVO: Mantenha um tom resolutivo, formal e executivo. Evite "Eu acho" ou introduções desnecessárias como "De acordo com os documentos...". Vá direto ao ponto com autoridade.
+4. CITAÇÃO DINÂMICA: Incorpore links e fontes originais naturalmente no texto. Se o contexto fornecer uma URL de origem, cite-a ao mencionar um dado específico dela.
+5. ANTI-ALUCINAÇÃO (Zero Guessing): Se a informação NÃO estiver no Contexto abaixo, você deve admitir que não possui dados. Use a frase: 'Não possuo informações suficientes no documento extraído para responder a isso.'
+
+--- RESTRIÇÃO CRÍTICA:
+Nunca mencione que você é uma IA ou que possui limitações técnicas. Responda apenas com os dados disponíveis ou informe a ausência deles preservando o tom profissional.
 """
 
     def num_tokens_from_string(self, string: str) -> int:
@@ -60,24 +63,25 @@ Sua arquitetura de resposta deve ser IRREPREENSÍVEL E RICA:
             temperature=temperature
         )
 
-    def rewrite_query(self, history: List[Dict[str, str]], query: str) -> str:
+    def rewrite_query(self, history: List[Dict[str, str]], query: str, summary: str = "") -> str:
         """
-        Standalone Query Rewriting to improve retrieval accuracy.
-        Transforms fuzzy user queries into precise search terms.
+        Standalone Query Rewriting utilizing both summary and raw history.
         """
-        if not history:
+        if not history and not summary:
             return query
 
         context_brief = "\n".join([f"{m['role']}: {m['content']}" for m in history[-4:]])
         
-        prompt_rewrite = f"""Dada a conversa abaixo e a nova pergunta do usuário, reescreva a pergunta para que ela seja uma frase de busca autônoma e completa para um banco de dados. 
-Inclua nomes de produtos, marcas ou especificações técnicas necessárias.
-Não responda a pergunta, APENAS retorne a pergunta reescrita.
+        prompt_rewrite = f"""Dada a memória e a nova pergunta do usuário, reescreva a pergunta para que ela seja uma frase de busca autônoma e completa. 
+Foque em extrair termos de busca técnicos e específicos.
 
-Conversa Recente:
+RESUMO DA MEMÓRIA:
+{summary if summary else "Sem histórico relevante."}
+
+CONVERSA RECENTE:
 {context_brief}
 
-Nova Pergunta do Usuário: {query}
+NOVA PERGUNTA: {query}
 
 Pergunta Reescrita para Busca:"""
 
@@ -87,12 +91,26 @@ Pergunta Reescrita para Busca:"""
 
     def retrieve(self, collection_name: str, query: str, n_results: int = 15) -> str:
         """
-        Neural Gate Retrieval: 
-        1. Hierarchical search (Matryoshka 512d)
-        2. Tiered Filtering (Math + AI Reranking)
+        Neural Gate Retrieval v2.5: 
+        1. Base Analytics (Conta e lista fontes via metadados)
+        2. Neural Gate (Filtragem Vetorial + AI)
         """
         try:
             collection = self.client_chroma.get_collection(name=collection_name, embedding_function=self.ef)
+            
+            # --- FASE 0: AUDITORIA DE INVENTÁRIO (Estratégia para Contagem/Soma) ---
+            # Pegamos todos os metadados para entender a escala da base
+            meta_all = collection.get(include=['metadatas'])
+            unique_sources = list(set([m.get('source_url') for m in meta_all['metadatas'] if m.get('source_url')]))
+            total_chunks = len(meta_all['metadatas'])
+            
+            stats_block = f"""[ESTATÍSTICAS DA BASE DE CONHECIMENTO]
+- Total de Documentos/Páginas Únicas: {len(unique_sources)}
+- Total de Segmentos de Conhecimento (Chunks): {total_chunks}
+- Lista de Fontes Presentes:
+{chr(10).join([f"  * {url}" for url in unique_sources])}
+-------------------------------------------
+"""
         except Exception as e:
             logger.error(f"Collection '{collection_name}' not found: {e}")
             return "Erro: Base de conhecimento não disponível."
@@ -106,39 +124,37 @@ Pergunta Reescrita para Busca:"""
         final_chunks = []
         ambiguous_candidates = []
 
-        # --- Neural Gate Logic ---
+        # --- Calibração Neural Gate v2.5 (Fix Threshold Logic) ---
         for i, distance in enumerate(results['distances'][0]):
             text_chunk = results['documents'][0][i]
             source_url = results['metadatas'][0][i].get('source_url', 'URL indisponível')
             enriched_content = f"--- ORIGEM: {source_url} ---\n{text_chunk}"
 
-            if distance < 0.22:
-                # ZONA VERDE: Confiança Matemática Total
+            # Lógica binária clara para evitar descarte precoce
+            if distance < 0.35:
                 final_chunks.append(enriched_content)
-                logger.info(f"✅ NeuralGate [GREEN]: Chunk {i+1} AUTO-APPROVED | Dist: {distance:.4f}")
-            elif 0.22 <= distance <= 0.48:
-                # ZONA AMARELA: Ambiguidade (Escala para Reranking)
+                logger.info(f"✅ NeuralGate [GREEN]: Chunk {i+1} APPROVED | Dist: {distance:.4f}")
+            elif distance <= 1.30:
                 ambiguous_candidates.append(enriched_content)
                 logger.info(f"🌀 NeuralGate [YELLOW]: Chunk {i+1} ESCALATED | Dist: {distance:.4f}")
             else:
-                # ZONA VERMELHA: Ruído Semântico
                 logger.info(f"✂️ NeuralGate [RED]: Chunk {i+1} DISCARDED | Dist: {distance:.4f}")
 
-        # Processamento da Zona Amarela via Neural Gate (IA)
+        # Processamento da Zona Amarela
         if ambiguous_candidates:
-            # Aumentamos para 10 para maior escala e precisão
             validated = self._ai_rerank_gate(query, ambiguous_candidates[:10])
             final_chunks.extend(validated)
 
-        if not final_chunks:
-            # Explicitamente informa que o contexto é vazio para evitar que o LLM use conhecimento interno
+        # Montagem do Contexto Enriquecido com Estatísticas
+        if not final_chunks and len(unique_sources) == 0:
             return "Vazio: O documento não contém nenhuma informação sobre este assunto."
         
-        final_context = "\n\n".join(final_chunks)
+        # O context_rag agora SEMPRE começa com as estatísticas
+        # Isso dá ao modelo a capacidade de contar e listar
+        final_context = stats_block + "\n" + "\n\n".join(final_chunks)
         
-        # Auditoria de Tokens Real-time
         token_count = self.num_tokens_from_string(final_context)
-        logger.info(f"📊 MONITOR DE CONTEXTO: {token_count} tokens serão enviados ao GPT.")
+        logger.info(f"📊 MONITOR DE CONTEXTO: {token_count} tokens enriquecidos com estatísticas.")
         
         return final_context
 
@@ -176,18 +192,6 @@ Pergunta Reescrita para Busca:"""
         except Exception as e:
             logger.error(f"Falha no processamento Neural Gate IA: {e}")
             return []
-
-    def generate_response(self, messages: List[Dict[str, str]]) -> Dict[str, Any]:
-        """
-        Final generation step using the enriched message stack.
-        """
-        logger.info("🚀 NeuralRAG: Generating final response...")
-        response = self._call_llm(messages)
-        
-        return {
-            "content": response.choices[0].message.content,
-            "usage": response.usage
-        }
 
     def generate_response(self, messages: List[Dict[str, str]]) -> Dict[str, Any]:
         """

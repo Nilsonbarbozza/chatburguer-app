@@ -5,8 +5,11 @@ Stage especializado para destilação de dados e conformidade para LLMs/RAG.
 import re
 import json
 import logging
+import hashlib
+import unicodedata
 from datetime import datetime
 from typing import Dict, Any
+from urllib.parse import urlparse, urljoin
 from core.pipeline import ProcessorStage
 from core.utils import setup_logging
 
@@ -26,12 +29,25 @@ class DataClearStage(ProcessorStage):
     def __init__(self, redact_pii: bool = True, strict: bool = False):
         self.redact = redact_pii
         self.strict = strict
-        # Tags estruturais que não compõem conteúdo legível para o modelo
+        # Tags de ruído global (Removidas apenas no Refino Final para não perder blocos)
         self.noise_tags = [
-            'script', 'style', 'nav', 'footer', 'header', 'aside',
-            'iframe', 'noscript', 'svg', 'path', 'g', 'canvas', 
-            'video', 'audio', 'button', 'form', 'section[role="complementary"]'
+            'script', 'style', 'nav', 'footer', 'aside',
+            'iframe', 'noscript', 'svg', 'canvas', 
+            'video', 'audio', 'button', 'form', 'header'
         ]
+
+    def _detect_waf_honeypot(self, soup) -> bool:
+        """Detector de Assinaturas de Bloqueio e Evasão."""
+        waf_signatures = [
+            "cloudflare", "ddos-guard", "captcha", "hcaptcha", 
+            "access denied", "permission denied", "challenge-platform",
+            "checking your browser", "security challenge", "sucuri"
+        ]
+        text_lower = soup.get_text().lower()
+        for sig in waf_signatures:
+            if sig in text_lower:
+                return True
+        return False
 
     def process(self, context: Dict[str, Any]) -> Dict[str, Any]:
         logger.info(f"=== AgenteDataClear: Iniciando Refino Semântico (Redigir PII: {self.redact}) ===")
@@ -41,338 +57,148 @@ class DataClearStage(ProcessorStage):
             logger.error("Soup não encontrado no contexto. Pulando DataClearStage.")
             return context
 
-        # 1. Destilação (The Distiller)
-        # Trabalhamos em uma cópia para não corromper o HTML original se for necessário depois
+        # 0. DETECTOR DE POTE DE MEL / WAF
+        if self._detect_waf_honeypot(soup):
+            logger.error("🚫 SEGURANÇA: WAF/Honeypot detectado! Abortando para proteção.")
+            context['waf_blocked'] = True
+            return context
+
         from bs4 import BeautifulSoup
-        clean_soup = BeautifulSoup(str(soup), 'lxml')
-        
-        # Remove tags de ruído
-        for tag in clean_soup(self.noise_tags):
-            tag.decompose()
-            
-        # 1.5 The Cookie Monster (Destruição de DOM Invisível de GDPR)
-        # Procura e destrói contêineres inteiros de políticas de cookies
-        cookie_and_gdpr_patterns = re.compile(
-            r'\b(cookie-consent|cookiebot|CybotCookiebotDialog|cookie-banner|cookie-notice|gdpr-banner|consent-banner|social-share|popup-overlay|modal-overlay)\b', 
-            re.I
-        )
-
-        for tag in clean_soup.find_all(class_=cookie_and_gdpr_patterns):
-            tag.decompose()
-
-        # Destrói também tags por ID (muito comum no Cookiebot e OneTrust)
-        for tag in clean_soup.find_all(id=cookie_and_gdpr_patterns):
-            tag.decompose()
-
-        # 1.6 Sniper de Ads e Sponsored Content
-        ad_patterns = re.compile(r'\b(ad-container|sponsored|promoted|taboola|outbrain|related-content|trending)\b', re.I)
-        for tag in clean_soup.find_all(class_=ad_patterns):
-            tag.decompose()
-
-        # 1.7 O "Cheat Code" Semântico (Extração de JSON-LD)
-        # Portais como Reuters escondem o conteúdo limpo aqui.
-        json_ld_data = []
-        for script in soup.find_all('script', type='application/ld+json'):
-            try:
-                js_content = json.loads(script.string)
-                if isinstance(js_content, dict):
-                    # Extraímos apenas o que é útil para contexto (Título, Descrição, Artigo)
-                    useful = {
-                        "headline": js_content.get("headline"),
-                        "description": js_content.get("description"),
-                        "articleBody": js_content.get("articleBody")
-                    }
-                    # Remove campos nulos
-                    json_ld_data.append({k: v for k, v in useful.items() if v})
-            except:
-                continue
-
-        # Isolamento Robusto de Main Content (Heurística de Densidade Cascata):
-        # Evita a armadilha de honeypots ou divs de acessibilidade vazias (role="main") validando a densidade de bytes limpos.
-        # Adicionamos seletores de elite para Blogs (entry-content, post-content)
-        blog_content_patterns = re.compile(r'entry-content|post-content|article-content|main-content|post-text', re.I)
-        
-        candidates = [
-            clean_soup.find('main'),
-            clean_soup.find(attrs={'role': 'main'}),
-            clean_soup.find(class_=blog_content_patterns),
-            clean_soup.find('article')
-        ]
-        
-        main_content = None
-        for candidate in candidates:
-            if candidate and len(candidate.get_text(strip=True)) > 200:
-                main_content = candidate
-                break
-                
-        # Se nenhuma âncora passar pelo teste de densidade, assume corpo defensivo.
-        if not main_content:
-            main_content = clean_soup.body if clean_soup.body else clean_soup
-
-        # 2. Conversão para Markdown (The MD-Transformer)
-        if md_converter:
-            markdown_body = md_converter(
-                str(main_content), 
-                heading_style="ATX", 
-                bullets="-",
-                # Mantemos as tags <a> e <img> para que o Markdownify converta em `[texto](url)` 
-                # e `![alt](img)` preservando a semântica visual e links confome o docs/ defende.
-            )
-        else:
-            logger.warning("markdownify não disponível. Usando fallback de texto simples.")
-            markdown_body = clean_soup.get_text(separator='\n\n')
-
-        # 2.5 Normalização Anti-Ruído e Caracteres Especiais Avançada
-        # Remove caracteres invisíveis e 'Invisible Separators' sem destruir o Markdown
-        import unicodedata
-        markdown_body = unicodedata.normalize("NFKC", markdown_body)
-        # O espectro de U+2060 a U+206F inclui o \u2063 (Invisible Separator) usado pelo eBay
-        markdown_body = re.sub(r'[\u200b\u200c\u200d\u200e\u200f\u202a-\u202e\u2060-\u206f\xad\ufeff]', '', markdown_body)
-        markdown_body = re.sub(r'[ \t]+', ' ', markdown_body) # Remove excesso de espaços no meio das palavras
-        
-        # --- PODA SEMÂNTICA (MODO STRICT) ---
-        if self.strict:
-            logger.info("[STRICT] Executando Poda Semântica de Elite...")
-            markdown_body = self._semantic_pruning(markdown_body)
-
-        # Anti-Ofuscação CSS (O "Sniper" de Letras Soltas):
-        # Esta regra apaga sumariamente QUALQUER linha do documento que contenha apenas uma única letra/número.
-        markdown_body = re.sub(r'(?m)^\s*\w\s*$\n?', '', markdown_body)
-        
-        markdown_body = re.sub(r'\n{3,}', '\n\n', markdown_body)
-
-        # Filtro de UI Boilerplate (Descarte Direto de Ações de Tela)
-        # Fundamental para SPAs que deixam os labels na tela (Google Maps)
-        ui_noise_patterns = [
-            r'Arraste para alterar\n?',
-            r'Recolher painel lateral\n?',
-            r'Mostrar teclado\n?',
-            r'Ocultar teclado\n?',
-            r'Fazer login\n?',
-            r'Mostrar seu local\n?',
-            r'Tipo de mapa\n?',
-            r'Zoom\n?',
-            r'Camadas\n?',
-            r'Navegar para a frente\n?',
-            r'Navegar para trás\n?'
-        ]
-        for pattern in ui_noise_patterns:
-            markdown_body = re.sub(pattern, '', markdown_body, flags=re.IGNORECASE)
-
-        # 3. Anonimização (The Safety Layer)
-        if self.redact:
-            markdown_body = self._redact_pii(markdown_body)
-
-        # 4. Estruturação Universal (Schema Canônico Nível Batalhão)
-        import hashlib
-        from urllib.parse import urlparse
-        
-        url = context.get('url') or context.get('base_url', '')
-        domain = urlparse(url).netloc if url else "unknown"
+        base_url = context.get('url') or context.get('base_url', '')
+        domain = urlparse(base_url).netloc if base_url else "unknown"
         crawl_timestamp = datetime.now().isoformat()
-        
-        title = clean_soup.title.string if clean_soup.title else "Sem Título"
-        if title:
-            title = unicodedata.normalize("NFKC", title)
-            title = re.sub(r'[\u200b\u200c\u200d\u200e\u200f\u202a-\u202e\u2060-\u206f\xad\ufeff]', '', title)
-            title = re.sub(r'\s+', ' ', title).strip()
-        
-        # Hash determinístico para deduplicação no Data Lake
-        id_string = f"{url}_{crawl_timestamp}"
-        id_hash = hashlib.sha256(id_string.encode('utf-8')).hexdigest()
-        
-        metadata_snapshot = {
-            "source_title": title,
-            "source_url": url,
-        }
-        
-        chunks = self._create_chunks(
-            markdown_body, 
-            chunk_size=1000, 
-            overlap=150, 
-            metadata_snapshot=metadata_snapshot
-        )
+        current_executor = context.get('executor_level', 'engine-aiohttp')
 
-        executor = context.get('executor_level', 'frontend-monolithic')
+        # 1. Identificação de Blocos (Antes de qualquer limpeza destrutiva)
+        content_blocks = soup.find_all('article')
+        if not content_blocks or len(content_blocks) <= 1:
+            content_blocks = soup.find_all(['div', 'section'], class_=re.compile(r'post|entry|article', re.I))
 
-        # Montagem Final do Payload de Data Lake
-        dataset_entry = {
-            "id_hash": id_hash,
-            "url": url,
-            "domain": domain,
-            "crawl_timestamp": crawl_timestamp,
-            "schema_version": "v2_batalhao",
-            "executor": executor, # Proveniência ativada
-            "data": {
-                "title": title,
-                "markdown_body": markdown_body,
-                "json_ld": json_ld_data if json_ld_data else None,
-                "semantic_chunks": chunks # Opcional mantido para RAG sync
-            },
-            "compliance": {
-                "pii_filtered": self.redact,
-                "gdpr_status": "compliant"
-            }
-        }
+        dataset_entries = []
 
-        context['dataset_entry'] = dataset_entry
-        logger.info("✅ Dados destilados e prontos para exportação JSONL.")
-        
+        # 2. Processamento por Célula (Arquitetura Isolada)
+        if content_blocks and len(content_blocks) > 1:
+            logger.info(f"💥 Explodindo listagem: {len(content_blocks)} blocos detectados.")
+            
+            for block in content_blocks:
+                # Isolamos o bloco em uma nova sopa para evitar efeitos colaterais
+                item_soup = BeautifulSoup(str(block), 'lxml')
+                
+                # A. Título
+                title_tag = item_soup.find(['h1', 'h2', 'h3', 'a'], class_=re.compile(r'title|heading', re.I)) or item_soup.find(['h1', 'h2', 'h3'])
+                s_title = title_tag.get_text(strip=True) if title_tag else None
+                
+                # B. Link
+                link_tag = item_soup.find('a', href=True)
+                if title_tag and title_tag.name == 'a': link_tag = title_tag
+                s_url = link_tag['href'] if link_tag else base_url
+                if s_url.startswith('/'): s_url = urljoin(base_url, s_url)
+
+                # C. Limpeza Cirúrgica (Apenas na célula)
+                for scrap in item_soup(['script', 'style', 'img', 'figure', 'noscript', 'button', 'iframe', 'header']):
+                    scrap.decompose()
+                
+                # D. Texto/Markdown
+                try:
+                    if md_converter:
+                        content_text = md_converter(str(item_soup), heading_style="ATX", bullets="-")
+                    else:
+                        content_text = item_soup.get_text(separator=' ')
+                except:
+                    content_text = item_soup.get_text(separator=' ')
+
+                # E. Refino de Texto
+                content_text = re.sub(r'\[CONSULTE MAIS INFORMAÇÃO\].*?\n', '', content_text, flags=re.IGNORECASE)
+                content_text = re.sub(r'CONSULTE MAIS INFORMAÇÃO', '', content_text, flags=re.IGNORECASE)
+                content_text = re.sub(r'\n{3,}', '\n\n', content_text).strip()
+
+                if len(content_text) < 15:
+                    continue
+
+                if self.redact:
+                    content_text = self._redact_pii(content_text)
+
+                # F. Chunks e Entrada
+                final_title = s_title or "Artigo Sem Título"
+                id_hash = hashlib.sha256(f"{s_url}_{crawl_timestamp}".encode('utf-8')).hexdigest()
+                metadata = {"source_title": final_title, "source_url": s_url}
+                
+                chunks = self._create_chunks(content_text, metadata_snapshot=metadata)
+                if not chunks and len(content_text) >= 15:
+                    chunks = [{"id": 0, "text": content_text, "length": len(content_text), "vector_ready": True, "metadata_snapshot": metadata}]
+
+                if chunks:
+                    dataset_entries.append({
+                        "id_hash": id_hash, "url": s_url, "domain": domain, 
+                        "crawl_timestamp": crawl_timestamp, "schema_version": "v2_batalhao",
+                        "executor": current_executor,
+                        "data": {"title": final_title, "markdown_body": content_text, "semantic_chunks": chunks},
+                        "compliance": {"pii_filtered": self.redact, "gdpr_status": "compliant"}
+                    })
+
+            # Deduplicação por título
+            seen = set()
+            unique = []
+            for e in dataset_entries:
+                if e['data']['title'] not in seen:
+                    unique.append(e)
+                    seen.add(e['data']['title'])
+            context['dataset_entries'] = unique
+            
+        else:
+            # Caso de Página Única
+            logger.info("📄 Processando como Página Única.")
+            item_soup = BeautifulSoup(str(soup), 'lxml')
+            for scrap in item_soup(self.noise_tags + ['img', 'figure']):
+                scrap.decompose()
+            
+            content_text = md_converter(str(item_soup)) if md_converter else item_soup.get_text(separator=' ')
+            content_text = content_text.strip()
+            
+            if self.redact: content_text = self._redact_pii(content_text)
+            
+            final_title = soup.title.string if soup.title else "Sem Título"
+            id_hash = hashlib.sha256(f"{base_url}_{crawl_timestamp}".encode('utf-8')).hexdigest()
+            metadata = {"source_title": final_title, "source_url": base_url}
+            chunks = self._create_chunks(content_text, metadata_snapshot=metadata)
+
+            context['dataset_entries'] = [{
+                "id_hash": id_hash, "url": base_url, "domain": domain, 
+                "crawl_timestamp": crawl_timestamp, "schema_version": "v2_batalhao",
+                "executor": current_executor,
+                "data": {"title": final_title, "markdown_body": content_text, "semantic_chunks": chunks},
+                "compliance": {"pii_filtered": self.redact, "gdpr_status": "compliant"}
+            }]
+
+        logger.info(f"✅ Destilação Completa: {len(context.get('dataset_entries', []))} entradas válidas.")
         return context
 
-    def _semantic_pruning(self, text: str) -> str:
-        """
-        Executa poda agressiva de conteúdo editorial ruidoso (Markdown-centric).
-        """
-        # 1. SNIPER DE BLOCOS (O Bloco do WhatsApp da BBC e similares)
-        # Muitas vezes o markdownify adiciona negrito ou links aos marcadores
-        block_patterns = [
-            # Bloco Whatsapp da BBC
-            re.compile(r'\*\*\[No WhatsApp\].*?Fim do Whatsapp!', re.DOTALL | re.IGNORECASE),
-            re.compile(r'\[Pule Whatsapp.*?\]\(.*?\).*?(Fim do Whatsapp!|#end-of-whatsapp)', re.DOTALL | re.IGNORECASE),
-            # Bloco de recomendações/mais lidas
-            re.compile(r'\[Pule Mais lidas.*?\]\(.*?\).*?(Fim do Mais lidas|#end-of-recommendations)', re.DOTALL | re.IGNORECASE),
-            # Redes Sociais
-            re.compile(r'Siga a BBC News Brasil no.*?\n', re.IGNORECASE)
-        ]
-
-        for pattern in block_patterns:
-            text = re.sub(pattern, '\n', text)
-
-        # 2. FOOTER KILL-SWITCH (Desativado para evitar falsos-positivos agressivos)
-        # Em vez de cortar o texto, vamos apenas remover as seções de ruído no final se elas existirem.
-        footer_triggers = [
-            r'## Assista', 
-            r'## Histórias relacionadas',
-            r'## Tópicos relacionados',
-            r'## Leia mais', 
-            r'## Principais notícias',
-            r'## Mais lidas'
-        ]
-        
-        # Comentamos o corte bruto e mantemos apenas para análise futura se necessário
-        # for trigger in footer_triggers:
-        #     match = re.search(trigger, text, re.IGNORECASE)
-        #     if match:
-        #         logger.info(f"[STRICT] Kill-Switch evitado (apenas logado): {trigger}")
-        #         # text = text[:match.start()].strip()
-        #         break 
-
-        # 3. Limpeza de 'Skip-links' residuais
-        text = re.sub(r'\[Pule.*?\]\(.*?\)', '', text, flags=re.IGNORECASE)
-        
-        return text.strip()
-
     def _redact_pii(self, text: str) -> str:
-        """
-        Escudo PII Enterprise Nível 4: Conformidade GDPR/LGPD Global.
-        Implementa sanitização prévia, whitelist de URLs e um arsenal de Regex tático.
-        """
-        # ---------------------------------------------------------
-        # 1. PRÉ-PROCESSAMENTO: Correção de Conflitos do Markdownify
-        # ---------------------------------------------------------
-        # O Markdownify frequentemente escapa underscores (\_) para não confundir com itálico.
-        # Isso quebra a leitura de e-mails como carlos\_diretoria@...
-        # Esta linha desfaz o escape para que a Regex enxergue o e-mail real.
+        """Anonimização PII Nível 4."""
         text = text.replace(r'\_', '_')
-
-        # ---------------------------------------------------------
-        # 2. O ESCUDO DE URL (Whitelist Temporária Absoluta)
-        # ---------------------------------------------------------
-        # Captura links HTTP brutos ou dentro da sintaxe Markdown [texto](link)
-        url_pattern = re.compile(r'https?://[^\s\)]+')
-        urls_encontradas = url_pattern.findall(text)
-        
-        # Mascara as URLs temporariamente com um hash irreal para proteção total
-        for i, url in enumerate(urls_encontradas):
-            text = text.replace(url, f'__TOKEN_URL_BLINDADA_{i}__')
-
-        # ---------------------------------------------------------
-        # 3. OFUSCAÇÃO DE E-MAIL (Padrão Global Unicode)
-        # ---------------------------------------------------------
-        # Suporta domínios e nomes com acentos (ex: müller, logística)
-        email_pattern = re.compile(r'[a-zA-Z0-9._%+\-À-ÿ]+@[a-zA-Z0-9.\-À-ÿ]+\.[a-zA-Z]{2,8}')
-        text = email_pattern.sub('[REDACTED_EMAIL]', text)
-
-        # ---------------------------------------------------------
-        # 4. ARSENAL TÁTICO DE TELEFONES (Cobertura Mundial Refinada)
-        # ---------------------------------------------------------
-        # Ajustamos para exigir separadores ou símbolos, evitando colisão com IDs de produto.
-        phone_patterns = [
-            # TÁTICA 1: Formato Internacional (Exige + ou 00 no início)
-            r'(?:\+|00)\d{1,3}[\s-]?\(?\d{1,4}\)?[\s-]?\d{2,5}[\s-]?\d{2,5}(?:[\s-]?\d{1,5})?',
-
-            # TÁTICA 2: Toll-Free (Exige hífen ou espaço após o prefixo)
-            r'\b(?:1-)?(?:0800|0300|800|888|877|866|900|080)[\s-]?\d{3,4}[\s-]?\d{3,4}\b',
-
-            # TÁTICA 3: Nacional com Separadores (Para evitar IDs de 10-12 dígitos puros)
-            # Se for apenas número sem parênteses ou traço, o sistema ignora como sendo um SKU/ID.
-            r'\b(?:\(\d{2,3}\)|\d{2,3})[\s\-.]?9?\d{4}[\-.]\d{4}\b'
-        ]
-
-        # Executa as varreduras em sequência
-        for pattern in phone_patterns:
-            text = re.sub(pattern, '[REDACTED_PHONE]', text)
-
-        # ---------------------------------------------------------
-        # 5. RESTAURAÇÃO DA INTEGRIDADE ESTRUTURAL
-        # ---------------------------------------------------------
-        # Devolve as URLs originais intactas para o documento final
-        for i, url in enumerate(urls_encontradas):
-            text = text.replace(f'__TOKEN_URL_BLINDADA_{i}__', url)
-
+        # Ofuscação de e-mail básica
+        text = re.sub(r'[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}', '[REDACTED_EMAIL]', text)
         return text
 
     def _create_chunks(self, text: str, chunk_size: int = 1000, overlap: int = 150, metadata_snapshot: dict = None) -> list:
-        """
-        Técnica de Janela Deslizante (Sliding Window) com Overlap e Quebra Semântica.
-        Divide o texto para RAG garantindo que pedaços lógicos não percam contexto.
-        """
+        """Geração de Fragmentos para RAG."""
         chunks = []
+        text = text.strip()
+        if not text: return []
+        
         start = 0
         chunk_id = 0
-        text_length = len(text)
-        
-        while start < text_length:
+        while start < len(text):
             end = start + chunk_size
-            chunk_text = text[start:end]
+            chunk_text = text[start:end].strip()
             
-            # Preservação Semântica: Tenta não cortar palavras ou frases no meio
-            if end < text_length:
-                last_newline = chunk_text.rfind('\n')
-                last_space = chunk_text.rfind(' ')
-                # Prioriza quebra de linha (parágrafos), caso contrário, usa o último espaço
-                break_point = last_newline if (last_newline > chunk_size * 0.7) else last_space
-                
-                if break_point > chunk_size * 0.5: # Só recua se não for truncar severamente o chunk
-                    end = start + break_point
-                    chunk_text = text[start:end]
-
-            clean_chunk = chunk_text.strip()
-            
-            # Engenharia de Qualidade (Data Hygiene): Ignora chunks vazios ou ruidosos sem conteúdo real
-            if len(clean_chunk) > 50:
-                chunk_data = {
-                    "id": chunk_id,
-                    "text": clean_chunk,
-                    "length": len(clean_chunk),
-                    "vector_ready": True,
-                    "metadata_snapshot": {
-                        "token_estimate": len(clean_chunk) // 4 # Estimativa rápida (1 token ~ 4 chars)
-                    }
-                }
-                
-                # Metadata Inheritance: Chunk herda as propriedades do documento Pai
-                if metadata_snapshot:
-                    chunk_data["metadata_snapshot"].update(metadata_snapshot)
-                    
-                chunks.append(chunk_data)
+            if len(chunk_text) > 20:
+                chunks.append({
+                    "id": chunk_id, "text": chunk_text, "length": len(chunk_text),
+                    "vector_ready": True, "metadata_snapshot": metadata_snapshot or {}
+                })
                 chunk_id += 1
-                
-            start = end - overlap # Avança considerando a sobreposição para costurar contexto
+            start = end - overlap
+            if start >= len(text) or chunk_size > len(text): break
             
-            # Prevenção estrutural: Garante que a janela avança mesmo se o texto for muito denso
-            if start >= end:
-                start = end
-
         return chunks

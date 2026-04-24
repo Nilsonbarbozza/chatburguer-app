@@ -144,7 +144,7 @@ Novo Resumo (Máximo 3 linhas):"""
 
         return messages, metrics
 
-    def get_history_for_rewriting(self, session_id: str) -> List[Dict[str, str]]:
-        """Returns raw history for the query rewriter."""
-        _, history = self._get_session_state(session_id)
-        return history
+    def get_history_for_rewriting(self, session_id: str) -> Tuple[str, List[Dict[str, str]]]:
+        """Returns summary and raw history for the query rewriter."""
+        summary, history = self._get_session_state(session_id)
+        return summary, history

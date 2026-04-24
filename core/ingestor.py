@@ -97,14 +97,20 @@ class IngestorAgent:
             # Extract chunks from the pipeline output
             # O build_pipeline do cloner no modo 'dataset' gera uma lista de páginas
             # Cada página tem 'content' -> 'semantic_chunks'
+            # Extract chunks from the pipeline output
+            # Suporta ambos os schemas: o antigo (metadata/content) e o v2_batalhao (url/data)
             all_chunks = []
             for page in data:
-                # Extrai a URL correta do objeto de metadados
-                url = page.get("metadata", {}).get("source_url", "unknown_source")
-                chunks = page.get("content", {}).get("semantic_chunks", [])
+                # 1. Tenta extrair a URL (Fonte)
+                url = page.get("url") or page.get("metadata", {}).get("source_url", "unknown_source")
+                
+                # 2. Tenta extrair os chunks semânticos
+                # No v2_batalhao fica em page['data']['semantic_chunks']
+                # No antigo ficava em page['content']['semantic_chunks']
+                content_obj = page.get("data") or page.get("content", {})
+                chunks = content_obj.get("semantic_chunks", [])
                 
                 for chunk in chunks:
-                    # O chunk é um dicionário, precisamos apenas do campo 'text' para o vetor
                     chunk_text = chunk.get("text")
                     if chunk_text:
                         all_chunks.append({

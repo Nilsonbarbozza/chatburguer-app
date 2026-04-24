@@ -27,18 +27,22 @@ class OutputStage(ProcessorStage):
         os.makedirs(paths['OUT_DIR'], exist_ok=True)
 
         # Se houver entrada de dataset (AgenteDataClear), gera o JSONL e a versão legível
-        if 'dataset_entry' in context:
+        if 'dataset_entries' in context:
             dataset_path = os.path.join(paths['OUT_DIR'], 'dataset.jsonl')
-            save_file(dataset_path, json.dumps(context['dataset_entry'], ensure_ascii=False) + '\n')
             
-            # Gera versão legível automaticamente (Pretty JSON)
+            # Escrita em JSONL (Uma linha por documento)
+            with open(dataset_path, 'w', encoding='utf-8') as f:
+                for entry in context['dataset_entries']:
+                    f.write(json.dumps(entry, ensure_ascii=False) + '\n')
+            
+            # Gera versão legível automaticamente (Pretty JSON para RAG sync)
             readable_path = dataset_path.replace('.jsonl', '_readable.json')
-            save_file(readable_path, json.dumps([context['dataset_entry']], indent=4, ensure_ascii=False))
+            save_file(readable_path, json.dumps(context['dataset_entries'], indent=4, ensure_ascii=False))
             
             context['dataset_path'] = dataset_path
             context['dataset_readable_path'] = readable_path
             
-            logger.info(f"📁 Dataset exportado: {dataset_path}")
+            logger.info(f"📁 Dataset exportado: {dataset_path} ({len(context['dataset_entries'])} documentos)")
             logger.info(f"✨ Versão legível gerada: {readable_path}")
             return context
 
