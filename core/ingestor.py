@@ -57,7 +57,6 @@ class IngestorAgent:
     def format_collection_name(url: str) -> str:
         """
         Converts a URL domain to a safe ChromaDB collection name.
-        Example: https://pt.tradingeconomics.com -> sync_tradingeconomics
         """
         from urllib.parse import urlparse
         domain = urlparse(url).netloc
@@ -176,6 +175,7 @@ class IngestorAgent:
                         if chunk_text:
                             # Preservamos metadados vitais para o RAG
                             all_chunks.append({
+                                "id_hash": page.get("id_hash", "no_id"),
                                 "content": chunk_text,
                                 "metadata": {
                                     "source_url": url,
@@ -193,7 +193,7 @@ class IngestorAgent:
                 embedding_function=self.ef
             )
 
-            # Ingestão em Lotes (Batches) para evitar estouro de memória
+            # Ingestão em Lotes (Batches)
             batch_size = 100
             total_ingested = 0
             
@@ -202,7 +202,8 @@ class IngestorAgent:
                 
                 documents = [c["content"] for c in batch]
                 metadatas = [c["metadata"] for c in batch]
-                ids = [f"id_{collection_name}_{total_ingested + j}" for j in range(len(batch))]
+                # USAMOS O ID_HASH DO DOCUMENTO + INDEX DO CHUNK PARA DEDUPLICAÇÃO REAL
+                ids = [f"{c['id_hash']}_{j}" for j, c in enumerate(batch)]
                 
                 collection.add(
                     documents=documents,
@@ -210,7 +211,7 @@ class IngestorAgent:
                     ids=ids
                 )
                 total_ingested += len(batch)
-                logger.info(f"📥 Progresso: {total_ingested}/{len(all_chunks)} chunks injetados...")
+                logger.info(f"📥 Progresso: {total_ingested}/{len(all_chunks)} chunks...")
 
             logger.info(f"✅ Ingestão JSONL concluída com sucesso: {total_ingested} vetores.")
             return {

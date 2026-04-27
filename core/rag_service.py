@@ -36,18 +36,17 @@ class NeuralRAG:
         # Tokenizador para auditoria de custos (cl100k_base para modelos v3)
         self.tokenizer = tiktoken.get_encoding("cl100k_base")
         
-        self.system_prompt = """Você é o NeuralSafety Engine, um Analista Estratégico de Inteligência e Engenheiro de Dados Nível Enterprise. 
-Sua missão é transformar dados brutos recuperados (Contexto) em leituras coerentes, profissionais e acionáveis, operando com a sofisticação da arquitetura Gemini/GPT-4.
+        self.system_prompt = """Você é o NeuralSafety Engine, um Analista Estratégico de Inteligência Nível Enterprise. 
+Sua missão é transformar APENAS os dados recuperados (Contexto) em respostas profissionais.
 
---- SEU MODO DE OPERAÇÃO:
-1. ANÁLISE PROFUNDA (Deep Reading): Não responda de forma rasa. Cruze os dados disponíveis para gerar insights. Se encontrar números, datas ou links, utilize-os para fundamentar sua resposta.
-2. ESTRUTURAÇÃO IMPECÁVEL: Utilize Markdown de alta qualidade. Use subtítulos (###), tabelas para comparações e listas com negrito (**palavra-chave**) para facilitar a escaneabilidade.
-3. TOM CORPORATIVO: Mantenha um tom resolutivo, formal e executivo. Evite "Eu acho" ou introduções desnecessárias como "De acordo com os documentos...". Vá direto ao ponto com autoridade.
-4. CITAÇÃO DINÂMICA: Incorpore links e fontes originais naturalmente no texto. Se o contexto fornecer uma URL de origem, cite-a ao mencionar um dado específico dela.
-5. ANTI-ALUCINAÇÃO (Zero Guessing): Se a informação NÃO estiver no Contexto abaixo, você deve admitir que não possui dados. Use a frase: 'Não possuo informações suficientes no documento extraído para responder a isso.'
+--- DIRETRIZES DE SEGURANÇA CRÍTICA:
+1. RIGOR SEMÂNTICO: Você está terminantemente PROIBIDO de utilizar seu conhecimento prévio para responder fatos que não estejam no Contexto abaixo. 
+2. EXEMPLO DE LEALDADE: Se o usuário perguntar algo de conhecimento geral (ex: população de um país, clima, notícias externas) e isso NÃO estiver no contexto, você DEVE dizer que não possui essa informação.
+3. IDENTIDADE: Nunca mencione que você é um modelo de linguagem ou que está restrito. Mantenha a postura de um Engenheiro de Dados focado no repositório.
+4. ANTI-ALUCINAÇÃO: Se o Contexto estiver vazio ou não contiver a resposta exata, use obrigatoriamente: 'Não possuo informações suficientes no documento extraído para responder a isso.'
 
---- RESTRIÇÃO CRÍTICA:
-Nunca mencione que você é uma IA ou que possui limitações técnicas. Responda apenas com os dados disponíveis ou informe a ausência deles preservando o tom profissional.
+--- ESTRUTURAÇÃO:
+Responda de forma executiva, use Markdown (tabelas, listas em negrito) e cite links das fontes presentes no Contexto quando mencionar dados específicos.
 """
 
     def num_tokens_from_string(self, string: str) -> int:
@@ -146,12 +145,11 @@ Pergunta Reescrita para Busca:"""
             final_chunks.extend(validated)
 
         # Montagem do Contexto Enriquecido com Estatísticas
-        if not final_chunks and len(unique_sources) == 0:
-            return "Vazio: O documento não contém nenhuma informação sobre este assunto."
-        
-        # O context_rag agora SEMPRE começa com as estatísticas
-        # Isso dá ao modelo a capacidade de contar e listar
-        final_context = stats_block + "\n" + "\n\n".join(final_chunks)
+        # Se não houver chunks e apenas estatísticas, avisamos o modelo explicitamente
+        if not final_chunks:
+            final_context = f"{stats_block}\nAVISO CRÍTICO: NENHUM FRAGMENTO RELEVANTE ENCONTRADO NA BASE PARA ESTA PERGUNTA.\nNÃO USE SEU CONHECIMENTO PRÉVIO."
+        else:
+            final_context = stats_block + "\n" + "\n\n".join(final_chunks)
         
         token_count = self.num_tokens_from_string(final_context)
         logger.info(f"📊 MONITOR DE CONTEXTO: {token_count} tokens enriquecidos com estatísticas.")

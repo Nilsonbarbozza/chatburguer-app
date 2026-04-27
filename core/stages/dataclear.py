@@ -88,15 +88,33 @@ class DataClearStage(ProcessorStage):
                 title_tag = item_soup.find(['h1', 'h2', 'h3', 'a'], class_=re.compile(r'title|heading', re.I)) or item_soup.find(['h1', 'h2', 'h3'])
                 s_title = title_tag.get_text(strip=True) if title_tag else None
                 
-                # B. Link
-                link_tag = item_soup.find('a', href=True)
-                if title_tag and title_tag.name == 'a': link_tag = title_tag
+                # B. Link (Prioriza o link do título ou com classe de título)
+                link_tag = None
+                if title_tag:
+                    link_tag = title_tag.find('a', href=True) if title_tag.name != 'a' else title_tag
+                
+                if not link_tag:
+                    link_tag = item_soup.find('a', class_=re.compile(r'title|entry', re.I), href=True)
+                
+                if not link_tag:
+                    link_tag = item_soup.find('a', href=True) # Fallback
+
                 s_url = link_tag['href'] if link_tag else base_url
                 if s_url.startswith('/'): s_url = urljoin(base_url, s_url)
 
                 # C. Limpeza Cirúrgica (Apenas na célula)
-                for scrap in item_soup(['script', 'style', 'img', 'figure', 'noscript', 'button', 'iframe', 'header']):
+                # Remove tags ruidosas e seletores de widgets sociais comuns
+                noise_selectors = [
+                    'script', 'style', 'img', 'figure', 'noscript', 'button', 'iframe', 'header',
+                    '.sharedaddy', '.jp-relatedposts', '.social-share', '.post-author',
+                    '.entry-footer', '.wpcnt', '#sharing_email', '.robots-nocontent'
+                ]
+                for scrap in item_soup(noise_selectors):
                     scrap.decompose()
+                
+                # Remove qualquer elemento que contenha "Compartilhe isso" no ID ou Classe
+                for social_widget in item_soup.find_all(attrs={"class": re.compile(r'share|social|widget', re.I)}):
+                    social_widget.decompose()
                 
                 # D. Texto/Markdown
                 try:
@@ -110,9 +128,31 @@ class DataClearStage(ProcessorStage):
                 # E. Refino de Texto
                 content_text = re.sub(r'\[CONSULTE MAIS INFORMAÇÃO\].*?\n', '', content_text, flags=re.IGNORECASE)
                 content_text = re.sub(r'CONSULTE MAIS INFORMAÇÃO', '', content_text, flags=re.IGNORECASE)
+                
+                # SNIPER UNIVERSAL: Mata blocos de compartilhamento social complexos e multilingues
+                content_text = re.sub(r'\[Compartilhar|Share|Follow us.*?\]\(.*?\)', '', content_text, flags=re.DOTALL | re.IGNORECASE)
+                content_text = re.sub(r'\(abre em nova janela|opens in new window\)', '', content_text, flags=re.IGNORECASE)
+                content_text = re.sub(r'(?i)(Compartilhe|Share|Siga) (isso|this):.*?(?=###|##|#|\n\n|$)', '', content_text, flags=re.DOTALL)
+                
+                # Limpeza de resíduos de redes sociais (Universal)
+                social_junk = ['Facebook', 'Twitter', 'LinkedIn', 'WhatsApp', 'Tumblr', 'Pinterest', 'Reddit', 'Instagram', 'Youtube']
+                for sj in social_junk:
+                    content_text = re.sub(f'(?i){sj}', '', content_text)
+
                 content_text = re.sub(r'\n{3,}', '\n\n', content_text).strip()
 
-                if len(content_text) < 15:
+                # TRINCHEIRA 3: GATEKEEPER DE INTEGRIDADE
+                # Se após as limpezas o texto for muito curto ou parecer apenas uma lista de links
+                link_count = len(re.findall(r'\[.*?\]\(.*?\)', content_text))
+                word_count = len(content_text.split())
+                
+                # Ratio de Utilidade: Se tivermos muitos links para poucas palavras, é lixo editorial (ex: menu de tags)
+                if word_count > 0 and (link_count / word_count) > 0.4:
+                    logger.debug(f"🛑 BLOQUEADO: Baixa densidade semântica (Links ratio: {link_count/word_count:.2f})")
+                    continue
+
+                if len(content_text) < 400:
+                    logger.debug(f"⚠️ Artigo ruidoso descartado ({len(content_text)} chars): {s_title}")
                     continue
 
                 if self.redact:
@@ -154,6 +194,12 @@ class DataClearStage(ProcessorStage):
                 scrap.decompose()
             
             content_text = md_converter(str(item_soup)) if md_converter else item_soup.get_text(separator=' ')
+            
+            # SNIPER (Página Única)
+            content_text = re.sub(r'\[Compartilhar no.*?\]\(.*?\)', '', content_text, flags=re.DOTALL | re.IGNORECASE)
+            content_text = re.sub(r'\(abre em nova janela\)', '', content_text, flags=re.IGNORECASE)
+            content_text = re.sub(r'(?i)Compartilhe isso:.*?(?=###|##|#|\n\n|$)', '', content_text, flags=re.DOTALL)
+            
             content_text = content_text.strip()
             
             if self.redact: content_text = self._redact_pii(content_text)
