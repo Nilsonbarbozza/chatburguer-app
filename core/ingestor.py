@@ -145,7 +145,80 @@ class IngestorAgent:
                 "collection": collection_name,
                 "chunks_count": len(documents)
             }
-
         except Exception as e:
             logger.error(f"❌ Falha na ingestão: {e}")
+            raise
+
+    def ingest_jsonl_file(self, file_path: str, collection_name: str) -> Dict[str, Any]:
+        """
+        Loads a JSONL dataset (one JSON per line) and syncs it with ChromaDB.
+        Ex: ds_academy_articles_phase2_2026-04-27.jsonl
+        """
+        logger.info(f"🚀 Iniciando Ingestão JSONL: {file_path} -> Collection: {collection_name}")
+        
+        if not os.path.exists(file_path):
+            raise FileNotFoundError(f"Arquivo JSONL não encontrado: {file_path}")
+
+        try:
+            all_chunks = []
+            with open(file_path, 'r', encoding='utf-8') as f:
+                for line in f:
+                    if not line.strip():
+                        continue
+                    
+                    page = json.loads(line)
+                    url = page.get("url") or "unknown_source"
+                    content_obj = page.get("data") or {}
+                    chunks = content_obj.get("semantic_chunks", [])
+                    
+                    for chunk in chunks:
+                        chunk_text = chunk.get("text")
+                        if chunk_text:
+                            # Preservamos metadados vitais para o RAG
+                            all_chunks.append({
+                                "content": chunk_text,
+                                "metadata": {
+                                    "source_url": url,
+                                    "title": content_obj.get("title", "Sem Título")
+                                }
+                            })
+
+            if not all_chunks:
+                logger.warning(f"⚠️ Nenhum chunk encontrado no arquivo JSONL: {file_path}")
+                return {"status": "warning", "message": "Nenhum dado encontrado."}
+
+            # Create/Load Collection
+            collection = self.client.get_or_create_collection(
+                name=collection_name,
+                embedding_function=self.ef
+            )
+
+            # Ingestão em Lotes (Batches) para evitar estouro de memória
+            batch_size = 100
+            total_ingested = 0
+            
+            for i in range(0, len(all_chunks), batch_size):
+                batch = all_chunks[i:i + batch_size]
+                
+                documents = [c["content"] for c in batch]
+                metadatas = [c["metadata"] for c in batch]
+                ids = [f"id_{collection_name}_{total_ingested + j}" for j in range(len(batch))]
+                
+                collection.add(
+                    documents=documents,
+                    metadatas=metadatas,
+                    ids=ids
+                )
+                total_ingested += len(batch)
+                logger.info(f"📥 Progresso: {total_ingested}/{len(all_chunks)} chunks injetados...")
+
+            logger.info(f"✅ Ingestão JSONL concluída com sucesso: {total_ingested} vetores.")
+            return {
+                "status": "success",
+                "collection": collection_name,
+                "chunks_count": total_ingested
+            }
+
+        except Exception as e:
+            logger.error(f"❌ Falha catastrófica na ingestão JSONL: {e}")
             raise

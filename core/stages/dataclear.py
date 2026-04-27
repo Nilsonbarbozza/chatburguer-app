@@ -120,7 +120,8 @@ class DataClearStage(ProcessorStage):
 
                 # F. Chunks e Entrada
                 final_title = s_title or "Artigo Sem Título"
-                id_hash = hashlib.sha256(f"{s_url}_{crawl_timestamp}".encode('utf-8')).hexdigest()
+                # O ID deve ser baseado apenas na URL para permitir deduplicação real
+                id_hash = hashlib.sha256(f"{s_url}".encode('utf-8')).hexdigest()
                 metadata = {"source_title": final_title, "source_url": s_url}
                 
                 chunks = self._create_chunks(content_text, metadata_snapshot=metadata)
@@ -158,7 +159,8 @@ class DataClearStage(ProcessorStage):
             if self.redact: content_text = self._redact_pii(content_text)
             
             final_title = soup.title.string if soup.title else "Sem Título"
-            id_hash = hashlib.sha256(f"{base_url}_{crawl_timestamp}".encode('utf-8')).hexdigest()
+            # O ID deve ser baseado apenas na URL para permitir deduplicação real
+            id_hash = hashlib.sha256(f"{base_url}".encode('utf-8')).hexdigest()
             metadata = {"source_title": final_title, "source_url": base_url}
             chunks = self._create_chunks(content_text, metadata_snapshot=metadata)
 
