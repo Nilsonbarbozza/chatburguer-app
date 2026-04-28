@@ -12,7 +12,7 @@ class ExecutorL12(WorkerBase):
     Herda da WorkerBase para gestão automática de fila e ACK.
     """
 
-    def __init__(self, redis_manager, worker_id: str, proxy_manager=None, concurrency: int = 15):
+    def __init__(self, redis_manager, worker_id: str = None, proxy_manager=None, concurrency: int = 15):
         super().__init__(
             redis_manager=redis_manager, 
             stream_name="stream:level_12", 

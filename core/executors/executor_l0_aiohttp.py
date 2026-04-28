@@ -12,7 +12,7 @@ class ExecutorL0(WorkerBase):
     Otimizado estruturalmente com aiohttp e concorrência máxima viável (Semaphore=20)
     """
 
-    def __init__(self, redis_manager, worker_id: str, proxy_manager=None, concurrency: int = 20):
+    def __init__(self, redis_manager, worker_id: str = None, proxy_manager=None, concurrency: int = 20):
         super().__init__(
             redis_manager=redis_manager, 
             stream_name="stream:level_0", 

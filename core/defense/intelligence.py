@@ -3,7 +3,7 @@ import asyncio
 import logging
 from urllib.parse import urlparse
 from enum import Enum
-from typing import Dict, Any
+from typing import Dict, Any, Optional, Tuple
 
 logger = logging.getLogger("DefenseIntelligence")
 

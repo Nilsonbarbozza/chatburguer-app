@@ -1,6 +1,6 @@
 import logging
 import asyncio
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 from playwright.async_api import async_playwright
 try:
     from playwright_stealth import stealth_async
@@ -101,7 +101,7 @@ class ExecutorL34(WorkerBase):
     O Executor Bélico (Level 3-4).
     Tropa Pesada de Processamento. Consegue executar Javascript completo na máquina alvo.
     """
-    def __init__(self, redis_manager, worker_id: str, proxy_manager=None, concurrency: int = 5):
+    def __init__(self, redis_manager, worker_id: str = None, proxy_manager=None, concurrency: int = 5):
         super().__init__(
             redis_manager=redis_manager, 
             stream_name="stream:level_34", 

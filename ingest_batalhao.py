@@ -27,39 +27,30 @@ async def ingest_urls(file_path: str, job_id: str, respect_robots: bool, force_l
 
         logger.info(f"📂 Arquivo carregado: {len(urls)} URLs encontradas. Iniciando triagem...")
 
-        # 2. Deduplicação Massiva (Fase 1: Verificar quem é novo)
-        # Usamos SADD: retorna 1 se foi adicionado (novo), 0 se já existia
-        pipe = rm.client.pipeline()
+        # 2 e 3. Ingestão Atômica (Deduplicação + Enfileiramento em uma única operação Redis)
+        # Protege contra Race Conditions em workers distribuídos.
+        success_count = 0
         for url in urls:
-            pipe.sadd("batalhao:global_dedup", url)
-        
-        dedup_results = await pipe.execute()
-        
-        new_urls = [url for url, is_new in zip(urls, dedup_results) if is_new]
-        duplicates_count = len(urls) - len(new_urls)
-
-        if duplicates_count > 0:
-            logger.warning(f"🛡️ Vacina Anti-Duplicidade: {duplicates_count} URLs descartadas por já terem sido processadas anteriormente.")
-
-        if not new_urls:
-            logger.info("✅ Nenhuma URL nova para processar. Missão encerrada.")
-            return
-
-        # 3. Ingestão no Pipeline (Fase 2: XADD em massa)
-        pipe = rm.client.pipeline()
-        for url in new_urls:
             payload = {
-                "url": url,
                 "job_id": job_id,
                 "respect_robots": str(respect_robots).lower(),
                 "force_level": force_level,
                 "ingested_at": str(asyncio.get_event_loop().time())
             }
-            pipe.xadd("stream:ingestion", payload)
+            # O RedisManager cuida da atomicidade e deduplicação via Lua
+            is_new = await rm.atomic_ingest_to_stream("stream:ingestion", url, payload)
+            if is_new:
+                success_count += 1
         
-        await pipe.execute()
-        
-        logger.info(f"🚀 MISSÃO DISPARADA! {len(new_urls)} URLs injetadas no funil de inteligência.")
+        duplicates_count = len(urls) - success_count
+        if duplicates_count > 0:
+            logger.warning(f"🛡️ Vacina Anti-Duplicidade: {duplicates_count} URLs já conhecidas foram ignoradas.")
+
+        if success_count == 0:
+            logger.info("✅ Nenhuma URL nova para processar. Missão encerrada.")
+            return
+
+        logger.info(f"🚀 MISSÃO DISPARADA! {success_count} URLs injetadas no funil de inteligência.")
         logger.info(f"Job ID: {job_id} | Robots: {respect_robots}")
 
     except FileNotFoundError:

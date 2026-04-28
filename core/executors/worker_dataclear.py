@@ -1,9 +1,9 @@
+import asyncio
 import logging
+import concurrent.futures
 from typing import Dict, Any
-from bs4 import BeautifulSoup
-
 from core.mq.worker_base import WorkerBase
-from core.stages.dataclear import DataClearStage
+from core.stages.dataclear import run_dataclear_job
 from core.export.data_lake_writer import DataLakeWriter
 
 logger = logging.getLogger("WorkerDataClear")
@@ -14,7 +14,7 @@ class WorkerDataClear(WorkerBase):
     Puxa o HTML sujo coletado de qualquer fila (L0, L12, L34),
     Limpa NLP/PII e devolve em JSONL.
     """
-    def __init__(self, redis_manager, worker_id: str):
+    def __init__(self, redis_manager, worker_id: str = None):
         super().__init__(
             redis_manager=redis_manager,
             stream_name="stream:dataclear",
@@ -22,8 +22,13 @@ class WorkerDataClear(WorkerBase):
             worker_id=worker_id,
             concurrency=30 # Pode ser altissimo pois nao bate na rede web.
         )
-        # O executor de PII (Redação Level 4 ativa)
-        self.cleaner = DataClearStage(redact_pii=True, strict=True)
+        # Pool de Processos para CPU-bound tasks (Parsing BeautifulSoup)
+        self.executor = concurrent.futures.ProcessPoolExecutor(max_workers=4)
+        
+        # Configurações do cleaner (serão passadas para o pool)
+        self.redact_pii = True
+        self.strict = True
+        
         # Exportador
         self.writer = DataLakeWriter(output_dir="data/output")
 
@@ -39,19 +44,20 @@ class WorkerDataClear(WorkerBase):
             return False
             
         try:
-            # Recreia o contexto monolítico para a classe Legada funcionar sem alterar a interface
-            soup = BeautifulSoup(html_content, 'lxml')
-            context = {
-                "soup": soup,
-                "url": url,
-                "executor_level": executor_level
-            }
+            # Despacha o processamento pesado para o Pool de Processos (CPU-bound)
+            # Isso impede que o BeautifulSoup trave o event loop assíncrono.
+            loop = asyncio.get_event_loop()
+            result = await loop.run_in_executor(
+                self.executor,
+                run_dataclear_job,
+                html_content,
+                url,
+                executor_level,
+                self.redact_pii,
+                self.strict
+            )
             
-            # Geração Canônica e Limpeza
-            processed_context = self.cleaner.process(context)
-            
-            # Ajuste para suportar múltiplos documentos explodidos de uma única URL
-            final_entries = processed_context.get("dataset_entries", [])
+            final_entries = result.get("dataset_entries", [])
 
             if final_entries:
                 # Dispara a gravação pro Data Lake com o Job ID correto

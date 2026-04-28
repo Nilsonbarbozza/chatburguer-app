@@ -21,6 +21,33 @@ except ImportError:
 setup_logging()
 logger = logging.getLogger('html_processor')
 
+def run_dataclear_job(html_content: str, url: str, executor_level: str, redact_pii: bool, strict: bool) -> Dict[str, Any]:
+    """
+    Função global Picklable para ser executada no ProcessPoolExecutor.
+    Recebe os dados brutos e retorna o dicionário processado.
+    """
+    from bs4 import BeautifulSoup
+    
+    # Instancia o stage localmente no processo secundário
+    cleaner = DataClearStage(redact_pii=redact_pii, strict=strict)
+    
+    # Prepara o contexto mínimo
+    soup = BeautifulSoup(html_content, 'lxml')
+    context = {
+        "soup": soup,
+        "url": url,
+        "executor_level": executor_level
+    }
+    
+    # Executa a limpeza
+    processed_context = cleaner.process(context)
+    
+    # Retorna apenas o que é estritamente necessário (e serializável)
+    return {
+        "dataset_entries": processed_context.get("dataset_entries", []),
+        "waf_blocked": processed_context.get("waf_blocked", False)
+    }
+
 class DataClearStage(ProcessorStage):
     """
     Agente de limpeza e estruturação de dados (AgenteDataClear).
@@ -35,6 +62,10 @@ class DataClearStage(ProcessorStage):
             'iframe', 'noscript', 'svg', 'canvas', 
             'video', 'audio', 'button', 'form', 'header'
         ]
+        # Novo: Lista de ruído para títulos (Bug #1)
+        self.noise_titles = {'compartilhe isso:', 'share this:', 'share:', 'siga:', 'compartilhar:', 'enviar por e-mail'}
+        # Novo: Domínios permitidos (Bug #2)
+        self.allowed_domains = {'blog.dsacademy.com.br'}
 
     def _detect_waf_honeypot(self, soup) -> bool:
         """Detector de Assinaturas de Bloqueio e Evasão."""
@@ -48,6 +79,20 @@ class DataClearStage(ProcessorStage):
             if sig in text_lower:
                 return True
         return False
+
+    def _extract_title(self, item_soup):
+        """Extrai o título real filtrando ruído social (Bug #1)."""
+        candidates = item_soup.find_all(['h1', 'h2', 'h3'])
+        # Tenta também encontrar links com classe de título se não houver headings
+        if not candidates:
+            candidates = item_soup.find_all('a', class_=re.compile(r'title|heading', re.I))
+            
+        for tag in candidates:
+            text = tag.get_text(strip=True)
+            # Filtra títulos curtos ou que contenham termos de redes sociais
+            if text.lower() not in self.noise_titles and len(text) > 5:
+                return tag
+        return None
 
     def process(self, context: Dict[str, Any]) -> Dict[str, Any]:
         logger.info(f"=== AgenteDataClear: Iniciando Refino Semântico (Redigir PII: {self.redact}) ===")
@@ -84,8 +129,8 @@ class DataClearStage(ProcessorStage):
                 # Isolamos o bloco em uma nova sopa para evitar efeitos colaterais
                 item_soup = BeautifulSoup(str(block), 'lxml')
                 
-                # A. Título
-                title_tag = item_soup.find(['h1', 'h2', 'h3', 'a'], class_=re.compile(r'title|heading', re.I)) or item_soup.find(['h1', 'h2', 'h3'])
+                # A. Título (Bug #1 Fix)
+                title_tag = self._extract_title(item_soup)
                 s_title = title_tag.get_text(strip=True) if title_tag else None
                 
                 # B. Link (Prioriza o link do título ou com classe de título)
@@ -101,6 +146,16 @@ class DataClearStage(ProcessorStage):
 
                 s_url = link_tag['href'] if link_tag else base_url
                 if s_url.startswith('/'): s_url = urljoin(base_url, s_url)
+                
+                # C. Filtro de Domínio e Timestamp (Bug #2 Fix)
+                parsed_s_url = urlparse(s_url)
+                if parsed_s_url.netloc and parsed_s_url.netloc not in self.allowed_domains:
+                    logger.debug(f"🛑 BLOQUEADO: Domínio externo ignorado: {parsed_s_url.netloc}")
+                    continue
+                
+                if '/1970/' in s_url:
+                    logger.debug(f"🛑 BLOQUEADO: URL com timestamp Unix Zero: {s_url}")
+                    continue
 
                 # C. Limpeza Cirúrgica (Apenas na célula)
                 # Remove tags ruidosas e seletores de widgets sociais comuns
@@ -147,7 +202,8 @@ class DataClearStage(ProcessorStage):
                 word_count = len(content_text.split())
                 
                 # Ratio de Utilidade: Se tivermos muitos links para poucas palavras, é lixo editorial (ex: menu de tags)
-                if word_count > 0 and (link_count / word_count) > 0.4:
+                # Ratio de Utilidade: Se tivermos muitos links para poucas palavras, é lixo editorial (Bug #4)
+                if word_count > 0 and (link_count / word_count) > 0.3:
                     logger.debug(f"🛑 BLOQUEADO: Baixa densidade semântica (Links ratio: {link_count/word_count:.2f})")
                     continue
 
@@ -229,7 +285,7 @@ class DataClearStage(ProcessorStage):
         return text
 
     def _create_chunks(self, text: str, chunk_size: int = 1000, overlap: int = 150, metadata_snapshot: dict = None) -> list:
-        """Geração de Fragmentos para RAG."""
+        """Geração de Fragmentos Semânticos para RAG (Bug #3 Fix)."""
         chunks = []
         text = text.strip()
         if not text: return []
@@ -238,6 +294,20 @@ class DataClearStage(ProcessorStage):
         chunk_id = 0
         while start < len(text):
             end = start + chunk_size
+            
+            # Tenta encontrar o fim de uma sentença para não cortar no meio (Bug #3)
+            if end < len(text):
+                # Procura delimitadores de sentença no final do chunk
+                # rfind procura da direita para a esquerda em um range seguro
+                found_delimiter = False
+                for delimiter in ['\n\n', '. ', '.\n', '! ', '? ']:
+                    # Procuramos o delimitador nos últimos 200 caracteres do limite planejado
+                    pos = text.rfind(delimiter, start + (chunk_size // 2), end + 200)
+                    if pos != -1:
+                        end = pos + len(delimiter)
+                        found_delimiter = True
+                        break
+            
             chunk_text = text[start:end].strip()
             
             if len(chunk_text) > 20:
@@ -246,6 +316,8 @@ class DataClearStage(ProcessorStage):
                     "vector_ready": True, "metadata_snapshot": metadata_snapshot or {}
                 })
                 chunk_id += 1
+            
+            # O próximo start deve respeitar o overlap baseado no 'end' real encontrado
             start = end - overlap
             if start >= len(text) or chunk_size > len(text): break
             

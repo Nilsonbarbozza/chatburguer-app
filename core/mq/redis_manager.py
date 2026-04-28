@@ -31,19 +31,49 @@ class RedisManager:
         Ingere URLs no broker usando pipeline para performance.
         Verifica deduplicação e define a prioridade baseada no SLA.
         """
+        # Script LUA para garantir atomicidade entre Verificação e Inserção
+        # Previne que múltiplos containers injetem a mesma URL se baterem ao mesmo tempo.
+        lua_script = """
+        local already_seen = redis.call('SISMEMBER', KEYS[1], ARGV[1])
+        if already_seen == 0 then
+            redis.call('SADD', KEYS[1], ARGV[1])
+            redis.call('ZADD', KEYS[2], ARGV[2], ARGV[1])
+            return 1
+        end
+        return 0
+        """
+        
         pipe = self.client.pipeline()
         for raw_url in urls:
             url = raw_url.lower().strip()
-            # Usando O(1) SET lookup para deduplicação
-            already_seen = await self.client.sismember(f"seen:{job_id}", url)
-            
-            if not already_seen:
-                pipe.sadd(f"seen:{job_id}", url)
-                # Adiciona na Priority Queue global deste Tenant
-                pipe.zadd("priority_queue", {url: sla_score})
+            # KEYS: [seen_set, priority_queue], ARGV: [url, score]
+            pipe.eval(lua_script, 2, f"seen:{job_id}", "priority_queue", url, sla_score)
         
         results = await pipe.execute()
         return results
+
+    async def atomic_ingest_to_stream(self, stream_name: str, url: str, payload: dict, dedup_set: str = "batalhao:global_dedup"):
+        """
+        Usa LUA para garantir que a URL só entra no Stream se não estiver no Set de dedup.
+        Resolve o problema de 'Race Condition' em escala horizontal.
+        """
+        lua_script = """
+        local already_seen = redis.call('SISMEMBER', KEYS[1], ARGV[1])
+        if already_seen == 0 then
+            redis.call('SADD', KEYS[1], ARGV[1])
+            redis.call('XADD', KEYS[2], '*', 'url', ARGV[1], unpack(ARGV, 2))
+            return 1
+        end
+        return 0
+        """
+        # Trasnforma payload dict em lista para o UNPACK do Lua [key1, val1, key2, val2...]
+        flattened_payload = []
+        for k, v in payload.items():
+            if k != "url": # URL já é o ARGV[1]
+                flattened_payload.extend([str(k), str(v)])
+        
+        result = await self.client.eval(lua_script, 2, dedup_set, stream_name, url, *flattened_payload)
+        return bool(result)
 
     async def init_streams(self, streams: List[str], group_name: str = "workers"):
         """

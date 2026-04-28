@@ -10,7 +10,7 @@ class WorkerIntelligence(WorkerBase):
     O Radar do Batalhão.
     Classifica URLs, aplica Robots.txt e despacha para a esquadra correta.
     """
-    def __init__(self, redis_manager, intelligence_service: DefenseIntelligence, worker_id: str):
+    def __init__(self, redis_manager, intelligence_service: DefenseIntelligence, worker_id: str = None):
         super().__init__(
             redis_manager=redis_manager,
             stream_name="stream:ingestion",

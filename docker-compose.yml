@@ -19,35 +19,75 @@ services:
           memory: 256M
 
   # ═══════════════════════════════
-  # 2. MOTOR DE GUERRA (Crawler)
+  # 2. MOTOR DE GUERRA (Orquestrador / Intelligence)
   # ═══════════════════════════════
-  batalhao_motor:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: batalhao_motor
+  batalhao_intelligence:
+    build: .
+    container_name: batalhao_intelligence
     restart: unless-stopped
     depends_on:
       - redis_batalhao
-    env_file:
-      - .env
     environment:
-      # Conexão interna Docker (container-to-container)
       - REDIS_URL=redis://redis_batalhao:6379
-      # Governança de Concorrência (ajuste conforme sua RAM)
-      - BATALHAO_CONCURRENCY_L0=20
-      - BATALHAO_CONCURRENCY_L12=15
-      - BATALHAO_CONCURRENCY_L34=5
-    volumes:
-      # Persistência de Dados
-      - ./data/output:/app/data/output
-      # Pasta para arquivos de missão (.txt com URLs)
-      - ./missoes:/app/missoes
+      - BATALHAO_ROLES=intelligence
     deploy:
       resources:
         limits:
-          cpus: '3.0'
-          memory: 6G
+          cpus: '0.5'
+          memory: 512M
+
+  # ═══════════════════════════════
+  # 3. EXECUTORES (I/O Heavy)
+  # ═══════════════════════════════
+  batalhao_worker_l0:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      - redis_batalhao
+    environment:
+      - REDIS_URL=redis://redis_batalhao:6379
+      - BATALHAO_ROLES=l0
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+
+  batalhao_worker_l12:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      - redis_batalhao
+    environment:
+      - REDIS_URL=redis://redis_batalhao:6379
+      - BATALHAO_ROLES=l12
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+
+  # ═══════════════════════════════
+  # 4. DATA CLEAR (CPU Heavy)
+  # ═══════════════════════════════
+  batalhao_worker_dataclear:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      - redis_batalhao
+    environment:
+      - REDIS_URL=redis://redis_batalhao:6379
+      - BATALHAO_ROLES=dataclear
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+    volumes:
+      - ./data/output:/app/data/output
 
   # ═══════════════════════════════
   # 3. RAG / API (FastAPI) — Opcional

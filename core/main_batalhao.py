@@ -26,6 +26,11 @@ CONCURRENCY_L0  = int(os.getenv("BATALHAO_CONCURRENCY_L0", "20"))
 CONCURRENCY_L12 = int(os.getenv("BATALHAO_CONCURRENCY_L12", "15"))
 CONCURRENCY_L34 = int(os.getenv("BATALHAO_CONCURRENCY_L34", "5"))
 
+# Definição de Papéis (Roles) para Escala Horizontal
+# Ex: BATALHAO_ROLES=intelligence,l0
+ROLES = os.getenv("BATALHAO_ROLES", "intelligence,l0,l12,l34,dataclear").split(",")
+ROLES = [r.strip().lower() for r in ROLES]
+
 async def main():
     logger.info("🏁 Iniciando Máquina Motor de Guerra: Crawler de Batalhão...")
     logger.info(f"⚙️ Concorrência: L0={CONCURRENCY_L0} | L12={CONCURRENCY_L12} | L34={CONCURRENCY_L34}")
@@ -53,36 +58,51 @@ async def main():
         api_key=PROXIES_SX_API_KEY
     )
 
+    tasks = []
+
     # 1.6 Inteligência e Blindagem Robots.txt
-    robots_guard = RobotsGuard(rm.client)
-    intel_service = DefenseIntelligence(rm, robots_guard=robots_guard)
-    w_intel = WorkerIntelligence(rm, intel_service, worker_id="sonar_Alpha")
+    if "intelligence" in ROLES:
+        robots_guard = RobotsGuard(rm.client)
+        intel_service = DefenseIntelligence(rm, robots_guard=robots_guard)
+        w_intel = WorkerIntelligence(rm, intel_service)
+        tasks.append(w_intel.listen())
+        logger.info("📡 Radar de Inteligência Ativado.")
 
-    # 2. Inicializa os Esquadrões
-    # Passamos o proxy_manager e a concorrência para todos os executores
-    w_l0 = ExecutorL0(rm, worker_id="soldado_L0_Alpha", proxy_manager=proxy_manager, concurrency=CONCURRENCY_L0)
-    w_l12 = ExecutorL12(rm, worker_id="soldado_L12_Ghost", proxy_manager=proxy_manager, concurrency=CONCURRENCY_L12)
-    w_l34 = ExecutorL34(rm, worker_id="armadura_L34_Tank", proxy_manager=proxy_manager, concurrency=CONCURRENCY_L34)
-    w_clear = WorkerDataClear(rm, worker_id="equipe_limpeza_Charlie")
+    # 2. Inicializa os Esquadrões (Baseado nas Roles)
+    if "l0" in ROLES:
+        w_l0 = ExecutorL0(rm, proxy_manager=proxy_manager, concurrency=CONCURRENCY_L0)
+        tasks.append(w_l0.listen())
+        logger.info("⚡ Executor L0 (aiohttp) Ativado.")
+
+    if "l12" in ROLES:
+        w_l12 = ExecutorL12(rm, proxy_manager=proxy_manager, concurrency=CONCURRENCY_L12)
+        tasks.append(w_l12.listen())
+        logger.info("🛡️ Executor L12 (curl_cffi) Ativado.")
+
+    if "l34" in ROLES:
+        w_l34 = ExecutorL34(rm, proxy_manager=proxy_manager, concurrency=CONCURRENCY_L34)
+        tasks.append(w_l34.listen())
+        logger.info("💥 Executor L34 (Playwright) Ativado.")
+
+    if "dataclear" in ROLES:
+        w_clear = WorkerDataClear(rm)
+        tasks.append(w_clear.listen())
+        logger.info("🧹 Equipe DataClear Ativada.")
     
-    logger.info("⚔️ Robôs Despertos. Monitorando Filas de Scraping...")
+    if not tasks:
+        logger.error("🛑 Nenhuma ROLE válida definida. O Batalhão não tem ordens para agir.")
+        await rm.close()
+        return
 
-    # 3. Trava Loop Principal para rodarem ao mesmo tempo
+    logger.info(f"⚔️ Batalhão em Combate com {len(tasks)} frentes ativas. Monitorando...")
+
+    # 3. Trava Loop Principal
     try:
-        await asyncio.gather(
-            w_intel.listen(),
-            w_l0.listen(),
-            w_l12.listen(),
-            w_l34.listen(),
-            w_clear.listen()
-        )
+        await asyncio.gather(*tasks)
     except KeyboardInterrupt:
         logger.warning("Parada Solicitada pelo usuário. Desligando robôs...")
     finally:
-        w_l0.stop()
-        w_l12.stop()
-        await w_l34.stop() # Espera fechar o Playwright limpo
-        w_clear.stop()
+        # Nota: O stop aqui é simplificado, o ideal em escala é lidar com SIGTERM
         await rm.close()
         logger.info("💀 Batalhão Desmobilizado com Segurança.")
 
