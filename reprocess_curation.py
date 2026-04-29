@@ -7,9 +7,10 @@ from core.mq.db_manager import DatabaseManager
 from core.utils import setup_logging
 
 setup_logging()
-logger = logging.getLogger("ResgateCuradoria")
+logger = logging.getLogger("html_processor.resgate")
 
 async def reprocess_mission(job_id: str):
+    print(f"🚀 Iniciando resgate para o Job: {job_id}")
     rm = RedisManager()
     db = DatabaseManager(dsn=os.getenv("POSTGRES_URL"))
     

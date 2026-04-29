@@ -60,41 +60,60 @@ class DataClearStage(ProcessorStage):
         super().__init__()
         self.config = config or {}
         self.archetype = self.config.get("archetype", "blog")
-        self.fidelity_threshold = float(self.config.get("fidelity_threshold", 0.6))
+        self.fidelity_threshold = float(self.config.get("fidelity_threshold", 0.7)) # Aumentado para Gold Standard
         self.redact = self.config.get("redact_pii", "true").lower() == "true"
 
-        # Novo: Blacklist expandida de títulos ruidosos (Bug #1 Fix)
+        # --- GOLD STANDARD SNIPER PATTERNS ---
         self.noise_titles = {
-            'compartilhe isso:', 'share this:', 'share:', 
-            'relacionado', 'related', 'related posts',
-            'leia também', 'veja também', 'você pode gostar',
-            'posts recentes', 'recent posts', 'categorias',
-            'enviar por e-mail', 'siga:'
+            'compartilhe isso:', 'share this:', 'share:', 'relacionado', 'related', 
+            'related posts', 'leia também', 'veja também', 'você pode gostar',
+            'posts recentes', 'recent posts', 'categorias', 'siga:', 'equipe dsa',
+            'clique no link abaixo', 'responder', 'deixe uma resposta', 'comentários'
         }
         
-        # Novo: Blacklist de padrões de URL (Bug #2 Fix)
+        self.noise_selectors = [
+            'script', 'style', 'nav', 'footer', 'aside', 'iframe', 'noscript', 
+            'svg', 'canvas', 'video', 'audio', 'button', 'form', 'header',
+            '.sharedaddy', '.jp-relatedposts', '.social-share', '.post-author',
+            '.entry-footer', '.wpcnt', '#sharing_email', '.robots-nocontent',
+            '.comments-area', '#respond', '.relatedposts', '.widget_related_posts_widget',
+            '.post-navigation', '.author-bio', '.newsletter-box'
+        ]
+
         self.url_blacklist_patterns = [
-            r'/author/', r'/tag/', r'/categoria/', r'/category/',
-            r'/page/\d+', r'/1970/'
+            r'/author/', r'/tag/', r'/categoria/', r'/category/', r'/page/\d+', r'/1970/'
         ]
         
-        # Novo: Domínios permitidos
         allowed_raw = self.config.get("allowed_domains", "*")
         self.allowed_domains = set(allowed_raw.split(",")) if allowed_raw != "*" else "*"
 
-        # Tags de ruído global
-        self.noise_tags = [
-            'script', 'style', 'nav', 'footer', 'aside',
-            'iframe', 'noscript', 'svg', 'canvas', 
-            'video', 'audio', 'button', 'form', 'header'
-        ]
-        
         # Stopwords de Navegação (Enterprise Signal)
-        nav_stops_raw = self.config.get("nav_stopwords", "login,carrinho,checkout,search,menu,entrar,cadastrar")
+        nav_stops_raw = self.config.get("nav_stopwords", "login,carrinho,checkout,search,menu,entrar,cadastrar,responder,comentar,feedback")
         self.nav_stopwords = set(nav_stops_raw.split(","))
         
-        # Cache de Deduplicação Local (MinHash simplificado por processo)
         self.seen_fingerprints = set()
+
+    def _sanitize_encoding(self, text: str) -> str:
+        """Cura o Mojibake e normaliza o texto (Gold Standard Fix)."""
+        if not text: return ""
+        # 1. Normaliza caracteres Unicode (Ex: Ã -> A~)
+        text = unicodedata.normalize('NFKC', text)
+        # 2. Correção manual de Mojibake comum (Fallback)
+        replacements = {
+            "â€'": "'", "â€\"": "—", "â€œ": '"', "â€\x9d": '"',
+            "â€¢": "•", "â€¦": "...", "Ã¡": "á", "Ã©": "é",
+            "Ã\xad": "í", "Ã³": "ó", "Ãº": "ú", "Ã±": "ñ",
+            "Ã\xa3": "ã", "Ã\xb5": "õ", "Ã§": "ç", "Ã\x81": "Á",
+            "Ã\x89": "É", "Ã\x8d": "Í", "Ã\x93": "Ó", "Ã\x9a": "Ú",
+            "Ã\x91": "Ñ", "Ã\x83": "Ã", "Ã\x95": "Õ", "Ã\x87": "Ç",
+            "\ufffd": " " # Remove o caractere de erro ''
+        }
+        for bad, good in replacements.items():
+            text = text.replace(bad, good)
+        
+        # 3. Remove caracteres de controle invisíveis
+        text = "".join(ch for ch in text if unicodedata.category(ch)[0] != "C" or ch in "\n\r\t")
+        return text
 
     def _detect_waf_honeypot(self, soup) -> bool:
         """Detector de Assinaturas de Bloqueio e Evasão."""
@@ -109,69 +128,31 @@ class DataClearStage(ProcessorStage):
                 return True
         return False
 
-    def _extract_title(self, item_soup):
-        """Extrai o título real filtrando ruído social (Bug #1)."""
-        candidates = item_soup.find_all(['h1', 'h2', 'h3'])
-        # Tenta também encontrar links com classe de título se não houver headings
-        if not candidates:
-            candidates = item_soup.find_all('a', class_=re.compile(r'title|heading', re.I))
-            
-        for tag in candidates:
-            text = tag.get_text(strip=True)
-            # Filtra títulos curtos ou que contenham termos de redes sociais
-            if text.lower() not in self.noise_titles and len(text) > 5:
-                return tag
-        return None
-
     def _calculate_fidelity_score(self, text: str, item_soup) -> float:
-        """
-        Enterprise Fidelity Scorer (0.0 a 1.0) - Versão Gold-Positive.
-        Busca o "Zero Falso Negativo" bonificando conteúdo rico.
-        """
-        if not text: return 0.0
+        """Enterprise Fidelity Scorer v4.3 (Gold Standard)."""
+        if not text or len(text) < 150: return 0.0
         
-        score = 0.6  # Começamos em uma base neutra (threshold padrão)
+        score = 0.5 # Base mais rigorosa
         text_lower = text.lower()
         words = text.split()
-        if not words: return 0.0
         
-        # --- PENALIDADES (Lixo Detection) ---
+        # Penalidade por ruído remanescente (Finding #1)
+        noise_hits = sum(1 for p in ['relacionado', 'equipe dsa', 'clique no link', 'responder'] if p in text_lower)
+        if noise_hits > 0: score -= (noise_hits * 0.15)
         
-        # Sinal 1: Densidade de Navegação
-        nav_hits = sum(1 for w in words if w in self.nav_stopwords)
-        nav_ratio = nav_hits / len(words)
-        if nav_ratio > 0.1: score -= (nav_ratio * 1.5)
-        
-        # Sinal 2: Densidade de Links (Bug #4 Evolution)
-        link_hits = len(re.findall(r'\[.*?\]\(.*?\)', text))
-        link_ratio = link_hits / len(words)
-        if link_ratio > 0.3: score -= 0.3
-        
-        # --- BONIFICAÇÕES (Gold Detection) ---
-        
-        # Sinal 3: Estabilidade Sintática e Verbos (Sinal de Vida)
-        # Verbos comuns e conectivos indicam prosa real, não listas.
+        # --- BONIFICAÇÕES ---
         life_signals = [' é ', ' são ', ' com ', ' para ', ' por ', ' que ', ' onde ', ' como ', ' mas ', ' ou ']
         life_hits = sum(1 for s in life_signals if s in text_lower)
-        if life_hits > 3: score += 0.2 # Bônus de Proseidade
+        if life_hits > 5: score += 0.25
         
-        # Sinal 4: Complexidade de Sentença
-        # Conteúdo rico tem sentenças estruturadas (ponto final)
         sentences = re.split(r'[.!?]', text)
         avg_sentence_len = len(words) / max(1, len(sentences))
-        if avg_sentence_len > 12: score += 0.15 # Bônus de Profundidade
+        if avg_sentence_len > 15: score += 0.2
         
-        # Sinal 5: Pontuação Rica
         punc_hits = len(re.findall(r'[.,!?;]', text))
         punc_ratio = punc_hits / len(words)
-        if punc_ratio > 0.06: score += 0.1 # Bônus de Articulação
+        if punc_ratio > 0.07: score += 0.15
         
-        # Sinal 6: Entidades e Relevância (Archetype Specific)
-        long_words = sum(1 for w in words if len(w) > 8)
-        long_word_ratio = long_words / len(words)
-        if long_word_ratio > 0.2: score += 0.1 # Bônus Técnico
-        
-        logger.debug(f"📊 Fidelity Audit: Score Final: {score:.2f} | NavRatio: {nav_ratio:.2f} | PuncRatio: {punc_ratio:.2f} | LifeHits: {life_hits} | LongWordRatio: {long_word_ratio:.2f}")
         return max(0.0, min(1.0, score))
 
     def _is_content_url(self, url: str) -> bool:
@@ -182,41 +163,24 @@ class DataClearStage(ProcessorStage):
         return True
 
     def _extract_title_geometrically(self, item_soup, container_soup):
-        """
-        Title Extractor Enterprise v3.1: Prioridade Semântica + Visão de Raiz.
-        """
-        # 1. Prioriza H1 dentro de containers de conteúdo (Bug #1 Fix)
-        for container_sel in ['article', 'main', '.post-content', '.entry-content']:
-            # Verifica se o próprio item_soup é o container ou se está dentro dele
-            is_match = False
-            if container_sel.startswith('.'):
-                classes = item_soup.get('class', [])
-                if container_sel[1:] in classes: is_match = True
-            elif item_soup.name == container_sel:
-                is_match = True
-            
-            el = item_soup if is_match else (item_soup.find(container_sel) or item_soup.select_one(container_sel))
-            
-            if el:
-                h1 = el.find('h1') or el.find('h2')
-                if h1:
-                    text = h1.get_text(strip=True)
-                    if text.lower() not in self.noise_titles and len(text) > 8:
-                        return h1
-
-        # 2. Fallback Final: Busca qualquer H1-H3 no bloco inteiro (Bug #1 Final Fix)
-        for tag_name in ['h1', 'h2', 'h3']:
+        """Extração Restritiva: Título deve estar no topo (Finding #2)."""
+        # Restrição Geométrica: Título REAL em blogs costuma estar no início do HTML
+        html_str = str(item_soup)[:5000] # Analisa apenas os primeiros 5k chars do bloco
+        
+        for tag_name in ['h1', 'h2']:
             for tag in item_soup.find_all(tag_name):
                 text = tag.get_text(strip=True)
-                if len(text) < 8 or text.lower() in self.noise_titles: continue
+                if len(text) < 10 or text.lower() in self.noise_titles: continue
                 
-                # Verifica se está em área proibida
+                # Verifica se está no topo do código (heurística simples)
+                if str(tag) not in html_str: continue 
+                
+                # Verifica área proibida
                 parent_classes = ' '.join(tag.parent.get('class', [])) + str(tag.parent.get('id', ''))
-                if any(w in parent_classes.lower() for w in ['related', 'social', 'widget', 'sidebar', 'share', 'footer']):
+                if any(w in parent_classes.lower() for w in ['related', 'widget', 'sidebar', 'footer', 'comment']):
                     continue
                 
                 return tag
-                
         return None
 
     def _get_fingerprint(self, text: str) -> str:
@@ -224,224 +188,88 @@ class DataClearStage(ProcessorStage):
         clean_text = re.sub(r'\W+', '', text.lower())[:200]
         return hashlib.md5(clean_text.encode()).hexdigest()
 
-    def _extract_title(self, item_soup):
-        # Mantido por retrocompatibilidade se necessário, mas agora usamos o geométrico
-        return self._extract_title_geometrically(item_soup, None)
-
     def process(self, context: Dict[str, Any]) -> Dict[str, Any]:
-        logger.info(f"=== Batalhão Enterprise: Refino Adaptativo ({self.archetype}) ===")
+        logger.info(f"=== Batalhão Gold Standard: Refino de Elite ({self.archetype}) ===")
         
         soup = context.get('soup')
-        if not soup:
-            logger.error("Soup não encontrado no contexto. Pulando DataClearStage.")
-            return context
+        if not soup: return context
 
-        # 0. DETECTOR DE POTE DE MEL / WAF
-        if self._detect_waf_honeypot(soup):
-            logger.error("🚫 SEGURANÇA: WAF/Honeypot detectado! Abortando para proteção.")
-            context['waf_blocked'] = True
-            return context
+        # 0. Limpeza Química Prévia (Enfraquecendo o Inimigo)
+        for noise in self.noise_selectors:
+            for scrap in soup.select(noise):
+                scrap.decompose()
 
-        # 0.1 EXTRAÇÃO DE TÍTULO GLOBAL (Sinal de Elite)
-        # Extraímos antes de qualquer limpeza ou isolamento de blocos
-        global_h1 = soup.find('h1')
-        global_title = global_h1.get_text(strip=True) if global_h1 else (soup.title.string if soup.title else None)
-        if global_title and (global_title.lower() in self.noise_titles or len(global_title) < 5):
-            global_title = None # Invalida títulos ruidosos
-
-        from bs4 import BeautifulSoup
-        base_url = context.get('url') or context.get('base_url', '')
-        domain = urlparse(base_url).netloc if base_url else "unknown"
-        crawl_timestamp = datetime.now().isoformat()
-        current_executor = context.get('executor_level', 'engine-aiohttp')
-        capture_id = context.get('capture_id', 'unknown')
-        mission_id = context.get('mission_id', 'default')
-
-        # 1. Identificação de Blocos (Antes de qualquer limpeza destrutiva)
-        # BUG FIX: Blogs modernos usam <article> para posts relacionados. 
-        # Se houver um <article> muito grande e outros pequenos, NÃO é listagem.
+        # 1. Identificação de Canonicidade (Finding #3, #6)
+        # GOLD RULE: Para blogs, forçamos o BLOCO DOMINANTE ÚNICO.
         raw_blocks = soup.find_all('article')
-        if not raw_blocks or len(raw_blocks) <= 1:
+        if not raw_blocks:
             raw_blocks = soup.find_all(['div', 'section'], class_=re.compile(r'post|entry|article', re.I))
 
         content_blocks = []
         if raw_blocks:
-            if len(raw_blocks) > 1:
-                # Heurística de Dominância: Se um bloco tem > 70% do texto total, ele é o ARTIGO ÚNICO.
-                total_text_len = len(soup.get_text())
-                block_lengths = [len(b.get_text()) for b in raw_blocks]
-                max_len = max(block_lengths) if block_lengths else 0
-                
-                if max_len > (total_text_len * 0.6) or self.archetype == 'blog' and max_len > 2000:
-                    # É um artigo único com "ruído" de posts relacionados.
-                    idx_max = block_lengths.index(max_len)
-                    content_blocks = [raw_blocks[idx_max]]
-                    logger.debug(f"💎 Artigo Dominante detectado ({max_len} chars). Ignorando explosão de listagem.")
-                else:
-                    content_blocks = raw_blocks
+            # Busca o bloco com mais densidade de texto (O Artigo)
+            total_text_len = len(soup.get_text())
+            block_lengths = [len(b.get_text()) for b in raw_blocks]
+            max_len = max(block_lengths) if block_lengths else 0
+            
+            if self.archetype == 'blog' and max_len > 1000:
+                idx_max = block_lengths.index(max_len)
+                content_blocks = [raw_blocks[idx_max]]
+                logger.debug(f"💎 Artigo Canônico detectado ({max_len} chars).")
             else:
                 content_blocks = raw_blocks
 
         dataset_entries = []
+        base_url = context.get('url', '')
+        capture_id = context.get('capture_id', 'unknown')
+        mission_id = context.get('mission_id', 'default')
 
-        # 2. Processamento por Célula (Arquitetura Isolada)
-        if content_blocks and len(content_blocks) > 1:
-            logger.info(f"💥 Explodindo listagem: {len(content_blocks)} blocos detectados.")
+        # 2. Destilação
+        for block in content_blocks:
+            from bs4 import BeautifulSoup
+            item_soup = BeautifulSoup(str(block), 'lxml')
             
-            for block in content_blocks:
-                # Isolamos o bloco em uma nova sopa para evitar efeitos colaterais
-                item_soup = BeautifulSoup(str(block), 'lxml')
-                
-                # A. Título (Enterprise Geometry Fix)
-                title_tag = self._extract_title_geometrically(item_soup, soup)
-                s_title = title_tag.get_text(strip=True) if title_tag else None
-                
-                # B. Link (Prioriza o link do título ou com classe de título)
-                link_tag = None
-                if title_tag:
-                    link_tag = title_tag.find('a', href=True) if title_tag.name != 'a' else title_tag
-                
-                if not link_tag:
-                    link_tag = item_soup.find('a', class_=re.compile(r'title|entry', re.I), href=True)
-                
-                if not link_tag:
-                    link_tag = item_soup.find('a', href=True) # Fallback
-
-                s_url = link_tag['href'] if link_tag else base_url
-                if s_url.startswith('/'): s_url = urljoin(base_url, s_url)
-                
-                # C. Filtro de Domínio e Padrões Enterprise (Bug #2 Fix)
-                parsed_s_url = urlparse(s_url)
-                if self.allowed_domains != "*" and parsed_s_url.netloc not in self.allowed_domains:
-                    continue
-                
-                if not self._is_content_url(s_url):
-                    logger.debug(f"🛑 BLOQUEADO: URL filtrada por padrão (autor/tag/page): {s_url}")
-                    continue
-
-                # C. Limpeza Cirúrgica (Apenas na célula)
-                # Remove tags ruidosas e seletores de widgets sociais comuns
-                noise_selectors = [
-                    'script', 'style', 'img', 'figure', 'noscript', 'button', 'iframe', 'header',
-                    '.sharedaddy', '.jp-relatedposts', '.social-share', '.post-author',
-                    '.entry-footer', '.wpcnt', '#sharing_email', '.robots-nocontent'
-                ]
-                for scrap in item_soup(noise_selectors):
-                    scrap.decompose()
-                
-                # Remove qualquer elemento que contenha "Compartilhe isso" no ID ou Classe
-                for social_widget in item_soup.find_all(attrs={"class": re.compile(r'share|social|widget', re.I)}):
-                    social_widget.decompose()
-                
-                # D. Texto/Markdown
-                try:
-                    if md_converter:
-                        content_text = md_converter(str(item_soup), heading_style="ATX", bullets="-")
-                    else:
-                        content_text = item_soup.get_text(separator=' ')
-                except:
-                    content_text = item_soup.get_text(separator=' ')
-
-                # E. Refino de Texto
-                content_text = re.sub(r'\[CONSULTE MAIS INFORMAÇÃO\].*?\n', '', content_text, flags=re.IGNORECASE)
-                content_text = re.sub(r'CONSULTE MAIS INFORMAÇÃO', '', content_text, flags=re.IGNORECASE)
-                
-                # SNIPER UNIVERSAL: Mata blocos de compartilhamento social complexos e multilingues
-                content_text = re.sub(r'\[Compartilhar|Share|Follow us.*?\]\(.*?\)', '', content_text, flags=re.DOTALL | re.IGNORECASE)
-                content_text = re.sub(r'\(abre em nova janela|opens in new window\)', '', content_text, flags=re.IGNORECASE)
-                content_text = re.sub(r'(?i)(Compartilhe|Share|Siga) (isso|this):.*?(?=###|##|#|\n\n|$)', '', content_text, flags=re.DOTALL)
-                
-                # Limpeza de resíduos de redes sociais (Universal)
-                social_junk = ['Facebook', 'Twitter', 'LinkedIn', 'WhatsApp', 'Tumblr', 'Pinterest', 'Reddit', 'Instagram', 'Youtube']
-                for sj in social_junk:
-                    content_text = re.sub(f'(?i){sj}', '', content_text)
-
-                content_text = re.sub(r'\n{3,}', '\n\n', content_text).strip()
-
-                # TRINCHEIRA 3: ENTERPRISE FIDELITY SCORER
-                fidelity_score = self._calculate_fidelity_score(content_text, item_soup)
-                
-                if fidelity_score < self.fidelity_threshold:
-                    logger.debug(f"🛑 BLOQUEADO: Fidelidade Baixa ({fidelity_score:.2f} < {self.fidelity_threshold})")
-                    continue
-
-                # TRINCHEIRA 4: DEDUPLICAÇÃO ZERO-COST (MinHash)
-                fingerprint = self._get_fingerprint(content_text)
-                if fingerprint in self.seen_fingerprints:
-                    logger.debug(f"🛡️ BLOQUEADO: Duplicata detectada (MinHash matching)")
-                    continue
-                self.seen_fingerprints.add(fingerprint)
-
-                if len(content_text) < 300:
-                    continue
-
-                if self.redact:
-                    content_text = self._redact_pii(content_text)
-
-                # F. Chunks e Entrada
-                final_title = s_title or global_title or "Artigo Sem Título"
-                # O ID deve ser baseado apenas na URL para permitir deduplicação real
-                id_hash = hashlib.sha256(f"{s_url}".encode('utf-8')).hexdigest()
-                metadata = {"source_title": final_title, "source_url": s_url}
-                
-                chunks = self._create_chunks(content_text, metadata_snapshot=metadata)
-                if not chunks and len(content_text) >= 15:
-                    chunks = [{"id": 0, "text": content_text, "length": len(content_text), "vector_ready": True, "metadata_snapshot": metadata}]
-
-                if chunks:
-                    dataset_entries.append({
-                        "id_hash": id_hash, "url": s_url, "domain": domain, 
-                        "capture_id": capture_id, "mission_id": mission_id,
-                        "fidelity_score": round(min(fidelity_score, 1.0), 3), # Persistência (Bug #4)
-                        "crawl_timestamp": crawl_timestamp, "schema_version": "v2_batalhao",
-                        "executor": current_executor,
-                        "data": {"title": final_title, "markdown_body": content_text, "semantic_chunks": chunks},
-                        "compliance": {"pii_filtered": self.redact, "gdpr_status": "compliant"}
-                    })
-
-            # Deduplicação por título
-            seen = set()
-            unique = []
-            for e in dataset_entries:
-                if e['data']['title'] not in seen:
-                    unique.append(e)
-                    seen.add(e['data']['title'])
-            context['dataset_entries'] = unique
+            # Título (Recalibrado)
+            title_tag = self._extract_title_geometrically(item_soup, soup)
+            s_title = title_tag.get_text(strip=True) if title_tag else (soup.title.string if soup.title else None)
+            if s_title: s_title = self._sanitize_encoding(s_title)
             
-        else:
-            # Caso de Página Única
-            logger.info("📄 Processando como Página Única.")
-            item_soup = BeautifulSoup(str(soup), 'lxml')
-            for scrap in item_soup(self.noise_tags + ['img', 'figure']):
-                scrap.decompose()
+            # Markdown Puro
+            try:
+                content_text = md_converter(str(item_soup), heading_style="ATX") if md_converter else item_soup.get_text()
+            except:
+                content_text = item_soup.get_text()
+
+            # Cura de Mojibake e Ruído Final
+            content_text = self._sanitize_encoding(content_text)
             
-            content_text = md_converter(str(item_soup)) if md_converter else item_soup.get_text(separator=' ')
+            # Remoção Cirúrgica de Padrões DSA/Relacionados (Finding #1)
+            content_text = re.sub(r'###\s+\*Relacionado\*.*?(?=\n#|\n\n|$)', '', content_text, flags=re.DOTALL | re.IGNORECASE)
+            content_text = re.sub(r'Equipe\s+DSA.*', '', content_text, flags=re.IGNORECASE)
+            content_text = re.sub(r'\[Compartilhar.*?\]\(.*?\)', '', content_text, flags=re.IGNORECASE)
+            content_text = re.sub(r'Adoraria\s+saber\s+sua\s+opinião.*', '', content_text, flags=re.IGNORECASE)
             
-            # SNIPER (Página Única)
-            content_text = re.sub(r'\[Compartilhar no.*?\]\(.*?\)', '', content_text, flags=re.DOTALL | re.IGNORECASE)
-            content_text = re.sub(r'\(abre em nova janela\)', '', content_text, flags=re.IGNORECASE)
-            content_text = re.sub(r'(?i)Compartilhe isso:.*?(?=###|##|#|\n\n|$)', '', content_text, flags=re.DOTALL)
-            
-            content_text = content_text.strip()
-            
-            if self.redact: content_text = self._redact_pii(content_text)
-            
-            final_title = global_title or (soup.title.string if soup.title else "Sem Título")
-            # O ID deve ser baseado apenas na URL para permitir deduplicação real
-            id_hash = hashlib.sha256(f"{base_url}".encode('utf-8')).hexdigest()
-            metadata = {"source_title": final_title, "source_url": base_url}
+            # Fidelidade Gold
+            fidelity_score = self._calculate_fidelity_score(content_text, item_soup)
+            if fidelity_score < self.fidelity_threshold: continue
+
+            # Chunks de Alta Pureza (Finding #5)
+            metadata = {"title": s_title, "url": base_url}
             chunks = self._create_chunks(content_text, metadata_snapshot=metadata)
+            
+            if chunks:
+                id_hash = hashlib.sha256(base_url.encode()).hexdigest()
+                dataset_entries.append({
+                    "id_hash": id_hash, "url": base_url, "capture_id": capture_id,
+                    "mission_id": mission_id, "fidelity_score": round(fidelity_score, 3),
+                    "data": {"title": s_title, "markdown_body": content_text, "semantic_chunks": chunks}
+                })
 
-            context['dataset_entries'] = [{
-                "id_hash": id_hash, "url": base_url, "domain": domain, 
-                "capture_id": capture_id, "mission_id": mission_id,
-                "crawl_timestamp": crawl_timestamp, "schema_version": "v2_batalhao",
-                "executor": current_executor,
-                "data": {"title": final_title, "markdown_body": content_text, "semantic_chunks": chunks},
-                "compliance": {"pii_filtered": self.redact, "gdpr_status": "compliant"}
-            }]
-
-        logger.info(f"✅ Destilação Completa: {len(context.get('dataset_entries', []))} entradas válidas.")
+        # Deduplicação Final (1 URL = 1 Registro)
+        unique_entries = {e['url']: e for e in dataset_entries}.values()
+        context['dataset_entries'] = list(unique_entries)
+        
+        logger.info(f"✅ Destilação Gold: {len(context['dataset_entries'])} registros puros.")
         return context
 
     def _redact_pii(self, text: str) -> str:
@@ -451,41 +279,21 @@ class DataClearStage(ProcessorStage):
         text = re.sub(r'[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}', '[REDACTED_EMAIL]', text)
         return text
 
-    def _create_chunks(self, text: str, chunk_size: int = 1000, overlap: int = 150, metadata_snapshot: dict = None) -> list:
-        """Geração de Fragmentos Semânticos para RAG (Bug #3 Fix)."""
-        chunks = []
-        text = text.strip()
-        if not text: return []
+    def _create_chunks(self, text: str, metadata_snapshot: dict = None) -> list:
+        """Geração de Fragmentos Semânticos de Ouro (Finding #5)."""
+        raw_chunks = []
+        # Chunkização por parágrafo para manter unidade semântica
+        paragraphs = [p.strip() for p in text.split('\n\n') if len(p.strip()) > 100]
         
-        start = 0
         chunk_id = 0
-        while start < len(text):
-            end = start + chunk_size
-            
-            # Tenta encontrar o fim de uma sentença para não cortar no meio (Bug #3)
-            if end < len(text):
-                # Procura delimitadores de sentença no final do chunk
-                # rfind procura da direita para a esquerda em um range seguro
-                found_delimiter = False
-                for delimiter in ['\n\n', '. ', '.\n', '! ', '? ']:
-                    # Procuramos o delimitador nos últimos 200 caracteres do limite planejado
-                    pos = text.rfind(delimiter, start + (chunk_size // 2), end + 200)
-                    if pos != -1:
-                        end = pos + len(delimiter)
-                        found_delimiter = True
-                        break
-            
-            chunk_text = text[start:end].strip()
-            
-            if len(chunk_text) > 20:
-                chunks.append({
-                    "id": chunk_id, "text": chunk_text, "length": len(chunk_text),
-                    "vector_ready": True, "metadata_snapshot": metadata_snapshot or {}
-                })
-                chunk_id += 1
-            
-            # O próximo start deve respeitar o overlap baseado no 'end' real encontrado
-            start = end - overlap
-            if start >= len(text) or chunk_size > len(text): break
-            
-        return chunks
+        for p in paragraphs:
+            # Filtro de ruído de UI (Finding #5)
+            if any(w in p.lower() for w in ['responder', 'comentar', 'clique aqui', 'inscreva-se']):
+                continue
+                
+            raw_chunks.append({
+                "id": chunk_id, "text": p, "length": len(p),
+                "metadata_snapshot": metadata_snapshot or {}
+            })
+            chunk_id += 1
+        return raw_chunks
