@@ -1,5 +1,6 @@
 import logging
 import aiohttp
+from datetime import datetime
 from typing import Dict, Any
 from core.mq.worker_base import WorkerBase
 
@@ -12,14 +13,17 @@ class ExecutorL0(WorkerBase):
     Otimizado estruturalmente com aiohttp e concorrência máxima viável (Semaphore=20)
     """
 
-    def __init__(self, redis_manager, worker_id: str = None, proxy_manager=None, concurrency: int = 20):
+    def __init__(self, redis_manager, worker_id: str = None, proxy_manager=None, 
+                 concurrency: int = 20, db_manager=None, raw_store=None):
         super().__init__(
             redis_manager=redis_manager, 
             stream_name="stream:level_0", 
             group_name="workers_l0", 
             worker_id=worker_id, 
             concurrency=concurrency,
-            proxy_manager=proxy_manager
+            proxy_manager=proxy_manager,
+            db_manager=db_manager,
+            raw_store=raw_store
         )
         self.session = None
         self.tier = 0
@@ -47,22 +51,42 @@ class ExecutorL0(WorkerBase):
                 if response.status == 200:
                     html_content = await response.text()
                     
-                    # -> [!] PONTO DE INTEGRAÇÃO COM PIPELINE DE LIMPEZA
-                    # Chamaremos o pipeline DataClear (que não roda aqui isolado)
-                    # O ideal na arquitetura final é enviar o HTML para a fila `stream:dataclear`
-                    # para que os workers de CPU Heavy tratem NLP sem parar o scrapper de IO.
-                    # Mas por simplifição atual, vamos logar apenas.
+                    import uuid
+                    capture_id = str(uuid.uuid4())
+                    content_hash = self.raw_store.calculate_hash(html_content)
                     
-                    logger.info(f"[L0] Sucesso ABSOLUTO em {url} | Status Real 200 | {len(html_content)} bytes")
-                    
-                    # Vamos enfileirar o payload bruto na fila de Limpeza (DataClear)
-                    payload = data.copy()
-                    payload.update({
-                        "html_content": html_content,
+                    # 1. Persistência Bruta (Raw Capture Plane)
+                    metadata = {
+                        "capture_id": capture_id,
+                        "mission_id": data.get("mission_id", "default"),
+                        "job_id": data.get("job_id", "unknown"),
+                        "url": url,
                         "executor_level": "L0-aiohttp",
-                        "status": "200"
+                        "http_status": 200,
+                        "content_type": response.headers.get("Content-Type", "text/html"),
+                        "captured_at": str(datetime.utcnow()),
+                        "content_hash": content_hash
+                    }
+                    
+                    raw_uri, meta_uri = await self.raw_store.save_artifact(
+                        metadata["mission_id"], capture_id, html_content, metadata
+                    )
+                    
+                    logger.info(f"[L0] Sucesso: {url} | Raw: {raw_uri} | {len(html_content)} bytes")
+                    
+                    # 2. Emissão de Evento Desacoplado (Artifact-Oriented)
+                    capture_event = data.copy()
+                    capture_event.update({
+                        "capture_id": capture_id,
+                        "raw_uri": raw_uri,
+                        "metadata_uri": meta_uri,
+                        "executor_level": "L0-aiohttp",
+                        "http_status": 200,
+                        "content_hash": content_hash
                     })
-                    await self.rm.client.xadd("stream:dataclear", payload)
+                    
+                    # Notifica o Controle de Captura (Control Plane ouvirá isso)
+                    await self.rm.client.xadd("stream:captured_raw", capture_event)
                     
                     return True
                     

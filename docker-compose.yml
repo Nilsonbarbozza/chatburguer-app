@@ -2,7 +2,28 @@ version: '3.8'
 
 services:
   # ═══════════════════════════════
-  # 1. CÉREBRO (Redis)
+  # 1. CÉREBRO RELACIONAL (Control Plane)
+  # ═══════════════════════════════
+  postgres_batalhao:
+    image: postgres:15-alpine
+    container_name: postgres_batalhao
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=batalhao_admin
+      - POSTGRES_PASSWORD=batalhao_secret
+      - POSTGRES_DB=batalhao_control
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+      - ./core/mq/schema_postgres.sql:/docker-entrypoint-initdb.d/schema.sql
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+
+  # ═══════════════════════════════
+  # 2. MENSAGERIA (Redis)
   # ═══════════════════════════════
   redis_batalhao:
     image: redis:7-alpine
@@ -19,7 +40,7 @@ services:
           memory: 256M
 
   # ═══════════════════════════════
-  # 2. MOTOR DE GUERRA (Orquestrador / Intelligence)
+  # 3. INTELIGÊNCIA & GOVERNANÇA
   # ═══════════════════════════════
   batalhao_intelligence:
     build: .
@@ -27,93 +48,98 @@ services:
     restart: unless-stopped
     depends_on:
       - redis_batalhao
+      - postgres_batalhao
     environment:
       - REDIS_URL=redis://redis_batalhao:6379
+      - POSTGRES_URL=postgresql://batalhao_admin:batalhao_secret@postgres_batalhao:5432/batalhao_control
       - BATALHAO_ROLES=intelligence
-    deploy:
-      resources:
-        limits:
-          cpus: '0.5'
-          memory: 512M
+      - LOG_LEVEL=DEBUG
+    volumes:
+      - .:/app
+
+  batalhao_capture_control:
+    build: .
+    container_name: batalhao_capture_control
+    restart: unless-stopped
+    depends_on:
+      - redis_batalhao
+      - postgres_batalhao
+    environment:
+      - REDIS_URL=redis://redis_batalhao:6379
+      - POSTGRES_URL=postgresql://batalhao_admin:batalhao_secret@postgres_batalhao:5432/batalhao_control
+      - BATALHAO_ROLES=capture_control
+      - LOG_LEVEL=DEBUG
+    volumes:
+      - .:/app
+      - ./data/raw:/app/data/raw
 
   # ═══════════════════════════════
-  # 3. EXECUTORES (I/O Heavy)
+  # 4. EXECUTORES (I/O Heavy)
   # ═══════════════════════════════
   batalhao_worker_l0:
     build: .
     restart: unless-stopped
     depends_on:
       - redis_batalhao
+      - postgres_batalhao
     environment:
       - REDIS_URL=redis://redis_batalhao:6379
+      - POSTGRES_URL=postgresql://batalhao_admin:batalhao_secret@postgres_batalhao:5432/batalhao_control
       - BATALHAO_ROLES=l0
+      - LOG_LEVEL=DEBUG
     deploy:
       replicas: 2
-      resources:
-        limits:
-          cpus: '1.0'
-          memory: 1G
+    volumes:
+      - .:/app
+      - ./data/raw:/app/data/raw
 
   batalhao_worker_l12:
     build: .
     restart: unless-stopped
     depends_on:
       - redis_batalhao
+      - postgres_batalhao
     environment:
       - REDIS_URL=redis://redis_batalhao:6379
+      - POSTGRES_URL=postgresql://batalhao_admin:batalhao_secret@postgres_batalhao:5432/batalhao_control
       - BATALHAO_ROLES=l12
-    deploy:
-      replicas: 1
-      resources:
-        limits:
-          cpus: '1.0'
-          memory: 1G
+      - LOG_LEVEL=DEBUG
+    volumes:
+      - .:/app
+      - ./data/raw:/app/data/raw
+
+#  batalhao_worker_l34:
+#    build: .
+#    restart: unless-stopped
+#    depends_on:
+#      - redis_batalhao
+#      - postgres_batalhao
+#    environment:
+#      - REDIS_URL=redis://redis_batalhao:6379
+#      - POSTGRES_URL=postgresql://batalhao_admin:batalhao_secret@postgres_batalhao:5432/batalhao_control
+#      - BATALHAO_ROLES=l34
+#      - LOG_LEVEL=DEBUG
+#    volumes:
+#      - .:/app
+#      - ./data/raw:/app/data/raw
 
   # ═══════════════════════════════
-  # 4. DATA CLEAR (CPU Heavy)
+  # 5. DATA CLEAR (CPU Heavy)
   # ═══════════════════════════════
   batalhao_worker_dataclear:
     build: .
     restart: unless-stopped
     depends_on:
       - redis_batalhao
+      - postgres_batalhao
     environment:
       - REDIS_URL=redis://redis_batalhao:6379
+      - POSTGRES_URL=postgresql://batalhao_admin:batalhao_secret@postgres_batalhao:5432/batalhao_control
       - BATALHAO_ROLES=dataclear
+      - LOG_LEVEL=DEBUG
     deploy:
       replicas: 2
-      resources:
-        limits:
-          cpus: '2.0'
-          memory: 2G
-    volumes:
-      - ./data/output:/app/data/output
-
-  # ═══════════════════════════════
-  # 3. RAG / API (FastAPI) — Opcional
-  # ═══════════════════════════════
-  neural-safety:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    image: neuralsafety/core:v1.0
-    container_name: neuralsafety_engine
-    restart: unless-stopped
-    # Sobrescreve o CMD padrão (Batalhão) para rodar o RAG
-    command: ["uvicorn", "rag_generator:app", "--host", "0.0.0.0", "--port", "8000"]
-    ports:
-      - "8000:8000"
-    environment:
-      - ENVIRONMENT=production
-    env_file:
-      - .env
     volumes:
       - .:/app
-      - ./data:/app/data
-    deploy:
-      resources:
-        limits:
-          cpus: '2.0'
-          memory: 4G
-    # Descomente a linha abaixo para desativar o RAG quando não precisar
-    # profiles: ["rag"]
+      - ./data/raw:/app/data/raw
+      - ./data/curated:/app/data/curated

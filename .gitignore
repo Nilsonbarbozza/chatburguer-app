@@ -31,3 +31,12 @@ Thumbs.db
 
 .logs/
 .temp/
+
+# Batalhão Data & Infrastructure
+data/
+postgres/
+redis/
+vector_db/
+missoes/
+*.gz
+*.jsonl

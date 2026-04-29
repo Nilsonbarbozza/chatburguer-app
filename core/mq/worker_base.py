@@ -13,7 +13,10 @@ class WorkerBase(ABC):
     Gerencia automaticamente Acknowledgment (ACK) ou roteamento para Dead Letter.
     """
 
-    def __init__(self, redis_manager, stream_name: str, group_name: str, worker_id: str = None, concurrency: int = 10, proxy_manager=None, claim_interval: int = 60):
+    def __init__(self, redis_manager, stream_name: str, group_name: str, 
+                 worker_id: str = None, concurrency: int = 10, 
+                 proxy_manager=None, claim_interval: int = 60,
+                 raw_store=None, db_manager=None):
         self.rm = redis_manager
         self.stream_name = stream_name
         self.group_name = group_name
@@ -24,6 +27,8 @@ class WorkerBase(ABC):
         
         self.semaphore = asyncio.Semaphore(concurrency)
         self.proxy_manager = proxy_manager
+        self.raw_store = raw_store
+        self.db_manager = db_manager
         self.running = False
         self.tier = 0 # Default, will be overridden by subclasses
 
@@ -36,17 +41,31 @@ class WorkerBase(ABC):
 
     async def handle_failure(self, msg_id: str, data: Dict[str, Any]):
         """
-        Escalonamento de Retry ou envio direto para Dead Letter Queue.
+        Registro de falha unificado no Control Plane (PostgreSQL).
         """
-        logger.warning(f"Processamento falhou para msg_id {msg_id}. Roteando falha...")
+        url = data.get("url", "unknown")
+        mission_id = data.get("mission_id", "default")
+        
+        logger.warning(f"❌ [FALHA] Processamento falhou para {url}. Registrando no Control Plane...")
+        
         try:
-            # Exemplo Mínimo: envia pra log
-            # TODO: Implemenar Exponential Backoff ou mover para stream:dead_letters
-            await self.rm.client.xadd("stream:dead_letters", {"original_stream": self.stream_name, **data})
-            # Acknowledge the failed message from the original stream so it doesn't loop forever
+            if self.db_manager:
+                await self.db_manager.register_dead_letter(
+                    mission_id=mission_id,
+                    url=url,
+                    stage=self.stream_name.split(':')[-1],
+                    failure_type="OPERATIONAL_FAILURE",
+                    failure_reason="Erro não tratado no worker ou limite de retries atingido",
+                    payload_ref=data
+                )
+            else:
+                # Fallback técnico apenas se o DB não estiver injetado
+                await self.rm.client.xadd("stream:dead_letters", {"original_stream": self.stream_name, **data})
+            
+            # Acknowledge para evitar loop infinito de mensagens defeituosas
             await self.rm.client.xack(self.stream_name, self.group_name, msg_id)
         except Exception as e:
-            logger.error(f"Erro Crítico ao rotear falha {msg_id}: {e}")
+            logger.error(f"⚠️ Erro Crítico no tratamento de falha {msg_id}: {e}")
 
     async def claim_stuck_messages(self):
         """

@@ -17,6 +17,7 @@ RUN groupadd -r appgroup && useradd -r -g appgroup -d $APP_HOME -s /sbin/nologin
 # 5. Instalação de dependências Python
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
+# RUN playwright install chromium  # Desativado temporariamente por instabilidade de rede
 
 # 6. Copia TODO o código-fonte do projeto
 COPY . .

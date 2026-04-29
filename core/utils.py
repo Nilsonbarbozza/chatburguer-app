@@ -95,8 +95,11 @@ def setup_logging() -> logging.Logger:
 
     logger_inst.setLevel(logging.DEBUG)
 
+    log_level_name = os.getenv("LOG_LEVEL", "INFO").upper()
+    log_level = getattr(logging, log_level_name, logging.INFO)
+
     ch = logging.StreamHandler()
-    ch.setLevel(logging.WARNING)  # terminal: só warnings+
+    ch.setLevel(log_level)  # terminal level
 
     log_dir = Path('logs')
     log_dir.mkdir(exist_ok=True)

@@ -91,5 +91,22 @@ class RedisManager:
                 else:
                     logger.error(f"Erro ao criar stream {stream}: {e}")
 
+    async def set_mission_config(self, job_id: str, config: dict):
+        """
+        Salva a configuração da missão no Redis para consulta pelos workers.
+        """
+        key = f"batalhao:config:{job_id}"
+        await self.client.hset(key, mapping=config)
+        # Expira em 24h para não poluir o Redis infinitamente
+        await self.client.expire(key, 86400)
+        logger.info(f"Configuração para a missão '{job_id}' salva no Redis.")
+
+    async def get_mission_config(self, job_id: str) -> dict:
+        """
+        Recupera a configuração da missão.
+        """
+        key = f"batalhao:config:{job_id}"
+        return await self.client.hgetall(key)
+
     async def close(self):
         await self.client.aclose()
