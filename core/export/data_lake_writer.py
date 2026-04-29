@@ -31,22 +31,28 @@ class DataLakeWriter:
         os.makedirs(path, exist_ok=True)
         return path
 
-    async def write_jsonl(self, mission_id: str, payload_list: List[Dict[str, Any]]) -> str:
+    async def write_jsonl(self, mission_id: str, payload_list: List[Dict[str, Any]], capture_id: str = "unknown") -> str:
         """
-        Salva artefatos curados em JSONL particionado.
+        Salva artefatos curados em JSONL atômico (1 arquivo por captura para evitar Race Conditions).
         """
         dir_path = self._generate_path(mission_id)
-        file_path = os.path.join(dir_path, "dataset.jsonl")
+        # Usamos o capture_id no nome para garantir que NUNCA dois workers escrevam no mesmo arquivo
+        file_name = f"capture_{capture_id}.jsonl"
+        file_path = os.path.join(dir_path, file_name)
         
         try:
-            async with aiofiles.open(file_path, mode='a', encoding='utf-8') as f:
-                for payload in payload_list:
-                    await f.write(json.dumps(payload, ensure_ascii=False) + '\n')
+            # Escrita atômica: preparamos o conteúdo e escrevemos de uma vez
+            content = ""
+            for payload in payload_list:
+                content += json.dumps(payload, ensure_ascii=False) + '\n'
             
-            logger.info(f"✅ [Mission: {mission_id}] Gravados {len(payload_list)} registros em {file_path}")
+            async with aiofiles.open(file_path, mode='w', encoding='utf-8') as f:
+                await f.write(content)
+            
+            logger.info(f"✅ [Mission: {mission_id}] Artefato Atômico Gravado: {file_name}")
             return file_path
         except Exception as e:
-            logger.error(f"❌ Falha de ESCRITA no Curated Store: {e}")
+            logger.error(f"❌ Falha de ESCRITA ATÔMICA no Curated Store: {e}")
             return ""
 
     async def write_manifest(self, mission_id: str, job_id: str, total_records: int):

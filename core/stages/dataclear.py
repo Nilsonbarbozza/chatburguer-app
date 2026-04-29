@@ -60,7 +60,7 @@ class DataClearStage(ProcessorStage):
         super().__init__()
         self.config = config or {}
         self.archetype = self.config.get("archetype", "blog")
-        self.fidelity_threshold = float(self.config.get("fidelity_threshold", 0.7)) # Aumentado para Gold Standard
+        self.fidelity_threshold = float(self.config.get("fidelity_threshold", 0.6)) # Calibragem Final Gold
         self.redact = self.config.get("redact_pii", "true").lower() == "true"
 
         # --- GOLD STANDARD SNIPER PATTERNS ---
@@ -77,7 +77,11 @@ class DataClearStage(ProcessorStage):
             '.sharedaddy', '.jp-relatedposts', '.social-share', '.post-author',
             '.entry-footer', '.wpcnt', '#sharing_email', '.robots-nocontent',
             '.comments-area', '#respond', '.relatedposts', '.widget_related_posts_widget',
-            '.post-navigation', '.author-bio', '.newsletter-box'
+            '.post-navigation', '.author-bio', '.newsletter-box',
+            '#comments', '.comment-list', '.comment-respond', '.comment-reply-title',
+            '.comment-metadata', '.comment-body', '.reply', '.comment-content',
+            '.form-submit', '.navigation.comment-navigation', '.pingback',
+            '#reply-title', '.comment-form'
         ]
 
         self.url_blacklist_patterns = [
@@ -94,11 +98,21 @@ class DataClearStage(ProcessorStage):
         self.seen_fingerprints = set()
 
     def _sanitize_encoding(self, text: str) -> str:
-        """Cura o Mojibake e normaliza o texto (Gold Standard Fix)."""
+        """Cura o Mojibake e normaliza o texto (Gold Standard Fix Nível 5)."""
         if not text: return ""
-        # 1. Normaliza caracteres Unicode (Ex: Ã -> A~)
+        
+        # 1. Tenta recuperar texto que foi corrompido de UTF-8 para Latin-1
+        try:
+            # Se o texto contém padrões clássicos de Mojibake UTF-8 (Ã¡, Ã©, etc)
+            if any(p in text for p in ["Ã¡", "Ã©", "Ã\xad", "Ã³", "Ãº", "Ã\xa3", "Ã§"]):
+                text = text.encode('latin-1').decode('utf-8')
+        except (UnicodeEncodeError, UnicodeDecodeError):
+            pass
+
+        # 2. Normaliza caracteres Unicode
         text = unicodedata.normalize('NFKC', text)
-        # 2. Correção manual de Mojibake comum (Fallback)
+        
+        # 3. Correção manual de Mojibake residual
         replacements = {
             "â€'": "'", "â€\"": "—", "â€œ": '"', "â€\x9d": '"',
             "â€¢": "•", "â€¦": "...", "Ã¡": "á", "Ã©": "é",
@@ -106,12 +120,12 @@ class DataClearStage(ProcessorStage):
             "Ã\xa3": "ã", "Ã\xb5": "õ", "Ã§": "ç", "Ã\x81": "Á",
             "Ã\x89": "É", "Ã\x8d": "Í", "Ã\x93": "Ó", "Ã\x9a": "Ú",
             "Ã\x91": "Ñ", "Ã\x83": "Ã", "Ã\x95": "Õ", "Ã\x87": "Ç",
-            "\ufffd": " " # Remove o caractere de erro ''
+            "\ufffd": " " 
         }
         for bad, good in replacements.items():
             text = text.replace(bad, good)
         
-        # 3. Remove caracteres de controle invisíveis
+        # 4. Remove caracteres de controle invisíveis
         text = "".join(ch for ch in text if unicodedata.category(ch)[0] != "C" or ch in "\n\r\t")
         return text
 
@@ -129,16 +143,17 @@ class DataClearStage(ProcessorStage):
         return False
 
     def _calculate_fidelity_score(self, text: str, item_soup) -> float:
-        """Enterprise Fidelity Scorer v4.3 (Gold Standard)."""
+        """Enterprise Fidelity Scorer v4.4 (Gold Standard)."""
         if not text or len(text) < 150: return 0.0
         
-        score = 0.5 # Base mais rigorosa
+        score = 0.5 
         text_lower = text.lower()
         words = text.split()
         
-        # Penalidade por ruído remanescente (Finding #1)
-        noise_hits = sum(1 for p in ['relacionado', 'equipe dsa', 'clique no link', 'responder'] if p in text_lower)
-        if noise_hits > 0: score -= (noise_hits * 0.15)
+        # Penalidade severa por ruído de UI/Marketing
+        noise_patterns = ['relacionado', 'equipe dsa', 'clique no link', 'responder', 'comentar', 'compartilhar', 'newsletter']
+        noise_hits = sum(1 for p in noise_patterns if p in text_lower)
+        if noise_hits > 0: score -= (noise_hits * 0.05)
         
         # --- BONIFICAÇÕES ---
         life_signals = [' é ', ' são ', ' com ', ' para ', ' por ', ' que ', ' onde ', ' como ', ' mas ', ' ou ']
@@ -149,44 +164,31 @@ class DataClearStage(ProcessorStage):
         avg_sentence_len = len(words) / max(1, len(sentences))
         if avg_sentence_len > 15: score += 0.2
         
-        punc_hits = len(re.findall(r'[.,!?;]', text))
-        punc_ratio = punc_hits / len(words)
-        if punc_ratio > 0.07: score += 0.15
-        
         return max(0.0, min(1.0, score))
 
     def _is_content_url(self, url: str) -> bool:
-        """Filtra padrões de URL que não são conteúdo real (Bug #2 Fix)."""
+        """Filtra padrões de URL que não são conteúdo real."""
         for pattern in self.url_blacklist_patterns:
             if re.search(pattern, url):
                 return False
         return True
 
     def _extract_title_geometrically(self, item_soup, container_soup):
-        """Extração Restritiva: Título deve estar no topo (Finding #2)."""
-        # Restrição Geométrica: Título REAL em blogs costuma estar no início do HTML
-        html_str = str(item_soup)[:5000] # Analisa apenas os primeiros 5k chars do bloco
+        """Extração Restritiva: Título deve estar no topo."""
+        html_str = str(item_soup)[:5000] 
         
         for tag_name in ['h1', 'h2']:
             for tag in item_soup.find_all(tag_name):
                 text = tag.get_text(strip=True)
                 if len(text) < 10 or text.lower() in self.noise_titles: continue
-                
-                # Verifica se está no topo do código (heurística simples)
                 if str(tag) not in html_str: continue 
                 
-                # Verifica área proibida
                 parent_classes = ' '.join(tag.parent.get('class', [])) + str(tag.parent.get('id', ''))
                 if any(w in parent_classes.lower() for w in ['related', 'widget', 'sidebar', 'footer', 'comment']):
                     continue
                 
                 return tag
         return None
-
-    def _get_fingerprint(self, text: str) -> str:
-        """Gera um MinHash simplificado para deduplicação zero-cost."""
-        clean_text = re.sub(r'\W+', '', text.lower())[:200]
-        return hashlib.md5(clean_text.encode()).hexdigest()
 
     def process(self, context: Dict[str, Any]) -> Dict[str, Any]:
         logger.info(f"=== Batalhão Gold Standard: Refino de Elite ({self.archetype}) ===")
@@ -199,23 +201,27 @@ class DataClearStage(ProcessorStage):
             for scrap in soup.select(noise):
                 scrap.decompose()
 
-        # 1. Identificação de Canonicidade (Finding #3, #6)
-        # GOLD RULE: Para blogs, forçamos o BLOCO DOMINANTE ÚNICO.
+        # 0.1 Expurgo por Palavras-Chave de Interação (Finding #7)
+        # Remove elementos que contenham APENAS palavras de UI, respeitando limites de palavra
+        for text_noise in ["Responder", "Comentar", "Deixe uma resposta"]:
+            # Busca strings que contenham a palavra isolada (ignora se for parte de outra palavra)
+            for element in soup.find_all(string=re.compile(rf"^\s*{text_noise}\s*$", re.I)):
+                if element.parent:
+                    element.parent.decompose()
+
+        # 1. Identificação de Canonicidade
         raw_blocks = soup.find_all('article')
         if not raw_blocks:
             raw_blocks = soup.find_all(['div', 'section'], class_=re.compile(r'post|entry|article', re.I))
 
         content_blocks = []
         if raw_blocks:
-            # Busca o bloco com mais densidade de texto (O Artigo)
-            total_text_len = len(soup.get_text())
             block_lengths = [len(b.get_text()) for b in raw_blocks]
             max_len = max(block_lengths) if block_lengths else 0
             
             if self.archetype == 'blog' and max_len > 1000:
                 idx_max = block_lengths.index(max_len)
                 content_blocks = [raw_blocks[idx_max]]
-                logger.debug(f"💎 Artigo Canônico detectado ({max_len} chars).")
             else:
                 content_blocks = raw_blocks
 
@@ -223,6 +229,7 @@ class DataClearStage(ProcessorStage):
         base_url = context.get('url', '')
         capture_id = context.get('capture_id', 'unknown')
         mission_id = context.get('mission_id', 'default')
+        executor = context.get('executor_level', 'unknown')
 
         # 2. Destilação
         for block in content_blocks:
@@ -243,52 +250,49 @@ class DataClearStage(ProcessorStage):
             # Cura de Mojibake e Ruído Final
             content_text = self._sanitize_encoding(content_text)
             
-            # Remoção Cirúrgica de Padrões DSA/Relacionados (Finding #1)
+            # EXTERMINADOR DE MARKETING v2.0
             content_text = re.sub(r'###\s+\*Relacionado\*.*?(?=\n#|\n\n|$)', '', content_text, flags=re.DOTALL | re.IGNORECASE)
             content_text = re.sub(r'Equipe\s+DSA.*', '', content_text, flags=re.IGNORECASE)
             content_text = re.sub(r'\[Compartilhar.*?\]\(.*?\)', '', content_text, flags=re.IGNORECASE)
             content_text = re.sub(r'Adoraria\s+saber\s+sua\s+opinião.*', '', content_text, flags=re.IGNORECASE)
+            content_text = re.sub(r'Inscreva-se\s+em\s+nossa\s+newsletter.*', '', content_text, flags=re.IGNORECASE)
+            content_text = re.sub(r'Clique\s+aqui\s+para\s+saber\s+mais.*', '', content_text, flags=re.IGNORECASE)
+            content_text = re.sub(r'Deixe\s+um\s+comentário.*', '', content_text, flags=re.IGNORECASE)
             
             # Fidelidade Gold
             fidelity_score = self._calculate_fidelity_score(content_text, item_soup)
             if fidelity_score < self.fidelity_threshold: continue
 
-            # Chunks de Alta Pureza (Finding #5)
+            # Chunks de Alta Pureza
             metadata = {"title": s_title, "url": base_url}
             chunks = self._create_chunks(content_text, metadata_snapshot=metadata)
             
             if chunks:
                 id_hash = hashlib.sha256(base_url.encode()).hexdigest()
                 dataset_entries.append({
-                    "id_hash": id_hash, "url": base_url, "capture_id": capture_id,
-                    "mission_id": mission_id, "fidelity_score": round(fidelity_score, 3),
+                    "id_hash": id_hash, 
+                    "url": base_url, 
+                    "capture_id": capture_id,
+                    "mission_id": mission_id, 
+                    "executor": executor,
+                    "fidelity_score": round(fidelity_score, 3),
                     "data": {"title": s_title, "markdown_body": content_text, "semantic_chunks": chunks}
                 })
 
-        # Deduplicação Final (1 URL = 1 Registro)
         unique_entries = {e['url']: e for e in dataset_entries}.values()
         context['dataset_entries'] = list(unique_entries)
-        
-        logger.info(f"✅ Destilação Gold: {len(context['dataset_entries'])} registros puros.")
         return context
 
-    def _redact_pii(self, text: str) -> str:
-        """Anonimização PII Nível 4."""
-        text = text.replace(r'\_', '_')
-        # Ofuscação de e-mail básica
-        text = re.sub(r'[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}', '[REDACTED_EMAIL]', text)
-        return text
-
     def _create_chunks(self, text: str, metadata_snapshot: dict = None) -> list:
-        """Geração de Fragmentos Semânticos de Ouro (Finding #5)."""
+        """Geração de Fragmentos Semânticos de Ouro (Exterminando UI)."""
         raw_chunks = []
-        # Chunkização por parágrafo para manter unidade semântica
         paragraphs = [p.strip() for p in text.split('\n\n') if len(p.strip()) > 100]
         
         chunk_id = 0
         for p in paragraphs:
-            # Filtro de ruído de UI (Finding #5)
-            if any(w in p.lower() for w in ['responder', 'comentar', 'clique aqui', 'inscreva-se']):
+            # Filtro de ruído agressivo com Word Boundary (Finding #1, #7)
+            p_lower = p.lower()
+            if any(re.search(rf"\b{w}\b", p_lower) for w in ['responder', 'comentar', 'clique aqui', 'inscreva-se', 'compartilhe']):
                 continue
                 
             raw_chunks.append({

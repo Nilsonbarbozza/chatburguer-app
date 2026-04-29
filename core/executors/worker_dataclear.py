@@ -88,7 +88,7 @@ class WorkerDataClear(WorkerBase):
 
             if final_entries:
                 # 4. Exportação Homologada (Curated Store)
-                file_path = await self.writer.write_jsonl(mission_id, final_entries)
+                file_path = await self.writer.write_jsonl(mission_id, final_entries, capture_id=capture_id)
                 
                 # 5. Fechamento do Elo no PostgreSQL (Ação 3)
                 if self.db_manager and file_path:
