@@ -32,8 +32,15 @@ def consolidate_mission(mission_path: str):
                 
     logger.info(f"✅ SUCESSO! {count} fragmentos unidos em {output_file}")
     
-    # Opcional: remover fragmentos após consolidar para limpar o Data Lake
-    # for frag in fragments: os.remove(frag)
+    # Faxina Diamond: Remover fragmentos após consolidar para manter o Curated Store limpo
+    logger.info("🧹 Iniciando limpeza de fragmentos temporários...")
+    for frag in fragments: 
+        try:
+            os.remove(frag)
+        except Exception as e:
+            logger.error(f"⚠️ Erro ao remover fragmento {frag}: {e}")
+    
+    logger.info("✨ Curated Store limpo e organizado.")
 
 if __name__ == "__main__":
     import sys
