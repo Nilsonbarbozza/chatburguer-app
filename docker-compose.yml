@@ -143,3 +143,25 @@ services:
       - .:/app
       - ./data/raw:/app/data/raw
       - ./data/curated:/app/data/curated
+
+  # ═══════════════════════════════
+  # 6. SAAS: AGENTIC API (WebFetch)
+  # ═══════════════════════════════
+  batalhao_agentic_api:
+    build: .
+    container_name: batalhao_agentic_api
+    restart: unless-stopped
+    depends_on:
+      - redis_batalhao
+    ports:
+      - "8000:8000"
+    environment:
+      - REDIS_URL=redis://redis_batalhao:6379
+      - LOG_LEVEL=DEBUG
+    command: uvicorn agentic_api.main:app --host 0.0.0.0 --port 8000
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+    volumes:
+      - .:/app
