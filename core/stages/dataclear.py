@@ -81,7 +81,8 @@ class DataClearStage(ProcessorStage):
             '#comments', '.comment-list', '.comment-respond', '.comment-reply-title',
             '.comment-metadata', '.comment-body', '.reply', '.comment-content',
             '.form-submit', '.navigation.comment-navigation', '.pingback',
-            '#reply-title', '.comment-form'
+            '#reply-title', '.comment-form',
+            'img', 'figure', 'picture', 'figcaption', 'noscript'
         ]
 
         self.url_blacklist_patterns = [
@@ -250,7 +251,32 @@ class DataClearStage(ProcessorStage):
             # Cura de Mojibake e Ruído Final
             content_text = self._sanitize_encoding(content_text)
             
-            # EXTERMINADOR DE MARKETING v2.0
+            # EXTERMINADOR DE MARKETING v2.1 (DIAMOND ELITE)
+            # 1. Remover Imagens Markdown residuais e links de imagem
+            content_text = re.sub(r'!\[.*?\]\(.*?\)', '', content_text)
+            content_text = re.sub(r'\[!\[.*?\]\(.*?\)\]\(.*?\)', '', content_text) # Links que envolvem imagens
+            
+            # 2. Neutralizar Links de Categoria/Tag/Navegação Interna
+            # Transformamos [Texto](URL_Interna) em apenas "Texto"
+            internal_patterns = [
+                '/categoria/', '/tag/', '/author/', '/category/', 
+                'datascienceacademy.com.br', 'dsacademy.com.br', 
+                'wp-content/uploads'
+            ]
+            
+            def _link_neutralizer(match):
+                text = match.group(1)
+                url = match.group(2)
+                # Normaliza para busca
+                url_clean = url.lower().strip()
+                if any(p in url_clean for p in internal_patterns):
+                    return text
+                return f"[{text}]({url})"
+
+            # Regex mais robusta para links markdown
+            content_text = re.sub(r'\[([^\]]+)\]\((https?://[^\)]+)\)', _link_neutralizer, content_text)
+
+            # 3. Limpeza de CTAs e Ruído Editorial
             content_text = re.sub(r'###\s+\*Relacionado\*.*?(?=\n#|\n\n|$)', '', content_text, flags=re.DOTALL | re.IGNORECASE)
             content_text = re.sub(r'Equipe\s+DSA.*', '', content_text, flags=re.IGNORECASE)
             content_text = re.sub(r'\[Compartilhar.*?\]\(.*?\)', '', content_text, flags=re.IGNORECASE)
@@ -258,6 +284,10 @@ class DataClearStage(ProcessorStage):
             content_text = re.sub(r'Inscreva-se\s+em\s+nossa\s+newsletter.*', '', content_text, flags=re.IGNORECASE)
             content_text = re.sub(r'Clique\s+aqui\s+para\s+saber\s+mais.*', '', content_text, flags=re.IGNORECASE)
             content_text = re.sub(r'Deixe\s+um\s+comentário.*', '', content_text, flags=re.IGNORECASE)
+            content_text = re.sub(r'Leia\s+também.*', '', content_text, flags=re.IGNORECASE)
+            
+            # 4. Remover URLs soltas (sujeira de CDN/Imagens)
+            content_text = re.sub(r'https?://\S+\.(jpg|jpeg|png|gif|webp|svg|pdf)(\?\S+)?', '', content_text, flags=re.IGNORECASE)
             
             # Fidelidade Gold
             fidelity_score = self._calculate_fidelity_score(content_text, item_soup)
