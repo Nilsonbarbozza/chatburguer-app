@@ -1,4 +1,10 @@
 from fastapi import FastAPI
+from dotenv import load_dotenv
+import os
+
+# Carregar variáveis de ambiente do arquivo .env
+load_dotenv()
+
 from agentic_api.routes import router
 
 app = FastAPI(

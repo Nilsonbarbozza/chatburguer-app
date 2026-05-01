@@ -9,6 +9,11 @@ from concurrent.futures import ProcessPoolExecutor
 from agentic_api.schemas import FetchRequest, FetchResponse, SearchFetchRequest, SearchFetchResponse
 from agentic_api.auth import validate_api_key_and_rate_limit
 from core.stages.dataclear import run_dataclear_job
+import logging
+
+# Setup logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger("AgenticAPI")
 
 router = APIRouter()
 
@@ -136,58 +141,74 @@ async def search_and_fetch(
     request: SearchFetchRequest,
     customer_id: str = Depends(validate_api_key_and_rate_limit)
 ):
-    start_time = time.time()
-    tavily_api_key = os.getenv("TAVILY_API_KEY")
-    if not tavily_api_key:
-        raise HTTPException(status_code=500, detail="TAVILY_API_KEY missing")
+    try:
+        start_time = time.time()
         
-    async with aiohttp.ClientSession() as session:
-        async with session.post("https://api.tavily.com/search", json={"api_key": tavily_api_key, "query": request.query, "max_results": 2}) as resp:
-            if resp.status != 200:
-                raise HTTPException(status_code=502, detail="Tavily Failed")
-            data = await resp.json()
-            urls = [r.get("url") for r in data.get("results", []) if r.get("url")]
+        # Recarga forçada do ENV para garantir que a chave esteja lá (Resiliência)
+        from dotenv import load_dotenv
+        load_dotenv()
+        
+        tavily_api_key = os.getenv("TAVILY_API_KEY")
+        if not tavily_api_key:
+            raise HTTPException(status_code=500, detail="TAVILY_API_KEY missing in .env")
             
-    if not urls:
-        raise HTTPException(status_code=404, detail="No URLs found")
-
-    async def fetch_safe(u):
-        try:
-            if request.force_stealth:
-                return {"url": u, "html": await _fetch_curlcffi(u, 15)}
-            else:
-                return {"url": u, "html": await _fetch_aiohttp(u, 15)}
-        except:
-            return None
-
-    fetch_results = await asyncio.gather(*(fetch_safe(u) for u in urls))
-    valid_fetches = [f for f in fetch_results if f]
+        async with aiohttp.ClientSession() as session:
+            async with session.post("https://api.tavily.com/search", json={"api_key": tavily_api_key, "query": request.query, "max_results": 2}) as resp:
+                if resp.status != 200:
+                    tavily_err = await resp.text()
+                    raise HTTPException(status_code=502, detail=f"Tavily API Failed: {tavily_err}")
+                data = await resp.json()
+                urls = [r.get("url") for r in data.get("results", []) if r.get("url")]
+                
+        if not urls:
+            raise HTTPException(status_code=404, detail="O Radar não encontrou nenhuma URL relevante para esta busca.")
     
-    if not valid_fetches:
-        raise HTTPException(status_code=502, detail="All fetches failed")
-
-    loop = asyncio.get_running_loop()
-    markdown_parts = []
-    urls_processed = []
-    config = {"archetype": "blog", "fidelity_threshold": request.fidelity_threshold, "allowed_domains": "*"}
+        async def fetch_safe(u):
+            try:
+                if request.force_stealth:
+                    return {"url": u, "html": await _fetch_curlcffi(u, 15)}
+                else:
+                    return {"url": u, "html": await _fetch_aiohttp(u, 15)}
+            except Exception as e:
+                logger.error(f"Falha ao baixar {u}: {e}")
+                return None
     
-    for f in valid_fetches:
-        try:
-            res = await loop.run_in_executor(process_pool, run_dataclear_job, f["html"], f["url"], "L0", config, "radar", "mission")
-            entries = res.get("dataset_entries", [])
-            if entries:
-                md = entries[0].get("data", {}).get("markdown_body", "")
-                if md:
-                    markdown_parts.append(f"# Fonte: {f['url']}\n{md}")
-                    urls_processed.append(f['url'])
-        except: continue
-
-    if not markdown_parts:
-        raise HTTPException(status_code=500, detail="Extraction failed")
-
-    return SearchFetchResponse(
-        query=request.query,
-        urls_processed=urls_processed,
-        processing_ms=int((time.time() - start_time) * 1000),
-        consolidated_markdown="\n\n---\n\n".join(markdown_parts)
-    )
+        fetch_results = await asyncio.gather(*(fetch_safe(u) for u in urls))
+        valid_fetches = [f for f in fetch_results if f]
+        
+        if not valid_fetches:
+            raise HTTPException(status_code=502, detail="As fontes encontradas estão inacessíveis no momento.")
+    
+        loop = asyncio.get_running_loop()
+        markdown_parts = []
+        urls_processed = []
+        # Restaurando a régua de elite (0.6) conforme solicitado
+        config = {"archetype": "blog", "fidelity_threshold": 0.6, "allowed_domains": "*"}
+        
+        for f in valid_fetches:
+            try:
+                res = await loop.run_in_executor(process_pool, run_dataclear_job, f["html"], f["url"], "L0", config, "radar", "mission")
+                entries = res.get("dataset_entries", [])
+                if entries:
+                    md = entries[0].get("data", {}).get("markdown_body", "")
+                    if md:
+                        markdown_parts.append(f"# Fonte: {f['url']}\n{md}")
+                        urls_processed.append(f['url'])
+            except Exception as e:
+                logger.error(f"Erro na limpeza da URL {f['url']}: {e}")
+                continue
+    
+        if not markdown_parts:
+            raise HTTPException(status_code=404, detail="O conteúdo encontrado não passou no filtro de qualidade (Fidelidade < 0.2).")
+    
+        return SearchFetchResponse(
+            query=request.query,
+            urls_processed=urls_processed,
+            processing_ms=int((time.time() - start_time) * 1000),
+            consolidated_markdown="\n\n---\n\n".join(markdown_parts)
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"CRITICAL ERROR IN RADAR: {e}")
+        raise HTTPException(status_code=500, detail=f"Erro Crítico no Radar: {str(e)}")

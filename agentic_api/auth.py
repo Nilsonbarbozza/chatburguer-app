@@ -41,26 +41,33 @@ async def validate_api_key_and_rate_limit(api_key: str = Security(API_KEY_HEADER
     redis_key = f"ratelimit:{customer_id}"
     unique_member = f"{current_time}:{uuid.uuid4()}"
     
-    # Pipeline transacional atômico (Garante que ler/escrever aconteça num bloco só)
-    pipeline = rm.client.pipeline(transaction=True)
-    
-    # 1. Limpa as requisições antigas
-    pipeline.zremrangebyscore(redis_key, 0, window_start)
-    # 2. Adiciona a requisição atual com UUID (evitando sobrescrita no mesmo milissegundo)
-    pipeline.zadd(redis_key, {unique_member: current_time})
-    # 3. Conta quantas restam
-    pipeline.zcard(redis_key)
-    # 4. Renova a expiração
-    pipeline.expire(redis_key, 60)
-    
-    results = await pipeline.execute()
-    request_count = results[2] # O resultado do zcard é o terceiro comando
-    
-    if request_count > RATE_LIMIT_MAX_REQUESTS:
-        raise HTTPException(
-            status_code=429, 
-            detail=f"Too Many Requests: Enterprise limit is {RATE_LIMIT_MAX_REQUESTS} requests per minute."
-        )
+    try:
+        # Pipeline transacional atômico
+        pipeline = rm.client.pipeline(transaction=True)
+        
+        # 1. Limpa as requisições antigas
+        pipeline.zremrangebyscore(redis_key, 0, window_start)
+        # 2. Adiciona a requisição atual com UUID
+        pipeline.zadd(redis_key, {unique_member: current_time})
+        # 3. Conta quantas restam
+        pipeline.zcard(redis_key)
+        # 4. Renova a expiração
+        pipeline.expire(redis_key, 60)
+        
+        results = await pipeline.execute()
+        request_count = results[2]
+        
+        if request_count > RATE_LIMIT_MAX_REQUESTS:
+            raise HTTPException(
+                status_code=429, 
+                detail=f"Too Many Requests: Enterprise limit is {RATE_LIMIT_MAX_REQUESTS} requests per minute."
+            )
+    except HTTPException:
+        raise
+    except Exception as e:
+        # Fallback: Se o Redis falhar, permitimos a requisição mas logamos o erro.
+        import logging
+        logging.error(f"⚠️ Redis Rate Limiter Offline: {e}. Permitindo requisição em modo degradado.")
         
     return customer_id
 
