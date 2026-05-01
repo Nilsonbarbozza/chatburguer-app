@@ -1,11 +1,11 @@
 import time
 import asyncio
 import aiohttp
+import os
 from curl_cffi.requests import AsyncSession as CurlCffiSession
 from fastapi import APIRouter, Depends, HTTPException
 from concurrent.futures import ProcessPoolExecutor
 
-import os
 from agentic_api.schemas import FetchRequest, FetchResponse, SearchFetchRequest, SearchFetchResponse
 from agentic_api.auth import validate_api_key_and_rate_limit
 from core.stages.dataclear import run_dataclear_job
@@ -86,11 +86,10 @@ async def fetch_url(
         html_content = await asyncio.wait_for(fetch_strategy(), timeout=timeout_seconds)
         
         # 2. Despacho de Processamento Pesado (CPU-Bound)
-        # Passa o html_content pro ProcessPoolExecutor. A thread principal fica livre.
         config = {
             "archetype": request.archetype,
             "fidelity_threshold": request.fidelity_threshold,
-            "allowed_domains": "*" # API não restringe domínio
+            "allowed_domains": "*"
         }
         
         loop = asyncio.get_running_loop()
@@ -105,7 +104,6 @@ async def fetch_url(
             
         entries = clear_result.get("dataset_entries", [])
         
-        # Se a página foi purificada abaixo do fidelity_threshold, volta vazio
         if not entries:
             markdown_body = ""
             semantic_chunks = []
@@ -127,14 +125,11 @@ async def fetch_url(
         )
         
     except asyncio.TimeoutError:
-        raise HTTPException(
-            status_code=504, 
-            detail=f"Gateway Timeout: Extraction took longer than {timeout_seconds}s. Try increasing timeout with render_js if needed."
-        )
+        raise HTTPException(status_code=504, detail="Gateway Timeout")
     except HTTPException:
-        raise # Repassa as exceções de bloco e limite que já estruturamos
+        raise
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Internal Extraction Error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/search_and_fetch", response_model=SearchFetchResponse)
 async def search_and_fetch(
@@ -144,21 +139,19 @@ async def search_and_fetch(
     start_time = time.time()
     tavily_api_key = os.getenv("TAVILY_API_KEY")
     if not tavily_api_key:
-        raise HTTPException(status_code=500, detail="TAVILY_API_KEY not configured.")
+        raise HTTPException(status_code=500, detail="TAVILY_API_KEY missing")
         
-    # 1. Radar (Tavily)
     async with aiohttp.ClientSession() as session:
         async with session.post("https://api.tavily.com/search", json={"api_key": tavily_api_key, "query": request.query, "max_results": 2}) as resp:
             if resp.status != 200:
-                raise HTTPException(status_code=502, detail="Tavily Search Failed")
+                raise HTTPException(status_code=502, detail="Tavily Failed")
             data = await resp.json()
             urls = [r.get("url") for r in data.get("results", []) if r.get("url")]
             
     if not urls:
-        raise HTTPException(status_code=404, detail="No relevant URLs found.")
+        raise HTTPException(status_code=404, detail="No URLs found")
 
-    # 2. Fetch Paralelo usando seus helpers originais
-    async def fetch_wrapper(u):
+    async def fetch_safe(u):
         try:
             if request.force_stealth:
                 return {"url": u, "html": await _fetch_curlcffi(u, 15)}
@@ -167,18 +160,15 @@ async def search_and_fetch(
         except:
             return None
 
-    fetch_results = await asyncio.gather(*(fetch_wrapper(u) for u in urls))
+    fetch_results = await asyncio.gather(*(fetch_safe(u) for u in urls))
     valid_fetches = [f for f in fetch_results if f]
     
     if not valid_fetches:
-        raise HTTPException(status_code=502, detail="All fetches failed.")
+        raise HTTPException(status_code=502, detail="All fetches failed")
 
-    # 3. DataClear em Pool
     loop = asyncio.get_running_loop()
     markdown_parts = []
     urls_processed = []
-    
-    # Usando o arquétipo 'blog' que é o padrão de performance do seu sistema
     config = {"archetype": "blog", "fidelity_threshold": request.fidelity_threshold, "allowed_domains": "*"}
     
     for f in valid_fetches:
@@ -190,11 +180,10 @@ async def search_and_fetch(
                 if md:
                     markdown_parts.append(f"# Fonte: {f['url']}\n{md}")
                     urls_processed.append(f['url'])
-        except:
-            continue
+        except: continue
 
     if not markdown_parts:
-        raise HTTPException(status_code=500, detail="Extraction failed.")
+        raise HTTPException(status_code=500, detail="Extraction failed")
 
     return SearchFetchResponse(
         query=request.query,
@@ -202,4 +191,3 @@ async def search_and_fetch(
         processing_ms=int((time.time() - start_time) * 1000),
         consolidated_markdown="\n\n---\n\n".join(markdown_parts)
     )
-
