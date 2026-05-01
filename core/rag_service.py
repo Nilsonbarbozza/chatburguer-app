@@ -179,13 +179,90 @@ Pergunta Reescrita para Busca:"""
 
     def generate_response(self, messages: List[Dict[str, str]]) -> Dict[str, Any]:
         """
-        Final generation step using the enriched message stack.
+        Agentic Generation: Decides if it needs more context via WebFetch API.
         """
-        logger.info("🚀 NeuralRAG: Generating final response...")
-        response = self._call_llm(messages)
+        logger.info("🚀 NeuralRAG: Initiating Agentic Generation...")
         
+        # Definição das ferramentas disponíveis para o Agente
+        tools = [
+            {
+                "type": "function",
+                "function": {
+                    "name": "neuralsafety_webfetch",
+                    "description": "Extrai conteúdo de artigos, notícias e sites corporativos em Markdown limpo. Use SEMPRE que o usuário fornecer uma URL ou quando o contexto do RAG for insuficiente sobre um link específico.",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "url": {"type": "string", "description": "A URL completa do site alvo."},
+                            "force_stealth": {"type": "boolean", "description": "Ative se o site tiver bloqueios fortes."}
+                        },
+                        "required": ["url"]
+                    }
+                }
+            }
+        ]
+
+        # 1ª Tentativa: O modelo decide se responde ou usa ferramenta
+        response = self.client_llm.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=messages,
+            tools=tools,
+            tool_choice="auto",
+            temperature=0.1
+        )
+
+        response_message = response.choices[0].message
+        tool_calls = response_message.tool_calls
+
+        # Se o Agente decidiu que precisa de reforço (WebFetch)
+        if tool_calls:
+            messages.append(response_message)
+            
+            for tool_call in tool_calls:
+                if tool_call.function.name == "neuralsafety_webfetch":
+                    import json, requests
+                    args = json.loads(tool_call.function.arguments)
+                    url = args.get("url")
+                    
+                    # Chamada interna para a nossa API (Batalhão)
+                    fetch_content = self._internal_webfetch(url, args.get("force_stealth", False))
+                    
+                    messages.append({
+                        "tool_call_id": tool_call.id,
+                        "role": "tool",
+                        "name": "neuralsafety_webfetch",
+                        "content": fetch_content
+                    })
+            
+            # 2ª Chamada: Agora com o conteúdo extraído injetado
+            logger.info("🧠 NeuralRAG: Injetando extração em tempo real na resposta final...")
+            response = self.client_llm.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=messages
+            )
+
         return {
             "content": response.choices[0].message.content,
             "usage": response.usage
         }
+
+    def _internal_webfetch(self, url: str, force_stealth: bool) -> str:
+        """Helper para bater na API interna de WebFetch."""
+        api_url = "http://localhost:8000/api/v1/fetch"
+        api_key = "sk-neuralsafety-enterprise-v1"
+        
+        logger.info(f"⚡ [AGENTIC RAG] Buscando reforço externo: {url}")
+        
+        try:
+            import requests
+            headers = {"X-API-Key": api_key, "Content-Type": "application/json"}
+            payload = {"url": url, "force_stealth": force_stealth}
+            
+            res = requests.post(api_url, json=payload, headers=headers, timeout=30)
+            res.raise_for_status()
+            return res.json().get("markdown_body", "Conteúdo vazio ou erro na extração.")
+        except Exception as e:
+            logger.error(f"Erro na integração Agentic: {e}")
+            return f"Erro ao acessar fonte externa: {str(e)}"
+
 

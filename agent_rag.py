@@ -133,7 +133,7 @@ def run_agent(user_query: str):
 # ==========================================
 if __name__ == "__main__":
     # Teste de Estresse Comercial
-    alvo = "https://blog.dsacademy.com.br/por-que-os-modelos-de-machine-learning-falham-sem-business-analytics/"
-    pergunta = f"Leia este artigo ({alvo}) e me explique em 3 tópicos curtos por que os modelos falham."
+    alvo = "https://blog.dsacademy.com.br/7-maneiras-que-os-cientistas-de-dados-usam-estatistica/"
+    pergunta = f"Leia este artigo ({alvo}) e me explique resumidamente como a estatistica é utilizada na ciencia de dados."
     
     run_agent(pergunta)
