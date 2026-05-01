@@ -199,6 +199,21 @@ Pergunta Reescrita para Busca:"""
                         "required": ["url"]
                     }
                 }
+            },
+            {
+                "type": "function",
+                "function": {
+                    "name": "neuralsafety_search_and_fetch",
+                    "description": "Busca na internet por eventos recentes e extrai o conteúdo das duas melhores fontes. Use quando o usuário fizer perguntas sobre notícias, eventos atuais ou pedir pesquisas SEM fornecer um link.",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "query": { "type": "string", "description": "A frase de busca otimizada (ex: 'novas regulamentações de IA na Europa 2026')." },
+                            "force_stealth": { "type": "boolean" }
+                        },
+                        "required": ["query"]
+                    }
+                }
             }
         ]
 
@@ -219,8 +234,8 @@ Pergunta Reescrita para Busca:"""
             messages.append(response_message)
             
             for tool_call in tool_calls:
+                import json
                 if tool_call.function.name == "neuralsafety_webfetch":
-                    import json, requests
                     args = json.loads(tool_call.function.arguments)
                     url = args.get("url")
                     
@@ -230,7 +245,21 @@ Pergunta Reescrita para Busca:"""
                     messages.append({
                         "tool_call_id": tool_call.id,
                         "role": "tool",
-                        "name": "neuralsafety_webfetch",
+                        "name": tool_call.function.name,
+                        "content": fetch_content
+                    })
+                
+                elif tool_call.function.name == "neuralsafety_search_and_fetch":
+                    args = json.loads(tool_call.function.arguments)
+                    query = args.get("query")
+                    
+                    # Chamada interna para a nossa API de Busca e Extração
+                    fetch_content = self._internal_search_and_fetch(query, args.get("force_stealth", False))
+                    
+                    messages.append({
+                        "tool_call_id": tool_call.id,
+                        "role": "tool",
+                        "name": tool_call.function.name,
                         "content": fetch_content
                     })
             
@@ -251,7 +280,7 @@ Pergunta Reescrita para Busca:"""
         api_url = "http://localhost:8000/api/v1/fetch"
         api_key = "sk-neuralsafety-enterprise-v1"
         
-        logger.info(f"⚡ [AGENTIC RAG] Buscando reforço externo: {url}")
+        logger.info(f"⚡ [AGENTIC RAG] Buscando reforço externo direto: {url}")
         
         try:
             import requests
@@ -265,4 +294,24 @@ Pergunta Reescrita para Busca:"""
             logger.error(f"Erro na integração Agentic: {e}")
             return f"Erro ao acessar fonte externa: {str(e)}"
 
-
+    def _internal_search_and_fetch(self, query: str, force_stealth: bool) -> str:
+        """Helper para bater na API interna de Busca e Extração."""
+        api_url = "http://localhost:8000/api/v1/search_and_fetch"
+        api_key = "sk-neuralsafety-enterprise-v1"
+        
+        logger.info(f"📡 [AGENTIC RAG] Acionando Radar para: '{query}'")
+        
+        try:
+            import requests
+            headers = {"X-API-Key": api_key, "Content-Type": "application/json"}
+            payload = {"query": query, "force_stealth": force_stealth}
+            
+            res = requests.post(api_url, json=payload, headers=headers, timeout=45)
+            res.raise_for_status()
+            data = res.json()
+            urls = data.get("urls_processed", [])
+            logger.info(f"✅ Radar concluiu em {data.get('processing_ms')}ms. URLs processadas: {urls}")
+            return data.get("consolidated_markdown", "Nenhum conteúdo pôde ser extraído da busca.")
+        except Exception as e:
+            logger.error(f"Erro no Radar Agentic: {e}")
+            return f"Erro ao realizar busca e extração: {str(e)}"
