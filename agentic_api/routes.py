@@ -5,7 +5,8 @@ from curl_cffi.requests import AsyncSession as CurlCffiSession
 from fastapi import APIRouter, Depends, HTTPException
 from concurrent.futures import ProcessPoolExecutor
 
-from agentic_api.schemas import FetchRequest, FetchResponse
+import os
+from agentic_api.schemas import FetchRequest, FetchResponse, SearchFetchRequest, SearchFetchResponse
 from agentic_api.auth import validate_api_key_and_rate_limit
 from core.stages.dataclear import run_dataclear_job
 
@@ -134,3 +135,112 @@ async def fetch_url(
         raise # Repassa as exceções de bloco e limite que já estruturamos
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Internal Extraction Error: {str(e)}")
+
+@router.post("/search_and_fetch", response_model=SearchFetchResponse)
+async def search_and_fetch(
+    request: SearchFetchRequest,
+    customer_id: str = Depends(validate_api_key_and_rate_limit)
+):
+    start_time = time.time()
+    
+    # 1. Fase: Radar (Integração Tavily)
+    tavily_api_key = os.getenv("TAVILY_API_KEY")
+    if not tavily_api_key:
+        raise HTTPException(status_code=500, detail="TAVILY_API_KEY not configured on server.")
+        
+    tavily_url = "https://api.tavily.com/search"
+    tavily_payload = {
+        "api_key": tavily_api_key,
+        "query": request.query,
+        "search_depth": "basic",
+        "include_answer": False,
+        "max_results": 2
+    }
+    
+    urls_to_fetch = []
+    async with aiohttp.ClientSession() as session:
+        async with session.post(tavily_url, json=tavily_payload) as resp:
+            if resp.status != 200:
+                error_body = await resp.text()
+                raise HTTPException(status_code=502, detail=f"Tavily Search Failed: {error_body}")
+            data = await resp.json()
+            urls_to_fetch = [result.get("url") for result in data.get("results", []) if result.get("url")]
+            
+    if not urls_to_fetch:
+        raise HTTPException(status_code=404, detail="No relevant URLs found for the given query.")
+
+    # 2. Fase: Ataque Simultâneo (Fetch Parallel)
+    timeout_seconds = 15
+    executor_used = "L12-curlcffi" if request.force_stealth else "L0-aiohttp"
+    
+    async def fetch_single_url(url_str: str) -> dict:
+        try:
+            if request.force_stealth:
+                html = await asyncio.wait_for(_fetch_curlcffi(url_str, timeout_seconds), timeout=timeout_seconds)
+            else:
+                html = await asyncio.wait_for(_fetch_aiohttp(url_str, timeout_seconds), timeout=timeout_seconds)
+            return {"url": url_str, "html": html, "success": True, "error": None}
+        except Exception as e:
+            return {"url": url_str, "html": None, "success": False, "error": str(e)}
+
+    fetch_results = await asyncio.gather(*(fetch_single_url(u) for u in urls_to_fetch), return_exceptions=True)
+    
+    successful_fetches = [res for res in fetch_results if isinstance(res, dict) and res["success"]]
+    failed_fetches = [res for res in fetch_results if isinstance(res, dict) and not res["success"]]
+    
+    if not successful_fetches:
+        error_details = ", ".join([f"{f['url']}: {f['error']}" for f in failed_fetches])
+        raise HTTPException(status_code=502, detail=f"All fetches failed. Details: {error_details}")
+
+    # 3. Fase: DataClear (Pool Execution)
+    loop = asyncio.get_running_loop()
+    config = {
+        "archetype": "article",
+        "fidelity_threshold": request.fidelity_threshold,
+        "allowed_domains": "*"
+    }
+    
+    clear_tasks = []
+    for fetch_res in successful_fetches:
+        task = loop.run_in_executor(
+            process_pool, 
+            run_dataclear_job,
+            fetch_res["html"], fetch_res["url"], executor_used, config, "search-and-fetch", "radar-mission"
+        )
+        clear_tasks.append((fetch_res["url"], task))
+        
+    markdown_parts = []
+    urls_processed = []
+    
+    for url, task in clear_tasks:
+        try:
+            clear_result = await task
+            entries = clear_result.get("dataset_entries", [])
+            if entries:
+                data = entries[0].get("data", {})
+                md_body = data.get("markdown_body", "")
+                title = data.get("title", url) # Try to get title, fallback to URL
+                if md_body:
+                    markdown_parts.append(f"# Fonte: {title}\n{md_body}")
+                    urls_processed.append(url)
+        except Exception as e:
+            failed_fetches.append({"url": url, "error": f"DataClear failed: {str(e)}"})
+
+    if not markdown_parts:
+        raise HTTPException(status_code=500, detail="DataClear failed to extract content from all fetched URLs.")
+
+    consolidated_markdown = "\n\n---\n\n".join(markdown_parts)
+    processing_ms = int((time.time() - start_time) * 1000)
+    
+    error_message = None
+    if failed_fetches:
+        error_message = "Some sources failed: " + ", ".join([f"{f['url']} ({f['error']})" for f in failed_fetches])
+
+    return SearchFetchResponse(
+        query=request.query,
+        urls_processed=urls_processed,
+        processing_ms=processing_ms,
+        consolidated_markdown=consolidated_markdown,
+        error_message=error_message
+    )
+

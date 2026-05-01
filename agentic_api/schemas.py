@@ -48,3 +48,21 @@ class FetchResponse(BaseModel):
     processing_ms: int = Field(..., description="Tempo total de processamento em milissegundos.")
     executor_used: str = Field(..., description="O arsenal utilizado na extração (L0-aiohttp, L12-curlcffi, L34-playwright).")
     error_message: Optional[str] = Field(None, description="Detalhes do erro, caso o status não seja success.")
+
+class SearchFetchRequest(BaseModel):
+    """
+    Contrato de Entrada para a busca radar combinada com extração.
+    """
+    query: str = Field(..., description="A frase de busca otimizada para o radar (Tavily).")
+    force_stealth: bool = Field(default=False, description="Ativa evasão pesada nas URLs descobertas.")
+    fidelity_threshold: float = Field(default=0.6, description="Limiar de fidelidade para o DataClear.")
+
+class SearchFetchResponse(BaseModel):
+    """
+    Contrato de Saída para o tiro duplo consolidado.
+    """
+    query: str = Field(..., description="A query que originou a busca.")
+    urls_processed: List[str] = Field(..., description="As URLs que foram extraídas com sucesso.")
+    processing_ms: int = Field(..., description="Tempo total desde a busca até a limpeza final.")
+    consolidated_markdown: str = Field(..., description="Markdown consolidado de todas as fontes válidas.")
+    error_message: Optional[str] = Field(None, description="Avisos sobre fontes que falharam ou erros gerais.")
