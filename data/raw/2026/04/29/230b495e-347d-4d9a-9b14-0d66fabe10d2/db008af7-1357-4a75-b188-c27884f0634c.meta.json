@@ -1,0 +1,16 @@
+{
+  "capture_id": "db008af7-1357-4a75-b188-c27884f0634c",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/o-papel-do-arquiteto-de-dados-no-cenario-atual-de-dados/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:46.154051",
+  "content_hash": "97459cb709e81c413c974a62abdaf0b765968be9ddd833be6fd0c8a027dac86a",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/db008af7-1357-4a75-b188-c27884f0634c.txt.gz"
+  }
+}

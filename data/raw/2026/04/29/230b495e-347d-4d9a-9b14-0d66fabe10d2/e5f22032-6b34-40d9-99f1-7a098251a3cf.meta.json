@@ -1,0 +1,16 @@
+{
+  "capture_id": "e5f22032-6b34-40d9-99f1-7a098251a3cf",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/construindo-um-centro-de-excelencia-em-engenharia-de-dados-parte_3/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:40.741379",
+  "content_hash": "7f2eafcae59986634bdd0c6ad52e8eac23b1413b7f78a6b7689922a94d16a7bb",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/e5f22032-6b34-40d9-99f1-7a098251a3cf.txt.gz"
+  }
+}

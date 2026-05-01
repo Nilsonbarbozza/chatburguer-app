@@ -1,0 +1,16 @@
+{
+  "capture_id": "b7a92743-f021-413b-a2e8-89e251b3961a",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/ia-aplicada-ao-servico-publico-do-e-gov-para-o-ai-gov/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:22.921409",
+  "content_hash": "e25962042114573cf70ac2611db32fd81f012f098c6e7103740ba91f4fcbb433",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/b7a92743-f021-413b-a2e8-89e251b3961a.txt.gz"
+  }
+}

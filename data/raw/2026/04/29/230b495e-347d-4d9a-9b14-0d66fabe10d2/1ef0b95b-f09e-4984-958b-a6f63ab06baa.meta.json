@@ -1,0 +1,16 @@
+{
+  "capture_id": "1ef0b95b-f09e-4984-958b-a6f63ab06baa",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/por-que-a-linguagem-python-e-tao-popular-em-machine-learning-e-inteligencia-artificial/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:14.132542",
+  "content_hash": "70f5f714cc0a32f070ef8abe61ac1162b55631a3038a60abac4600963b4093a6",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/1ef0b95b-f09e-4984-958b-a6f63ab06baa.txt.gz"
+  }
+}

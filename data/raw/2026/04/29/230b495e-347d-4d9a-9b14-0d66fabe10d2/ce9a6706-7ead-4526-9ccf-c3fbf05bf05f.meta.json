@@ -1,0 +1,16 @@
+{
+  "capture_id": "ce9a6706-7ead-4526-9ccf-c3fbf05bf05f",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/guia-definitivo-sobre-protocolos-e-frameworks-de-agentes-de-ia-parte-vi-sintese-comparacao-recomendacoes-e-futuro/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:20.797051",
+  "content_hash": "6236bd676d963b8f8dec0308300a8a5f0003ac95fc615d7da0f2d82ee10db523",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/ce9a6706-7ead-4526-9ccf-c3fbf05bf05f.txt.gz"
+  }
+}

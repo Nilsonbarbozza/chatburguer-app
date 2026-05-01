@@ -1,0 +1,16 @@
+{
+  "capture_id": "724c7e9f-0137-4975-9ac5-810f0d842cd9",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/ia-x-machine-learning-x-deep-learning-x-llm/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:20.791663",
+  "content_hash": "e334d03578249cbf03e76da9dbf1f309c55f4cf6b96ef55bdab7a42964ae0a0f",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/724c7e9f-0137-4975-9ac5-810f0d842cd9.txt.gz"
+  }
+}

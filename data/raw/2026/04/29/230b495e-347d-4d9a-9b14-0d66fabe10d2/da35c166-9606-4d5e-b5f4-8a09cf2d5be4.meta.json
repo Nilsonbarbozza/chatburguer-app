@@ -1,0 +1,16 @@
+{
+  "capture_id": "da35c166-9606-4d5e-b5f4-8a09cf2d5be4",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/governanca-de-dados-e-empreendedorismo-dois-novos-modulos-na_dsa/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:01.387736",
+  "content_hash": "9ff048988da2bba715f9d1d5a556adb79be67bd20e33d8f2e15585b6f41ca855",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/da35c166-9606-4d5e-b5f4-8a09cf2d5be4.txt.gz"
+  }
+}

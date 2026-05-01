@@ -1,0 +1,16 @@
+{
+  "capture_id": "57951ea7-78f0-42f0-8a53-c5e19f49d1f7",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/ia-generativa-e-llms-para-gestao-de-contratos/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:18.297966",
+  "content_hash": "6616cb3aa1aacc5b0c09551312deffdaa77024a1ed168274138af249cbc5b6f6",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/57951ea7-78f0-42f0-8a53-c5e19f49d1f7.txt.gz"
+  }
+}

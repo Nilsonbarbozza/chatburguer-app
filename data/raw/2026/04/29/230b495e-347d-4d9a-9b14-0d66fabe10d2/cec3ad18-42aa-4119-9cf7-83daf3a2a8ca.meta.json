@@ -1,0 +1,16 @@
+{
+  "capture_id": "cec3ad18-42aa-4119-9cf7-83daf3a2a8ca",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/llms-e-tipos-emergentes-de-modelos-de-linguagem/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:33.220484",
+  "content_hash": "c436a61983ae297e0f7377fde9a2bca422fa41fe7c55d753b5679fbb80ba9302",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/cec3ad18-42aa-4119-9cf7-83daf3a2a8ca.txt.gz"
+  }
+}

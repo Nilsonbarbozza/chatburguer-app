@@ -1,0 +1,16 @@
+{
+  "capture_id": "bf10f274-c830-44c7-b7c7-466b0a41e697",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/engenharia-de-dados-com-linguagem-scala/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:52.975698",
+  "content_hash": "823ed8aa84a58db67a346b3a344d555e0d4e3dd127fd876fc294c145e1cf2baf",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/bf10f274-c830-44c7-b7c7-466b0a41e697.txt.gz"
+  }
+}

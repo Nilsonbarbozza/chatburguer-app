@@ -1,0 +1,16 @@
+{
+  "capture_id": "55200ca8-e68b-4145-9f17-e2df64be63f2",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/trilha-de-aprendizagem-da-formacao-ai-automation-engineer-4-0/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:51.106316",
+  "content_hash": "d8017ecd4a7c6e789c0fc68ce4a1cfaa101cf75cac22865baab0039de0b07870",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/55200ca8-e68b-4145-9f17-e2df64be63f2.txt.gz"
+  }
+}

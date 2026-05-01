@@ -1,0 +1,16 @@
+{
+  "capture_id": "b1480d9c-10e4-4f10-ac1d-d8fa55e98c00",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/o-guia-definitivo-sobre-data-drift-estudos-de-caso/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:43.029801",
+  "content_hash": "586cde2fd7c7fe73125acf17fa08286ea7a9bdf867bd1f16f62c09af67644cb1",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/b1480d9c-10e4-4f10-ac1d-d8fa55e98c00.txt.gz"
+  }
+}

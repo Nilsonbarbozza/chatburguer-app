@@ -1,0 +1,16 @@
+{
+  "capture_id": "7beef347-3ffc-40f7-9116-f6971d028b13",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/o-que-e-data-quality-e-por-que-isso-e_importante/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:47.865091",
+  "content_hash": "92b5d8da671a3049226c6f7e6c93cd48fec6b43bbc18a50d0b2219e66f22a032",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/7beef347-3ffc-40f7-9116-f6971d028b13.txt.gz"
+  }
+}

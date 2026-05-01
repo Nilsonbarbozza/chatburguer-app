@@ -1,0 +1,16 @@
+{
+  "capture_id": "1eeb324e-c063-496e-8a6a-c977ef41672f",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/pensando-em-migrar-sua-carreira-para-data-science/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:01.703611",
+  "content_hash": "808ffb1412ef308f0045d0048756b39bb04b67202c2e111e5ad4c0e7c5f1667a",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/1eeb324e-c063-496e-8a6a-c977ef41672f.txt.gz"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "capture_id": "faeebb76-0479-4020-8f8c-94978cc419ac",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/conheca-o-analytics-engineer-engenheiro-analitico-definicao-responsabilidades-habilidades-e-salario/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:37.944320",
+  "content_hash": "88a83fec855d43be7dcefb260c956059e0400c40c27b3641b07954d4e98482ea",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/faeebb76-0479-4020-8f8c-94978cc419ac.txt.gz"
+  }
+}

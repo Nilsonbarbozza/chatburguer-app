@@ -1,0 +1,16 @@
+{
+  "capture_id": "6df86c24-9c18-4ed7-98ae-1c9cf1e67fab",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/5-erros-de-portfolio-que-impedem-cientistas-de-dados-de-serem-contratados/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:17:47.033645",
+  "content_hash": "f13cf6696975616b865dcc6890377b3fb6f33096019eb8d730c3a4712985c663",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/6df86c24-9c18-4ed7-98ae-1c9cf1e67fab.txt.gz"
+  }
+}

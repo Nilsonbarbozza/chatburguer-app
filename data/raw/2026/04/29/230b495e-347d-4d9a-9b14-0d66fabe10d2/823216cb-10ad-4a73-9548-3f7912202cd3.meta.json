@@ -1,0 +1,16 @@
+{
+  "capture_id": "823216cb-10ad-4a73-9548-3f7912202cd3",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/arquitetura-de-dados-moderna-cache-documentos-e-grafos-com-redis-mongodb-e-neo4j/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:19.968426",
+  "content_hash": "96239c1a574583be5b8c9da644929338fe3e28e4e192f2292c373e6f81d50ff1",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/823216cb-10ad-4a73-9548-3f7912202cd3.txt.gz"
+  }
+}

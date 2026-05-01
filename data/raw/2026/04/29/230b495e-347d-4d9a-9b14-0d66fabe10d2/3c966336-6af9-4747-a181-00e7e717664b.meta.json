@@ -1,0 +1,16 @@
+{
+  "capture_id": "3c966336-6af9-4747-a181-00e7e717664b",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/trilha-de-aprendizagem-da-formacao-analista-de-inteligencia-de-negocios-4-0/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:57.408943",
+  "content_hash": "0e03cbb9c689722b5691f1aca334eddd0da3803d53bd9fcdda1047592078dd2f",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/3c966336-6af9-4747-a181-00e7e717664b.txt.gz"
+  }
+}

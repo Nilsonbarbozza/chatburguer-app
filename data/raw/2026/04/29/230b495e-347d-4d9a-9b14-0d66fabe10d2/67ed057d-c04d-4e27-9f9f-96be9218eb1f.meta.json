@@ -1,0 +1,16 @@
+{
+  "capture_id": "67ed057d-c04d-4e27-9f9f-96be9218eb1f",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/oracle-ai-database-engineer-como-a-ia-esta-reinventando-o-administrador-de-banco-de-dados-oracle/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:01.192236",
+  "content_hash": "b7f2e130e9895274067add2c9099f1c8ef5e022d30cd1d6662825aca49ae0a88",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/67ed057d-c04d-4e27-9f9f-96be9218eb1f.txt.gz"
+  }
+}

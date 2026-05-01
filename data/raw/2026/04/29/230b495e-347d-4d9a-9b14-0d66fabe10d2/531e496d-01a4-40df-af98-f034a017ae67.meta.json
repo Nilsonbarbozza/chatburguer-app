@@ -1,0 +1,16 @@
+{
+  "capture_id": "531e496d-01a4-40df-af98-f034a017ae67",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/guia-definitivo-para-migracao-de-carreira-como-conquistar-seu-lugar-na-area-de-dados-parte-6/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:11.223829",
+  "content_hash": "43cb8eabbc8640c68f38ad573a2407df86803d8bb1a966119a82cc826d6a90dd",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/531e496d-01a4-40df-af98-f034a017ae67.txt.gz"
+  }
+}

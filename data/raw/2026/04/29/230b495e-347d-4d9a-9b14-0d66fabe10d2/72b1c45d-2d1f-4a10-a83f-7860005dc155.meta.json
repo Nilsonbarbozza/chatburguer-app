@@ -1,0 +1,16 @@
+{
+  "capture_id": "72b1c45d-2d1f-4a10-a83f-7860005dc155",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/camada-semantica-na-arquitetura-de-dados-conceito-beneficios-e-importancia/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:27.145014",
+  "content_hash": "37c51d05c73107b7d3249748c95fe87ef439580078b452d79fe27ce65d68dede",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/72b1c45d-2d1f-4a10-a83f-7860005dc155.txt.gz"
+  }
+}

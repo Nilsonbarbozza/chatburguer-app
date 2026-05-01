@@ -1,0 +1,16 @@
+{
+  "capture_id": "1bd755f1-a3c5-47af-a449-20c3ca3fc141",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/o-que-e_dataops/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:53.448748",
+  "content_hash": "ba6dfc78a64d34ec7a70c26735fe2f1f5c347320fda4c2f1574116b959578d41",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/1bd755f1-a3c5-47af-a449-20c3ca3fc141.txt.gz"
+  }
+}

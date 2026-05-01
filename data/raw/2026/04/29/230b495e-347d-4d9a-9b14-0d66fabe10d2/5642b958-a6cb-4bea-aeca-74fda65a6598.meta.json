@@ -1,0 +1,16 @@
+{
+  "capture_id": "5642b958-a6cb-4bea-aeca-74fda65a6598",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/como-precificar-um-projeto-de-data-science-machine-learning-ou-ia/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:31.799852",
+  "content_hash": "0c774e54be1f1d4e9516db5dcf5c107b6877c0421b761542084e1a79856fcf82",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/5642b958-a6cb-4bea-aeca-74fda65a6598.txt.gz"
+  }
+}

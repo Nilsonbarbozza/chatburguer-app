@@ -1,0 +1,16 @@
+{
+  "capture_id": "f29da456-6670-4327-affa-65907658710c",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/7-conceitos-estatisticos-que-todo-cientista-de-dados-deve-dominar/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:17:50.051973",
+  "content_hash": "826bfe2da8e9b73fbec8bb1c145d4d21d39a87d253ca8a22c31c714c099183af",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/f29da456-6670-4327-affa-65907658710c.txt.gz"
+  }
+}

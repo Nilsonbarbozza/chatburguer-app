@@ -1,0 +1,16 @@
+{
+  "capture_id": "8fbe9cae-05ff-4f3e-a2d4-fc85ed5aa7ea",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/por-que-voce-deve-considerar-a-carreira-de-analista-de_dados/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:07.154053",
+  "content_hash": "6a29599e5a9bc7190d19645f3606f836596a4bf20d6dd5d253d1ac0d52b9295a",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/8fbe9cae-05ff-4f3e-a2d4-fc85ed5aa7ea.txt.gz"
+  }
+}

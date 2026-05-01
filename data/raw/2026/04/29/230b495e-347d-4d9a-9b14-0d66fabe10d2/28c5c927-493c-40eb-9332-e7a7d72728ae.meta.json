@@ -1,0 +1,16 @@
+{
+  "capture_id": "28c5c927-493c-40eb-9332-e7a7d72728ae",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/llm-ensemble-para-mixture-of-agents-moa-colaboracao-de-multiplos-agentes-para-solucoes-cognitivas/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:30.347130",
+  "content_hash": "e55b42678985e6f436766d8e84d8fe027d9c53c7c2e3c40f03477aafa4916125",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/28c5c927-493c-40eb-9332-e7a7d72728ae.txt.gz"
+  }
+}

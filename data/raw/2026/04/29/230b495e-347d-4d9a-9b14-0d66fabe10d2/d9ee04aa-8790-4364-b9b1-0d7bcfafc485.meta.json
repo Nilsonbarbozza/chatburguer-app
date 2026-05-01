@@ -1,0 +1,16 @@
+{
+  "capture_id": "d9ee04aa-8790-4364-b9b1-0d7bcfafc485",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/sua-app-de-ia-vazou-dados-sensiveis-da-sua-empresa-5-riscos-de-seguranca-que-voce-nao-pode-ignorar/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:49.807094",
+  "content_hash": "9ca16a83cae3806ebf0c9b470be112cb363a34c46bb1f82c4bd490d6b3d5bf43",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/d9ee04aa-8790-4364-b9b1-0d7bcfafc485.txt.gz"
+  }
+}

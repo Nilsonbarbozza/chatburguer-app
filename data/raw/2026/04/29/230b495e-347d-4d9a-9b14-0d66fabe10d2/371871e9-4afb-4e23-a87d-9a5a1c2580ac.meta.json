@@ -1,0 +1,16 @@
+{
+  "capture_id": "371871e9-4afb-4e23-a87d-9a5a1c2580ac",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/10-dicas-de-como-usar-python-para-analise-eficiente-de-grandes-conjuntos-de-dados/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:17:39.378797",
+  "content_hash": "a490e0f96e91e7764d0cf62dc81dbd8c4e0146356f5ae671751935b24a7e3b79",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/371871e9-4afb-4e23-a87d-9a5a1c2580ac.txt.gz"
+  }
+}

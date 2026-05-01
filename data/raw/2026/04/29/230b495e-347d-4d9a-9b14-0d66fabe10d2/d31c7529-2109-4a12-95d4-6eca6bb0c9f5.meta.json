@@ -1,0 +1,16 @@
+{
+  "capture_id": "d31c7529-2109-4a12-95d4-6eca6bb0c9f5",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/trilha-de-aprendizagem-da-formacao-processamento-de-linguagem-natural-4-0/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:21:11.318969",
+  "content_hash": "d8327f64a3435f22f08c9a181cf9b62816a852976bca2a0658293eccb58cfae1",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/d31c7529-2109-4a12-95d4-6eca6bb0c9f5.txt.gz"
+  }
+}

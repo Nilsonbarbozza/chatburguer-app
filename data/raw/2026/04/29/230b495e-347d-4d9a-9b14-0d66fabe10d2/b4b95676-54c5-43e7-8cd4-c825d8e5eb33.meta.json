@@ -1,0 +1,16 @@
+{
+  "capture_id": "b4b95676-54c5-43e7-8cd4-c825d8e5eb33",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/vem-ai-o-novo-curso-gratuito-de-python-da-data-science-academy/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:21:18.919312",
+  "content_hash": "fbf561daa7b9429601e5876e2b9228d2224d2233d78f4500c4104376851b100b",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/b4b95676-54c5-43e7-8cd4-c825d8e5eb33.txt.gz"
+  }
+}

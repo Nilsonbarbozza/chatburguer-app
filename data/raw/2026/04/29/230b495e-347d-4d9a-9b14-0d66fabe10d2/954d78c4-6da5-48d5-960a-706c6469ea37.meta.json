@@ -1,0 +1,16 @@
+{
+  "capture_id": "954d78c4-6da5-48d5-960a-706c6469ea37",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/novos-guias-de-carreira-em-ciencia-de-dados/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:41.652563",
+  "content_hash": "22ad288c489f9d665ac33e4e27ea7a81c340b93b1e0b12e9582793b07667040a",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/954d78c4-6da5-48d5-960a-706c6469ea37.txt.gz"
+  }
+}

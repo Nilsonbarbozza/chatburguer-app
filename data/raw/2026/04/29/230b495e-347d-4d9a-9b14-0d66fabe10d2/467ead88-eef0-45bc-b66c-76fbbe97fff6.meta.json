@@ -1,0 +1,16 @@
+{
+  "capture_id": "467ead88-eef0-45bc-b66c-76fbbe97fff6",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/trilha-de-aprendizagem-da-formacao-cloud-engineer-4-0/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:21:06.237703",
+  "content_hash": "254e8c47d248008e3ccef10f35c631682d9c1ae5999ee3708451c5ab9fcae6cf",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/467ead88-eef0-45bc-b66c-76fbbe97fff6.txt.gz"
+  }
+}

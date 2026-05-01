@@ -1,0 +1,16 @@
+{
+  "capture_id": "b9f39bc2-1bf2-419f-bddb-86db4ae707bc",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/qual-a-diferenca-entre-cientista-de-dados-e-engenheiro-de-machine-learning/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:32.444896",
+  "content_hash": "b9e220e39b39f15d0479b0385af60c2d9b6396bc3b3725c7cf92e6b136d6808d",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/b9f39bc2-1bf2-419f-bddb-86db4ae707bc.txt.gz"
+  }
+}

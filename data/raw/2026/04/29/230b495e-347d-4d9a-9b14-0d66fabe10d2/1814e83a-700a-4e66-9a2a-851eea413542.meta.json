@@ -1,0 +1,16 @@
+{
+  "capture_id": "1814e83a-700a-4e66-9a2a-851eea413542",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/spec-driven-development-a-nova-arquitetura-de-engenharia-de-software-na-era-dos-agentes-de-ia-parte-1/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:44.416320",
+  "content_hash": "efa6a3c4ee3c535c39f447931312c8db69d9433dde1cff03437c60a6a0240565",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/1814e83a-700a-4e66-9a2a-851eea413542.txt.gz"
+  }
+}

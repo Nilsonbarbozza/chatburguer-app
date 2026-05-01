@@ -1,0 +1,16 @@
+{
+  "capture_id": "d9df0b26-7731-4a64-bdcd-07cae209fdcb",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/aspectos-interessantes-da-migracao-de-carreira-para-ciencia-de-dados/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:20.128669",
+  "content_hash": "df9972f4a2aee48ff2593c17a5725e7ae90ef725ab491f8d33c824943605b71d",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/d9df0b26-7731-4a64-bdcd-07cae209fdcb.txt.gz"
+  }
+}

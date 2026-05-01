@@ -1,0 +1,16 @@
+{
+  "capture_id": "872725bd-f71a-4592-8039-7ce560d1a25c",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/7-livros-incriveis-para-ajudar-a-compreender-o-impacto-da-ia-na-sociedade/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:17:51.192655",
+  "content_hash": "e871bdf61295dc1c66df49556228418ecc2ec08ab8ba9e413a328c618ac8f9cd",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/872725bd-f71a-4592-8039-7ce560d1a25c.txt.gz"
+  }
+}

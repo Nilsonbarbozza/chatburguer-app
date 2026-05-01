@@ -1,0 +1,16 @@
+{
+  "capture_id": "19a238ad-5957-4cf0-91cd-9fcbf9b71d3c",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/as-20-melhores-newsletters-para-se-manter-atualizado-sobre-data-science-big-data-ia-blockchain-e_rpa/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:16.415393",
+  "content_hash": "cffd2a027c33c3093bb863e3ee31a1ca024c50d16bb23c6852f6afa1985ae63c",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/19a238ad-5957-4cf0-91cd-9fcbf9b71d3c.txt.gz"
+  }
+}

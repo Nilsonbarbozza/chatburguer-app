@@ -1,0 +1,16 @@
+{
+  "capture_id": "a57132d8-bc2a-4e17-9a71-bb4abe6a2478",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/ciencia-de-dados-e-inteligencia-artificial-na-engenharia-mecanica/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:29.142077",
+  "content_hash": "6668fbaf22d4838e91504ceda3b60c657731aa61258ae3e85f75dc096076cf63",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/a57132d8-bc2a-4e17-9a71-bb4abe6a2478.txt.gz"
+  }
+}

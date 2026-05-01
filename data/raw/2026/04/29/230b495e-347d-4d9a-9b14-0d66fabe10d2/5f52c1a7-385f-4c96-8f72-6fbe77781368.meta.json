@@ -1,0 +1,16 @@
+{
+  "capture_id": "5f52c1a7-385f-4c96-8f72-6fbe77781368",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/arquitetura-medalhao-o-guia-definitivo-para-organizar-o-data-lakehouse-camada-prata/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:23.934436",
+  "content_hash": "aaa21502fdb94de493a1e6250b09f1777ba3f7e04a7150df1926258d48e57ce1",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/5f52c1a7-385f-4c96-8f72-6fbe77781368.txt.gz"
+  }
+}

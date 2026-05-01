@@ -1,0 +1,16 @@
+{
+  "capture_id": "618b16ff-1115-4a03-ac59-8ab75f94f4d5",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/perguntas-e-respostas-sobre-a-pos-graduacao-lato-sensu-da-data-science-academy-parte-2/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:03.382290",
+  "content_hash": "f1c4d4740cad1c72a8b87a76b1fb6e6f79f0f8e5600d6ee4ab84e74f34f03df1",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/618b16ff-1115-4a03-ac59-8ab75f94f4d5.txt.gz"
+  }
+}

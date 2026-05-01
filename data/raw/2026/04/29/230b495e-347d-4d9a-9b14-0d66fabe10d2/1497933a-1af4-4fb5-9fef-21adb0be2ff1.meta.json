@@ -1,0 +1,16 @@
+{
+  "capture_id": "1497933a-1af4-4fb5-9fef-21adb0be2ff1",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/trilha-de-aprendizagem-da-formacao-engenheiro-de-ia/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:21:14.729577",
+  "content_hash": "6c1db082b637c5bb657d5267cf97175ba3520033507fe93ba31ff01426055b18",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/1497933a-1af4-4fb5-9fef-21adb0be2ff1.txt.gz"
+  }
+}

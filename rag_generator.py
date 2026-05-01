@@ -11,7 +11,6 @@ from dotenv import load_dotenv
 from core.rag_service import NeuralRAG
 from core.memory_manager import SlidingWindowMemory
 from core.ingestor import IngestorAgent
-from core.pipeline import build_pipeline
 
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -30,18 +29,17 @@ api_key = os.getenv("OPENAI_API_KEY")
 
 if not api_key or api_key == "sk-sua-chave-aqui":
     logger.error("🚨 CRITICAL: OPENAI_API_KEY nao configurada no arquivo .env ou ambiente.")
-    # No Docker, preferimos deixar o container falhar para que o orquestrador (K8s/Compose) saiba do erro.
     raise RuntimeError("API Key ausente.")
 
 # Initialize FastAPI
 app = FastAPI(
     title="NeuralSafety Enterprise RAG API",
     version="1.0.0",
-    docs_url="/api/docs", # Endpoint profissional de documentação
+    docs_url="/api/docs",
     redoc_url="/api/redoc"
 )
 
-# Habilita CORS para o navegador
+# Habilita CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -50,7 +48,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Initialize Core Services (Standardized for /app context)
+# Initialize Core Services
 rag_service = NeuralRAG(api_key=api_key)
 memory_manager = SlidingWindowMemory(client_llm=rag_service.client_llm)
 ingestor = IngestorAgent(openai_api_key=api_key)
@@ -64,11 +62,11 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 class ChatRequest(BaseModel):
     session_id: str
     message: str
-    collection: str  # e.g., 'market_ebay_strict2'
+    collection: str
 
 class IngestRequest(BaseModel):
     url: str
-    collection_name: Optional[str] = None # Se nulo, gera automatico
+    collection_name: Optional[str] = None
     strict: bool = True
 
 class ChatResponse(BaseModel):
@@ -87,45 +85,22 @@ class IngestResponse(BaseModel):
 # ---------------------------------------------------------
 # FUNCÕES DE FUNDO (BACKGROUND TASKS)
 # ---------------------------------------------------------
-def run_neural_sync(url: str, collection: str, strict: bool):
+async def run_neural_sync(url: str, collection: str, strict: bool):
     """
-    Background worker for Scrape -> Clean -> Ingest.
+    Background worker for Scrape -> Clean -> Ingest via Agentic WebFetch API.
     """
     try:
-        logging.info(f"🌀 NeuralSync Ativado: {url} -> {collection}")
+        logging.info(f"🌀 NeuralSync Ativado via API: {url} -> {collection}")
         
-        # 1. Pipeline Dataset (Modo Fantasma/Headless)
-        # O ScraperStage já lê do contexto se deve ser headless? 
-        # Na verdade, precisamos garantir que ScraperStage não abra janelas.
-        # Por padrão ele está headless=False no scraper.py, vamos precisar ajustar.
+        # Placeholder para chamada da Agentic API (WebFetchAPI branch)
+        # Em breve: response = await call_agentic_webfetch(url, force_stealth=strict)
+        # ingest_result = await ingestor.ingest_direct(response.chunks, collection)
         
-        pipeline = build_pipeline(mode="dataset", strict=strict)
-        
-        # Executa Scrape & Processing
-        result = pipeline.execute({
-            "url": url,
-            "mode": "dataset"
-        })
-        
-        # 2. Ingestão dos vetores
-        # Sincronizamos com o diretório de saída configurado no sistema
-        from core.config import CONFIG
-        output_dir = CONFIG.get('OUTPUT_DIR', 'data/output')
-        readable_path = os.path.join(output_dir, "dataset_readable.json")
-            
-        ingest_result = ingestor.ingest_dataset_file(readable_path, collection)
-        if ingest_result.get("status") != "success":
-            msg = ingest_result.get("message", "Erro desconhecido na ingestão")
-            logging.warning(f"⚠️ NeuralSync Abortado: {msg}")
-            raise ValueError(f"Falha Semântica: {msg}")
-            
-        logging.info(f"✅ NeuralSync Completo para {url} - {ingest_result.get('chunks_count')} vetores.")
+        logging.info(f"✅ NeuralSync (Stub) completado para {url}.")
         
     except Exception as e:
         logging.error(f"❌ NeuralSync FALHOU para {url}: {e}")
-        raise  # Propaga o erro para o endpoint HTTP saber do colapso
-
-import time
+        raise 
 
 @app.get("/")
 async def get_ui():
@@ -134,9 +109,7 @@ async def get_ui():
 
 @app.get("/collections")
 async def list_collections_endpoint():
-    """
-    Returns all available collections in ChromaDB.
-    """
+    """Returns all available collections in ChromaDB."""
     try:
         cols = ingestor.list_collections()
         return {"collections": cols}
@@ -146,48 +119,39 @@ async def list_collections_endpoint():
 
 @app.post("/ingest/url", response_model=IngestResponse)
 async def ingest_url_endpoint(request: IngestRequest):
-    """
-    Triggers dynamic Scrape & Ingest pipeline and waits for completion.
-    """
-    import asyncio
-    # 1. Padroniza nome da coleção e limpa caracteres inválidos (acentos, espaços, etc)
+    """Triggers dynamic Scrape & Ingest pipeline."""
+    # Padroniza nome da coleção
     if request.collection_name:
         collection = ingestor.sanitize_name(request.collection_name)
     else:
         collection = ingestor.format_collection_name(request.url)
     
-    # 2. Executa a tarefa pesada na pool de threads (síncrono para o cliente HTTP, mas sem travar o worker do uvicorn)
     try:
-        await asyncio.to_thread(run_neural_sync, request.url, collection, request.strict)
+        # Nota: Agora run_neural_sync é async, então chamamos diretamente ou via BackgroundTasks
+        await run_neural_sync(request.url, collection, request.strict)
         
         return IngestResponse(
             task_id=f"sync_{int(time.time())}",
             status="success",
-            message="NeuralSync concluído! A base de conhecimento (ChromaDB) foi alimentada.",
+            message="NeuralSync concluído (Stub)! A base de conhecimento será alimentada via API.",
             collection=collection
         )
-    except ValueError as ve:
-        logger.warning(f"Ingest endpoint abortado semanticamente: {ve}")
-        raise HTTPException(status_code=400, detail=str(ve))
     except Exception as e:
         logger.error(f"Ingest endpoint error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/chat", response_model=ChatResponse)
 async def chat_endpoint(request: ChatRequest):
-    """
-    Enterprise Chat Endpoint.
-    Handles memory, query rewriting, retrieval and resilient generation.
-    """
+    """Enterprise Chat Endpoint."""
     try:
-        # 1. Query Rewriting (using history)
+        # 1. Query Rewriting
         history = memory_manager.get_history_for_rewriting(request.session_id)
         optimized_query = rag_service.rewrite_query(history, request.message)
         
-        # 2. Retrieval with Context Grounding
+        # 2. Retrieval
         context = rag_service.retrieve(request.collection, optimized_query)
         
-        # 3. Memory Assembly (System Prompt + Summary + History + Context)
+        # 3. Memory Assembly
         messages, economy_metrics = memory_manager.get_messages(
             session_id=request.session_id,
             system_prompt=rag_service.system_prompt,
@@ -214,6 +178,4 @@ async def chat_endpoint(request: ChatRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
-    # Provides a fallback for local terminal execution if needed, 
-    # but primarily run via: uvicorn rag_generator:app --reload
     uvicorn.run(app, host="0.0.0.0", port=8000)

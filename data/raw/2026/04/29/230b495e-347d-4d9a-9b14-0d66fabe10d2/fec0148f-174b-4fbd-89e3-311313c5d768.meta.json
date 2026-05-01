@@ -1,0 +1,16 @@
+{
+  "capture_id": "fec0148f-174b-4fbd-89e3-311313c5d768",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/4-coisas-que-as-pessoas-emocionalmente-inteligentes-nao-fazem-2/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:17:38.087154",
+  "content_hash": "dc9d2cabb50e919f4c4e9a898ae362f46e913c32166b67d3ec14faf264651b2c",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/fec0148f-174b-4fbd-89e3-311313c5d768.txt.gz"
+  }
+}

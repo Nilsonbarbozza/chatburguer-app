@@ -1,0 +1,16 @@
+{
+  "capture_id": "e9035663-84d2-4db0-844a-95561c0aeb70",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/5-formas-gratuitas-de-hospedar-uma-aplicacao-python/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:17:47.910482",
+  "content_hash": "123081922ed7739b1f04a2c91b856fe6096eded66b37278ef06aefa56b08189b",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/e9035663-84d2-4db0-844a-95561c0aeb70.txt.gz"
+  }
+}

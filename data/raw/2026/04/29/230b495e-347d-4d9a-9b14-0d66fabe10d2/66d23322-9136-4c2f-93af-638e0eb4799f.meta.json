@@ -1,0 +1,16 @@
+{
+  "capture_id": "66d23322-9136-4c2f-93af-638e0eb4799f",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/o-que-sao-large-language-models-llms/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:52.175634",
+  "content_hash": "5ed8406716a56c312e972a310bccf1cb262b21ec23b8a4cb4cc859963094dde1",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/66d23322-9136-4c2f-93af-638e0eb4799f.txt.gz"
+  }
+}

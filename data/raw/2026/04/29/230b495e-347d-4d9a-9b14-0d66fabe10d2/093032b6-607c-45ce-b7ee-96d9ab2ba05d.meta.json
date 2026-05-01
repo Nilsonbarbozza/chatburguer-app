@@ -1,0 +1,16 @@
+{
+  "capture_id": "093032b6-607c-45ce-b7ee-96d9ab2ba05d",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/plataformas-no-code-e-low-code-para-construir-agentes-de-ia-e-automatizar-aplicacoes-parte-5-zapier-make-pipedream-power-automate-bolt-dify-e-botpress-para-automacao-de-fluxos/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:10.268461",
+  "content_hash": "fa6355e75711db78225db3b972581477a0ee8575ed099d91a3a7f09fec8a769c",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/093032b6-607c-45ce-b7ee-96d9ab2ba05d.txt.gz"
+  }
+}

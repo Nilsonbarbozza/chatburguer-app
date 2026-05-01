@@ -1,0 +1,16 @@
+{
+  "capture_id": "4fdab43a-0a19-4e30-86e8-d3936d59df1b",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/obrigado-por-esses-10-anos/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:54.843246",
+  "content_hash": "7f96bece9778f203e8ca15d5073378cb3d92a6e6025d3ed02027e4f6f6e966c8",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/4fdab43a-0a19-4e30-86e8-d3936d59df1b.txt.gz"
+  }
+}

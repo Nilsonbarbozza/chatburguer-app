@@ -1,0 +1,16 @@
+{
+  "capture_id": "dfd2cd86-b388-416b-a1d1-6c8e48c86ea8",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/arquitetura-medalhao-o-guia-definitivo-para-organizar-o-data-lakehouse-vantagens-e-implementacao/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:15.197739",
+  "content_hash": "d36b69ece44fce311e676841300b9d00a0dcc750b71e932ac442c13a79674466",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/dfd2cd86-b388-416b-a1d1-6c8e48c86ea8.txt.gz"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "capture_id": "8b153f0d-7887-4f4c-b5fd-1c70afcc889a",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/quem-e-o-ai-data-engineer/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:38.071405",
+  "content_hash": "9f7f30a2d4278138a91aa0a4be7f6669baed2de7f8600e686548eadda6f152d8",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/8b153f0d-7887-4f4c-b5fd-1c70afcc889a.txt.gz"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "capture_id": "144ac5be-95ef-4f03-b91e-3a1dbfd8b3ca",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/pos-graduacao-em-engenharia-dataops/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:18.703411",
+  "content_hash": "5e88f1ff4add0ff695a5716be458723b9d49638511cad065095bc4e7249b8171",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/144ac5be-95ef-4f03-b91e-3a1dbfd8b3ca.txt.gz"
+  }
+}

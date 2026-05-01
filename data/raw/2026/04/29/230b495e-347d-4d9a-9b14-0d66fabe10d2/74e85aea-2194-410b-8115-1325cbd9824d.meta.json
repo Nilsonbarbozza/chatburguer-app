@@ -1,0 +1,16 @@
+{
+  "capture_id": "74e85aea-2194-410b-8115-1325cbd9824d",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/8-principais-frameworks-python-para-agentes-de-ia/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:17:56.863520",
+  "content_hash": "ac8a4db05d21bd1912efd670b953d244e6432f0d83ed8d0b59007d2ebddf4d07",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/74e85aea-2194-410b-8115-1325cbd9824d.txt.gz"
+  }
+}

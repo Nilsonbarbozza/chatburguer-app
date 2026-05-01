@@ -1,0 +1,16 @@
+{
+  "capture_id": "e7daf135-4fcc-4805-92c5-b426ce02de3b",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/5-vantagens-de-estudar-com-a-metodologia-de-aprendizado-baseado-em-projetos-project-based-learning-pbl/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:17:52.636569",
+  "content_hash": "f3476251dc091384e1d440581f8a3b432190508e74690d286cc28c7b446ddab6",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/e7daf135-4fcc-4805-92c5-b426ce02de3b.txt.gz"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "capture_id": "1a9e22a5-1f18-41a2-87b3-97db7bd48060",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/como-fazer-a-transicao-para-a-ciencia-de-dados-e-dentro-da-ciencia-de-dados/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:30.581302",
+  "content_hash": "42fe01892e949a8c96c891bf0e4f7869b6b11dcfc8198a0ab948f27f7fd30bb1",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/1a9e22a5-1f18-41a2-87b3-97db7bd48060.txt.gz"
+  }
+}

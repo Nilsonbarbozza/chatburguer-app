@@ -1,0 +1,16 @@
+{
+  "capture_id": "b260e022-f241-41cd-92f1-e3d730cabe5f",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/mlops-otimizando-o-ciclo-de-vida-de-machine-learning-em-producao/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:35.339249",
+  "content_hash": "0b10b01297e9ec114ef78131cf6dd60e88e3a5bba26fd0a19012799f70a8d8fd",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/b260e022-f241-41cd-92f1-e3d730cabe5f.txt.gz"
+  }
+}

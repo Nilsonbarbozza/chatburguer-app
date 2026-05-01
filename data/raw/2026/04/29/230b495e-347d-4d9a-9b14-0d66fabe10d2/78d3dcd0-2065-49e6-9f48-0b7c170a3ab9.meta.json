@@ -1,0 +1,16 @@
+{
+  "capture_id": "78d3dcd0-2065-49e6-9f48-0b7c170a3ab9",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/inteligencia-artificial-em-alto-nivel-com-llms-e-retrieval-augmented-generation-rag-parte-1/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:24.567278",
+  "content_hash": "2517b232f830edc57bc1aea4bcc8d397d9120e8850bb6012c8dae2a011c527af",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/78d3dcd0-2065-49e6-9f48-0b7c170a3ab9.txt.gz"
+  }
+}

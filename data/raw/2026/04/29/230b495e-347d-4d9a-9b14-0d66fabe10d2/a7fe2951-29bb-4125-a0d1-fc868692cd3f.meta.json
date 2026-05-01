@@ -1,0 +1,16 @@
+{
+  "capture_id": "a7fe2951-29bb-4125-a0d1-fc868692cd3f",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/qual-o-melhor-computador-pessoal-para-aprender-data_science/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:35.460500",
+  "content_hash": "4f4bbd228dccd6eb892dbbf26a82524d6760a725e8f2639e7f4b0aa87a41cb60",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/a7fe2951-29bb-4125-a0d1-fc868692cd3f.txt.gz"
+  }
+}

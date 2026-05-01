@@ -1,0 +1,16 @@
+{
+  "capture_id": "1734bb91-50c2-4727-8325-7ec5dcb08daa",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/diferenca-entre-modelagem-estatistica-e-modelagem-preditiva/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:48.896692",
+  "content_hash": "da6b485762739ffb9635d96b443d2c527fc788179394245018943d2b1ed6bd55",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/1734bb91-50c2-4727-8325-7ec5dcb08daa.txt.gz"
+  }
+}

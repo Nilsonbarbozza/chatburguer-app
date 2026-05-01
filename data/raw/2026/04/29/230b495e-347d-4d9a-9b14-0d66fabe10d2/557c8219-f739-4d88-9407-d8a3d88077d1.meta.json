@@ -1,0 +1,16 @@
+{
+  "capture_id": "557c8219-f739-4d88-9407-d8a3d88077d1",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/a-dsa-faz-aniversario-e-voce-ganha-o-presente-ou-melhor-9-presentes/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:01.353043",
+  "content_hash": "746a4d45399fe484b07a8e169584930d598b7e5a14d8885b435a74bcfc711e13",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/557c8219-f739-4d88-9407-d8a3d88077d1.txt.gz"
+  }
+}

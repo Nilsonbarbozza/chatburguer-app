@@ -1,0 +1,16 @@
+{
+  "capture_id": "bf1ef0a9-09cb-47a7-b982-30058127a93d",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/fundamentos-de-linguagem-python-do-basico-a-aplicacoes-de-ia/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:03.235193",
+  "content_hash": "eda38552004af72ecc70b0d289fac99266d0cfdcb5530afdbb8d3c13082c37e2",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/bf1ef0a9-09cb-47a7-b982-30058127a93d.txt.gz"
+  }
+}

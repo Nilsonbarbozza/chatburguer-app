@@ -1,0 +1,16 @@
+{
+  "capture_id": "812af4e8-d578-463d-9258-acea6d97f70f",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/10-casos-de-uso-de-inteligencia-artificial-na-seguranca-cibernetica/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:17:36.069249",
+  "content_hash": "ed3681bd73fea8c312e9955b5126b830ccb9ceadf536773354faecc9387b1f60",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/812af4e8-d578-463d-9258-acea6d97f70f.txt.gz"
+  }
+}

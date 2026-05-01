@@ -1,0 +1,16 @@
+{
+  "capture_id": "bd146445-62e8-4411-bb67-18acb3825b8b",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/pos-graduacao-no-brasil-especializacao-mba-mestrado-e-doutorado-qual-caminho-escolher-para-sua-carreira/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:23.176818",
+  "content_hash": "2079df434a5915015cfc07e35c26c46b1327fdf0b3cab47a83b08ae6898bf3c2",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/bd146445-62e8-4411-bb67-18acb3825b8b.txt.gz"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "capture_id": "110c74f1-ca5d-44c0-ad63-4c6aaf9f5e7d",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/4-dicas-para-montar-uma-equipe-de-data_science/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:17:39.763457",
+  "content_hash": "245eaf99232c042e82241ed658bd4b037abf6e7c2406f4937ec0cfa6dec50ec6",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/110c74f1-ca5d-44c0-ad63-4c6aaf9f5e7d.txt.gz"
+  }
+}

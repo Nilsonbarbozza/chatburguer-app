@@ -1,0 +1,16 @@
+{
+  "capture_id": "eb89d021-6a0c-4cd0-9def-00275c8820a9",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/a-ascensao-do-engenheiro-de-machine_learning/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:17:59.958805",
+  "content_hash": "a692e51de6d71e284d8290b8568310b1940dbb7f1a2f267057b4c3afb3a5e51f",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/eb89d021-6a0c-4cd0-9def-00275c8820a9.txt.gz"
+  }
+}

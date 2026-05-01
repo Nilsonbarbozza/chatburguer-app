@@ -1,0 +1,16 @@
+{
+  "capture_id": "6b59a9a7-7d48-4064-8bcb-dfffaa83ea9a",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/destilacao-de-grandes-modelos-de-linguagem-llm-distillation-conceitos-e-aplicacoes/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:44.977928",
+  "content_hash": "4d3579e599cd319f0c8a4e35862e10bc2e026f1bb362017e70158db246571704",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/6b59a9a7-7d48-4064-8bcb-dfffaa83ea9a.txt.gz"
+  }
+}

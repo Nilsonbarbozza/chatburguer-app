@@ -1,0 +1,16 @@
+{
+  "capture_id": "2bce95f3-a6de-4da6-b8dc-d18b6b5fda05",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/interpretabilidade-de-modelos-de-machine-learning-e-ia/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:28.618839",
+  "content_hash": "d692056f5dd04def765008060911a0b9b3936c7ce955af64d55b2ec4d6bafcd6",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/2bce95f3-a6de-4da6-b8dc-d18b6b5fda05.txt.gz"
+  }
+}

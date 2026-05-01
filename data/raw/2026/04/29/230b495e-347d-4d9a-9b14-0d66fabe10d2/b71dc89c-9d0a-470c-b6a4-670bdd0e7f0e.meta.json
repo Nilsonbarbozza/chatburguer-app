@@ -1,0 +1,16 @@
+{
+  "capture_id": "b71dc89c-9d0a-470c-b6a4-670bdd0e7f0e",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/testes-a-b-em-projetos-de-data-science-casos-de-uso-e-exemplos-concretos-de-resultados-obtidos/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:52.256972",
+  "content_hash": "9ab774fca77b72d28b1519dccd9d32901f052ab136f96aa4d0ffc8cc5fa7c9ff",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/b71dc89c-9d0a-470c-b6a4-670bdd0e7f0e.txt.gz"
+  }
+}

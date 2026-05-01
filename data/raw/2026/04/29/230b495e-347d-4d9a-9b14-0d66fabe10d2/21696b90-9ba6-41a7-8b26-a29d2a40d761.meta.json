@@ -1,0 +1,16 @@
+{
+  "capture_id": "21696b90-9ba6-41a7-8b26-a29d2a40d761",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/guia-definitivo-para-o-tratamento-de-valores-ausentes-em-data-science-tecnicas-especializadas/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:17.528677",
+  "content_hash": "77c6369d1992794bb6cd231d0731e6805971dda225042e802c09a39b907a02f3",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/21696b90-9ba6-41a7-8b26-a29d2a40d761.txt.gz"
+  }
+}

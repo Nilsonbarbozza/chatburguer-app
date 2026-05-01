@@ -1,0 +1,16 @@
+{
+  "capture_id": "9eeef22d-53a9-4675-a380-06bdb008c617",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/pynarrative-biblioteca-python-para-storytelling/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:30.208979",
+  "content_hash": "605ee9ff88e35aa0f618e3093a23d994e2a0602fddebf0295c44c3992f687309",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/9eeef22d-53a9-4675-a380-06bdb008c617.txt.gz"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "capture_id": "8c443fce-289a-49b2-b631-8a2676e4de02",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/langchain-aplicacoes-de-inteligencia-artificial-generativa-com-llms/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:27.269659",
+  "content_hash": "5c797192b3b376e95dc39e7385f64488809c24297f1d61d7684a0fcc3593014f",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/8c443fce-289a-49b2-b631-8a2676e4de02.txt.gz"
+  }
+}

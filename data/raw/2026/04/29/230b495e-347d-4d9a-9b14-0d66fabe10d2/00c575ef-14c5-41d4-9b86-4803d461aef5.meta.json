@@ -1,0 +1,16 @@
+{
+  "capture_id": "00c575ef-14c5-41d4-9b86-4803d461aef5",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/pos-graduacao-em-engenharia-de-automacao-de-processos-com-ia/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:19.818827",
+  "content_hash": "8a62a5ff17249be6ff27f5bc4780c27873a051781c3dddae66b01f5763106ea8",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/00c575ef-14c5-41d4-9b86-4803d461aef5.txt.gz"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "capture_id": "9e038d75-51be-468f-a439-614c01d986cc",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/desvendando-hiperparametros-o-guia-definitivo-para-otimizar-modelos-de-machine-learning/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:47.874208",
+  "content_hash": "e384fa19f336de01a4d57f5d3258fa8885fe668a64fc0e7f8cf2e94a8cb8b89e",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/9e038d75-51be-468f-a439-614c01d986cc.txt.gz"
+  }
+}

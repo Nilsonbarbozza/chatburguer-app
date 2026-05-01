@@ -1,0 +1,16 @@
+{
+  "capture_id": "5ad56dc7-2581-4061-adfd-1c5112be3d13",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/10-bibliotecas-python-para-automacao-e-web-scraping/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:17:33.046528",
+  "content_hash": "6780c9dca7b9f7fd741d44e3e088360caab12e2b5df69c4d965b932f27bde1fc",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/5ad56dc7-2581-4061-adfd-1c5112be3d13.txt.gz"
+  }
+}

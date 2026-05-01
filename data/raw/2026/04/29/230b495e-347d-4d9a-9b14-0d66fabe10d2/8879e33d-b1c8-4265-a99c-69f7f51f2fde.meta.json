@@ -1,0 +1,16 @@
+{
+  "capture_id": "8879e33d-b1c8-4265-a99c-69f7f51f2fde",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/rag-attack-como-a-maior-forca-da-ia-se-tornou-uma-vulnerabilidade-de-seguranca/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:40.559175",
+  "content_hash": "68576b710575f021b6a555ff6148cc9d3dccd2a94c1e6a43e2b3c05ce1a8de7f",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/8879e33d-b1c8-4265-a99c-69f7f51f2fde.txt.gz"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "capture_id": "e9762e5b-6151-4fd8-a36e-7a9f4259f480",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/do-chatbot-ao-agente-autonomo-a-nova-fronteira-da-ciberseguranca-em-ia/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:54.548508",
+  "content_hash": "bc531f912aa441f5063714dc3b0f96a11f0b0488539080bd6f866072f7d28ee5",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/e9762e5b-6151-4fd8-a36e-7a9f4259f480.txt.gz"
+  }
+}

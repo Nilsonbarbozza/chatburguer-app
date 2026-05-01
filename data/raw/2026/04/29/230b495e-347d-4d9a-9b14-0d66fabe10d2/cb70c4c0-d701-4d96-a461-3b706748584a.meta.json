@@ -1,0 +1,16 @@
+{
+  "capture_id": "cb70c4c0-d701-4d96-a461-3b706748584a",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/plataformas-no-code-e-low-code-para-construir-agentes-de-ia-e-automatizar-aplicacoes-parte-6-comparacao-com-desenvolvimento-tradicional-em-codigo/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:11.256612",
+  "content_hash": "5fbb3bb87e07caa178e632f6d82663eef0e5cce3acd81f0ca816a394ff7993dc",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/cb70c4c0-d701-4d96-a461-3b706748584a.txt.gz"
+  }
+}

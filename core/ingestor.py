@@ -81,40 +81,17 @@ class IngestorAgent:
         """Returns a list of all existing collection names."""
         return [c.name for c in self.client.list_collections()]
 
-    def ingest_dataset_file(self, file_path: str, collection_name: str) -> Dict[str, Any]:
+    def ingest_direct(self, chunks: List[Dict[str, Any]], collection_name: str) -> Dict[str, Any]:
         """
-        Loads a readable dataset JSON and syncs it with ChromaDB.
+        Directly injects semantic chunks into ChromaDB.
+        Expected chunk format: {"text": str, "source_url": str}
         """
-        logger.info(f"🚀 Iniciando sincronização: {file_path} -> Collection: {collection_name}")
+        logger.info(f"🚀 Iniciando ingestão direta -> Collection: {collection_name}")
         
-        if not os.path.exists(file_path):
-            raise FileNotFoundError(f"Arquivo de dataset não encontrado: {file_path}")
-
         try:
-            with open(file_path, 'r', encoding='utf-8') as f:
-                data = json.load(f)
-            
-            # Extract chunks from the pipeline output
-            # O build_pipeline do cloner no modo 'dataset' gera uma lista de páginas
-            # Cada página tem 'content' -> 'semantic_chunks'
-            all_chunks = []
-            for page in data:
-                # Extrai a URL correta do objeto de metadados
-                url = page.get("metadata", {}).get("source_url", "unknown_source")
-                chunks = page.get("content", {}).get("semantic_chunks", [])
-                
-                for chunk in chunks:
-                    # O chunk é um dicionário, precisamos apenas do campo 'text' para o vetor
-                    chunk_text = chunk.get("text")
-                    if chunk_text:
-                        all_chunks.append({
-                            "content": chunk_text,
-                            "metadata": {"source_url": url}
-                        })
-
-            if not all_chunks:
-                logger.warning(f"⚠️ Nenhum texto válido encontrado para ingestão em {file_path}")
-                return {"status": "warning", "message": "Nenhum texto válido encontrado no arquivo."}
+            if not chunks:
+                logger.warning(f"⚠️ Nenhum chunk fornecido para ingestão.")
+                return {"status": "warning", "message": "Lista de chunks vazia."}
 
             # Create/Load Collection
             collection = self.client.get_or_create_collection(
@@ -122,10 +99,12 @@ class IngestorAgent:
                 embedding_function=self.ef
             )
 
-            # Ingest in batch
-            documents = [c["content"] for c in all_chunks]
-            metadatas = [c["metadata"] for c in all_chunks]
-            ids = [f"id_{collection_name}_{i}" for i in range(len(all_chunks))]
+            documents = [c["text"] for c in chunks if "text" in c]
+            metadatas = [{"source_url": c.get("source_url", "unknown")} for c in chunks if "text" in c]
+            ids = [f"id_{collection_name}_{int(time.time())}_{i}" for i in range(len(documents))]
+
+            if not documents:
+                return {"status": "warning", "message": "Nenhum texto válido encontrado nos chunks."}
 
             collection.add(
                 documents=documents,
@@ -133,7 +112,7 @@ class IngestorAgent:
                 ids=ids
             )
 
-            logger.info(f"✅ Sincronização concluída: {len(documents)} vetores injetados.")
+            logger.info(f"✅ Ingestão direta concluída: {len(documents)} vetores injetados.")
             return {
                 "status": "success",
                 "collection": collection_name,
@@ -141,5 +120,10 @@ class IngestorAgent:
             }
 
         except Exception as e:
-            logger.error(f"❌ Falha na ingestão: {e}")
+            logger.error(f"❌ Falha na ingestão direta: {e}")
             raise
+
+    def ingest_dataset_file(self, file_path: str, collection_name: str) -> Dict[str, Any]:
+        # ... (keeping this for backward compatibility if needed, but the primary will be ingest_direct)
+        pass
+

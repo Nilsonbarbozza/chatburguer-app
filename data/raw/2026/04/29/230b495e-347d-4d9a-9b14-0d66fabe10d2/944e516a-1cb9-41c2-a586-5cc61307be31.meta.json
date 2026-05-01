@@ -1,0 +1,16 @@
+{
+  "capture_id": "944e516a-1cb9-41c2-a586-5cc61307be31",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/modelos-de-embeddings-e-bancos-de-dados-vetoriais-para-aplicacoes-de-ia-generativa/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:37.316230",
+  "content_hash": "2c9222778dbd8cc6aeb554b41260cdc6a6c52d325183c9dda533c12e258939e0",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/944e516a-1cb9-41c2-a586-5cc61307be31.txt.gz"
+  }
+}

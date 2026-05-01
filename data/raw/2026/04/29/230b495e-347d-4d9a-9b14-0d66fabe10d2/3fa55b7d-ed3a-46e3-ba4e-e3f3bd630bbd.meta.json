@@ -1,0 +1,16 @@
+{
+  "capture_id": "3fa55b7d-ed3a-46e3-ba4e-e3f3bd630bbd",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/7-bibliotecas-de-ciencia-de-dados-para-construir-seu-portfolio-de-projetos-em_2025/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:17:46.062559",
+  "content_hash": "efbf712c0144f801118493c1344ccd25363d4986b20b9bb26b470c6357d65dd1",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/3fa55b7d-ed3a-46e3-ba4e-e3f3bd630bbd.txt.gz"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "capture_id": "c8dd935d-229b-4f9c-a19a-f592049b9ed9",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/small-data-na-transferencia-de-aprendizado-em-aplicacoes-de-machine-learning-e-ia/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:39.054022",
+  "content_hash": "44cbd9f0ab6ddd1ca1b162bf633b11443fd7631bb964588f3f27c59eef664457",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/c8dd935d-229b-4f9c-a19a-f592049b9ed9.txt.gz"
+  }
+}

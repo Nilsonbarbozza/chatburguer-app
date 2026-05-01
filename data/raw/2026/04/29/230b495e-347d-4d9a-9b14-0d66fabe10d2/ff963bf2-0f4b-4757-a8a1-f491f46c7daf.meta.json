@@ -1,0 +1,16 @@
+{
+  "capture_id": "ff963bf2-0f4b-4757-a8a1-f491f46c7daf",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/o-arquiteto-da-eficiencia-inteligente-o-que-faz-um-ai-automation-engineer-no-dia-a-dia/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:43.513206",
+  "content_hash": "787c2e98bb8f238af52d46e8c55e0d69422caa3b96e3bfa967c8c56fc83339e0",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/ff963bf2-0f4b-4757-a8a1-f491f46c7daf.txt.gz"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "capture_id": "8320aaf0-7833-4619-962f-b1aaa93da283",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/engenharia-de-alta-disponibilidade-e-seguranca-de-dados/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:51.917020",
+  "content_hash": "3babe21fb27691bf42227309fcd40cf3aad86393df7a9b7ad355c4fc58b3ea7a",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/8320aaf0-7833-4619-962f-b1aaa93da283.txt.gz"
+  }
+}

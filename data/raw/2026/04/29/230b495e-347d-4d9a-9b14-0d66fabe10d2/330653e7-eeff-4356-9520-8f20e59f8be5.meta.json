@@ -1,0 +1,16 @@
+{
+  "capture_id": "330653e7-eeff-4356-9520-8f20e59f8be5",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/novas-parcerias-para-os-programas-de-pos-graduacao-dsa-google-e-microsoft-azure/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:37.018918",
+  "content_hash": "afca0d8bff5342fc1810e0f7c00d5dd4ab0387799b545d3515aa5475155b0a6f",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/330653e7-eeff-4356-9520-8f20e59f8be5.txt.gz"
+  }
+}

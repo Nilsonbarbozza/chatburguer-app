@@ -1,0 +1,16 @@
+{
+  "capture_id": "28b655be-fba3-4fac-84f0-4fbd1f928218",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/os-15-melhores-livros-gratuitos-sobre-data_science/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:57.306859",
+  "content_hash": "a5c008a1483efb1f3aaf39642419016b303fcd87aa2ac4109dd860a89e4e7ca0",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/28b655be-fba3-4fac-84f0-4fbd1f928218.txt.gz"
+  }
+}

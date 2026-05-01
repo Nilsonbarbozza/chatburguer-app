@@ -1,0 +1,16 @@
+{
+  "capture_id": "fbf4a890-9033-4ca1-8628-695e49184a2c",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/a-pergunta-mais-importante-em-uma-entrevista-de-emprego-e-como-responde-la/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:00.552733",
+  "content_hash": "001c67edde9549c013028de7e4d02c514353ac1e89beaa8ba107d00b6f949164",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/fbf4a890-9033-4ca1-8628-695e49184a2c.txt.gz"
+  }
+}

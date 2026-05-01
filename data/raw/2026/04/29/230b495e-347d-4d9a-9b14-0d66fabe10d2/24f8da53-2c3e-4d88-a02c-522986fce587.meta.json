@@ -1,0 +1,16 @@
+{
+  "capture_id": "24f8da53-2c3e-4d88-a02c-522986fce587",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/como-rag-retrieval-augmented-generation-funciona-para-personalizar-os-llms/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:32.880100",
+  "content_hash": "b5eac6ee7198728b234e68573af5c1095d3f6d914f984d639bbe66dea1ef4b3f",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/24f8da53-2c3e-4d88-a02c-522986fce587.txt.gz"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "capture_id": "47a4e54a-7884-4363-aa48-7af3bee09291",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/trilha-de-aprendizagem-da-formacao-database-engineer-4-0/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:21:10.127726",
+  "content_hash": "21fc26b56f87369cefdffbbb2a5212cbed6fcf5492cfc05b75b97c46a1076e8b",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/47a4e54a-7884-4363-aa48-7af3bee09291.txt.gz"
+  }
+}

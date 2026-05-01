@@ -1,0 +1,16 @@
+{
+  "capture_id": "bf13e8b3-93dc-4177-bda7-09f2957bbc5c",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/analise-e-modelagem-de-series-temporais-tecnicas-estatisticas-ia-e-suas-aplicacoes/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:12.243029",
+  "content_hash": "a1681d4f968806a81ec906e39216a2e3cee121461c1fa89e08f30a2534beca1f",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/bf13e8b3-93dc-4177-bda7-09f2957bbc5c.txt.gz"
+  }
+}

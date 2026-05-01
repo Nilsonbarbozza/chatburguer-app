@@ -1,0 +1,16 @@
+{
+  "capture_id": "1090e49f-0243-4a0d-be6f-623a5b3be6d5",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/trilha-de-aprendizagem-da-formacao-inteligencia-artificial-aplicada-ao-direito-4-0/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:21:05.538975",
+  "content_hash": "cecd849ad6d9b4aaffd17173a17663acbe7c5e2b79afc52be05e7dbd2a7a834b",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/1090e49f-0243-4a0d-be6f-623a5b3be6d5.txt.gz"
+  }
+}

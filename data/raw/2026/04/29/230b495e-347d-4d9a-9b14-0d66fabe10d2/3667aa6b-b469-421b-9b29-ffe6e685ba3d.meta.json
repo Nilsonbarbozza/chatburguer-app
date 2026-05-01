@@ -1,0 +1,16 @@
+{
+  "capture_id": "3667aa6b-b469-421b-9b29-ffe6e685ba3d",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/arquitetura-de-dados-no-setor-alimenticio-um-dia-de-ana-beatriz-com-o-modern-data-stack/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:21.103483",
+  "content_hash": "301beb726b3d8798875ba9c2a8a5877e6ef41b1ec84a6f74dab0635c604beebc",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/3667aa6b-b469-421b-9b29-ffe6e685ba3d.txt.gz"
+  }
+}

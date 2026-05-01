@@ -1,0 +1,16 @@
+{
+  "capture_id": "3842a77d-68c6-4de1-999e-f7c8cb7ac6a8",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/cientista-de-dados-vs-analista-de-dados-o-mercado-em-2026/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:31.151339",
+  "content_hash": "1ce87274cb7f40fe3c19408a6dc8aab2dbe38e6f3893640dad1cdc020290b1d0",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/3842a77d-68c6-4de1-999e-f7c8cb7ac6a8.txt.gz"
+  }
+}

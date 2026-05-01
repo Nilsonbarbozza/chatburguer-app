@@ -1,0 +1,16 @@
+{
+  "capture_id": "c4eff59a-606c-4fce-832e-f332890889c6",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/10-dicas-para-conseguir-destaque-como-cientista-de-dados/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:17:40.405223",
+  "content_hash": "dd19bbd76b88007d4690e7e51f1167565442fe0db2d8932ef775c43d0f48f0e2",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/c4eff59a-606c-4fce-832e-f332890889c6.txt.gz"
+  }
+}

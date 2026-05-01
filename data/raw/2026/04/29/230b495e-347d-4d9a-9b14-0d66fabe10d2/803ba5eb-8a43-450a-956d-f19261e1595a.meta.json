@@ -1,0 +1,16 @@
+{
+  "capture_id": "803ba5eb-8a43-450a-956d-f19261e1595a",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/guia-completo-sobre-inteligencia-artificial-generativa/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:07.102030",
+  "content_hash": "1041a65edd36bc7ca4066310528d87f63e2cb0d3c8b145e747ed13d53bf4d1cc",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/803ba5eb-8a43-450a-956d-f19261e1595a.txt.gz"
+  }
+}

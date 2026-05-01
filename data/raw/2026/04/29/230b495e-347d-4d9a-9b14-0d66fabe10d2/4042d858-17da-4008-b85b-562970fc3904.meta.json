@@ -1,0 +1,16 @@
+{
+  "capture_id": "4042d858-17da-4008-b85b-562970fc3904",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/10-soft-skills-que-vao-aumentar-sua_empregabilidade/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:17:31.756140",
+  "content_hash": "246876a8c9b157fee200c4ac33fac4d2fa31f2f65f51682ed41af64aea047941",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/4042d858-17da-4008-b85b-562970fc3904.txt.gz"
+  }
+}

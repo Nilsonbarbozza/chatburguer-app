@@ -1,0 +1,16 @@
+{
+  "capture_id": "d61d61c9-e06a-4536-afa5-ddeb52b8be1d",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/pos-graduacao-em-visao-computacional/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:22.115814",
+  "content_hash": "709f0cdcfb51e5062799b0301d68a22c2ce1b13d02157a7490cbb8046cf1442f",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/d61d61c9-e06a-4536-afa5-ddeb52b8be1d.txt.gz"
+  }
+}

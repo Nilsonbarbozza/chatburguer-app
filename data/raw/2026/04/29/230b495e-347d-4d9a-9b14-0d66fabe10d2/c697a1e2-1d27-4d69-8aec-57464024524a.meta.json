@@ -1,0 +1,16 @@
+{
+  "capture_id": "c697a1e2-1d27-4d69-8aec-57464024524a",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/pos-graduacao-em-machine-learning-e-mlops/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:17.555643",
+  "content_hash": "bfc8f6df84d05971c931c4ec684dcacdeb1736fcd68516f254734023b5711a1b",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/c697a1e2-1d27-4d69-8aec-57464024524a.txt.gz"
+  }
+}

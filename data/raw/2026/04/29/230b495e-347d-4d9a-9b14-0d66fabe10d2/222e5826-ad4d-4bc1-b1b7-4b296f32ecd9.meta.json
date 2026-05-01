@@ -1,0 +1,16 @@
+{
+  "capture_id": "222e5826-ad4d-4bc1-b1b7-4b296f32ecd9",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/novo-modulo-gratuito-de-chatgpt-ia-generativa-e-engenharia-de-prompt/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:39.859731",
+  "content_hash": "cb3e7ab30a465f62d155540eaee2b54819a0d897e48951dff635ed412123065f",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/222e5826-ad4d-4bc1-b1b7-4b296f32ecd9.txt.gz"
+  }
+}

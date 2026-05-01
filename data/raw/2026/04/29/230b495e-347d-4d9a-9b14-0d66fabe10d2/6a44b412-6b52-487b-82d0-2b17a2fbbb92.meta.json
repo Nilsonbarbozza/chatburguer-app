@@ -1,0 +1,16 @@
+{
+  "capture_id": "6a44b412-6b52-487b-82d0-2b17a2fbbb92",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/prompt-injection-a-falha-de-seguranca-fundamental-em-aplicacoes-de-ia-com-llms/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:29.082257",
+  "content_hash": "ec0c1d5ea2fb368513599da06c9e6e7cef2cfcbf92a1370d0ffa179c60670f62",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/6a44b412-6b52-487b-82d0-2b17a2fbbb92.txt.gz"
+  }
+}

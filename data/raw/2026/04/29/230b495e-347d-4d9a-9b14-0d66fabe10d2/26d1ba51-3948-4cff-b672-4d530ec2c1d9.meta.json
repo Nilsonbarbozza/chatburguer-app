@@ -1,0 +1,16 @@
+{
+  "capture_id": "26d1ba51-3948-4cff-b672-4d530ec2c1d9",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/o-papel-do-analista-de-negocios-no-mundo-da-inteligencia-artificial/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:48.874585",
+  "content_hash": "c171c6df10bd6873ed303081dc1a1afe0c00327cf857f2bb61ad316c3c59be9d",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/26d1ba51-3948-4cff-b672-4d530ec2c1d9.txt.gz"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "capture_id": "59ae6046-893a-4fdf-9d7f-ab90103058b0",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/orquestracao-de-pipelines-de-dados-o-guia-definitivo/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:03.629040",
+  "content_hash": "1b0d33b10a4b62b41cba5829bce122a8ddbb2fe4ee1cd804df078e1ee97f8dd1",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/59ae6046-893a-4fdf-9d7f-ab90103058b0.txt.gz"
+  }
+}

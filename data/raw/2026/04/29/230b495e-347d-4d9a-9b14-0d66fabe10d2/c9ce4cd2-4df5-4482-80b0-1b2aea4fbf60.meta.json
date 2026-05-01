@@ -1,0 +1,16 @@
+{
+  "capture_id": "c9ce4cd2-4df5-4482-80b0-1b2aea4fbf60",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/beneficios-da-inteligencia-artificial-generativa-com-geracao-aumentada-de-recuperacao-rag/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:25.252234",
+  "content_hash": "39bd2c1d966dda5b72e167ddd32c9ec851010d7b44100f0814e48bf6397d3421",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/c9ce4cd2-4df5-4482-80b0-1b2aea4fbf60.txt.gz"
+  }
+}

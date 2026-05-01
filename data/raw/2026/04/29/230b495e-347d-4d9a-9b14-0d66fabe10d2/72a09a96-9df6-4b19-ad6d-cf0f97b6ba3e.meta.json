@@ -1,0 +1,16 @@
+{
+  "capture_id": "72a09a96-9df6-4b19-ad6d-cf0f97b6ba3e",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/os-7-principais-bancos-de-dados-vetoriais-para-solucoes-de-rag-em-aplicacoes-de-ia-generativa/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:59.122425",
+  "content_hash": "856325eacef603ddfb5e19b9c7e5cd61c3e84b59c0f233731db66d45c60323ef",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/72a09a96-9df6-4b19-ad6d-cf0f97b6ba3e.txt.gz"
+  }
+}

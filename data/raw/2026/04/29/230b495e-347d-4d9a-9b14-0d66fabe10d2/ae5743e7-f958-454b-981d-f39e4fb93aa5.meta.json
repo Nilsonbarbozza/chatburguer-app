@@ -1,0 +1,16 @@
+{
+  "capture_id": "ae5743e7-f958-454b-981d-f39e4fb93aa5",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/arquiteto-de-solucoes-de-cloud-computing-com-aws/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:19.278972",
+  "content_hash": "f524c248ad05a7ff41436deb34dc1faf6b7fd6315d28809714d7ba9b3c47165f",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/ae5743e7-f958-454b-981d-f39e4fb93aa5.txt.gz"
+  }
+}

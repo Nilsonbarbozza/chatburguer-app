@@ -1,0 +1,16 @@
+{
+  "capture_id": "1c3313d7-0083-4e34-b0f2-5a2286a90567",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/minio-o-object-storage-que-coloca-performance-e-resiliencia-no-centro-da-arquitetura-de-dados/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:32.995368",
+  "content_hash": "f10a877fca7d582ff017112f78119d98fbdba6212c9a8b6ef754fabf203dd934",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/1c3313d7-0083-4e34-b0f2-5a2286a90567.txt.gz"
+  }
+}

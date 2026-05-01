@@ -1,0 +1,16 @@
+{
+  "capture_id": "a67aa19e-06e8-4a6b-808d-4e0a00bb47e5",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/fundamentos-do-duckdb-vantagens-e-limitacoes/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:00.422954",
+  "content_hash": "93c10e7dc022856162a145df7bdf61a119bad71dab78623b46b0d5a756a2d0bb",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/a67aa19e-06e8-4a6b-808d-4e0a00bb47e5.txt.gz"
+  }
+}

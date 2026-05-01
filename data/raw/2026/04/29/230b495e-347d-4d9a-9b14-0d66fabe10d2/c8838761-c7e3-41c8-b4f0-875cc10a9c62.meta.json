@@ -1,0 +1,16 @@
+{
+  "capture_id": "c8838761-c7e3-41c8-b4f0-875cc10a9c62",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/infraestrutura-como-codigo-com-terraform-aws-azure-e_databricks/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:22.476824",
+  "content_hash": "284e57818e560aa8fef13cb6e468ba0184a0b8343f25bc07005e3be6096a7cb2",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/c8838761-c7e3-41c8-b4f0-875cc10a9c62.txt.gz"
+  }
+}

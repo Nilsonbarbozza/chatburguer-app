@@ -1,0 +1,16 @@
+{
+  "capture_id": "e36ebc9a-622a-4410-862d-efeaf95ba89d",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/pipeline-de-automacao-com-sagemaker-e-airflow/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:05.210836",
+  "content_hash": "6f99d28fdaf23c170ec5da9944fcc70a6cfac32bfd6ab26ec2eaac0830249a7d",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/e36ebc9a-622a-4410-862d-efeaf95ba89d.txt.gz"
+  }
+}

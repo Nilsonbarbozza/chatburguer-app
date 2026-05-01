@@ -1,0 +1,16 @@
+{
+  "capture_id": "4235bbec-f52f-4730-a9e9-335e1b2053a8",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/17-casos-de-uso-de-machine-learning/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:17:34.819938",
+  "content_hash": "7b5bc11d4b2ebf8c310c4467c0f4e0bc0f8ff6f5ad504bc258f30b07b778929e",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/4235bbec-f52f-4730-a9e9-335e1b2053a8.txt.gz"
+  }
+}

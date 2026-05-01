@@ -1,0 +1,16 @@
+{
+  "capture_id": "0d6c7aa6-0233-40d2-b5c5-eeb52178d945",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/airbyte-etl-e-elt-para-engenharia-de-dados/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:03.634614",
+  "content_hash": "37f934cd3c48d1bd2e52612c03f64d90865247cf2e19f7f450c2c343dd23abf3",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/0d6c7aa6-0233-40d2-b5c5-eeb52178d945.txt.gz"
+  }
+}

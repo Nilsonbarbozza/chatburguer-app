@@ -1,0 +1,16 @@
+{
+  "capture_id": "1705d276-6fbb-4115-aa2b-dcc8e037a608",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/linhagem-de-dados-tecnicas-e_exemplos/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:29.186799",
+  "content_hash": "5ec24b0c5dca67c8807bb57dd0c6cfe7c23c495814300cf0e60782e6722cda26",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/1705d276-6fbb-4115-aa2b-dcc8e037a608.txt.gz"
+  }
+}

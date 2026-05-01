@@ -1,0 +1,16 @@
+{
+  "capture_id": "7b140c59-cbb4-483c-b602-732307271766",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/8-mudancas-estruturais-que-os-agentes-de-ia-estao-provocando-nas-operacoes-de-ti/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:17:55.901966",
+  "content_hash": "8eda69267ed64d27ad9efc5e648159e731ac93e3d20849dc8109a0db2b7f7a71",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/7b140c59-cbb4-483c-b602-732307271766.txt.gz"
+  }
+}

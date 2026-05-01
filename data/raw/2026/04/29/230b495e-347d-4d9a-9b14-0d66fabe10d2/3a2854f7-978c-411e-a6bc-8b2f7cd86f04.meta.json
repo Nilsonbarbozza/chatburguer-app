@@ -1,0 +1,16 @@
+{
+  "capture_id": "3a2854f7-978c-411e-a6bc-8b2f7cd86f04",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/pos-graduacao-em-engenharia-de-dados-para-inteligencia-artificial/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:23.343839",
+  "content_hash": "17b453c3e54ebecb33bc8abdccb49bea64862dde9362ad87945094e636d2bc4a",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/3a2854f7-978c-411e-a6bc-8b2f7cd86f04.txt.gz"
+  }
+}

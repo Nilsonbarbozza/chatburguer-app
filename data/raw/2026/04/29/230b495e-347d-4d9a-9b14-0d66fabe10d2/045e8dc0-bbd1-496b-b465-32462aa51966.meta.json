@@ -1,0 +1,16 @@
+{
+  "capture_id": "045e8dc0-bbd1-496b-b465-32462aa51966",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/o-guia-essencial-do-crisp-dm-para-projetos-de-dados-de-sucesso/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:45.959444",
+  "content_hash": "bc246fe89b708488047a7ee05751fab441149acbc3e5cd149b937896973091f3",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/045e8dc0-bbd1-496b-b465-32462aa51966.txt.gz"
+  }
+}

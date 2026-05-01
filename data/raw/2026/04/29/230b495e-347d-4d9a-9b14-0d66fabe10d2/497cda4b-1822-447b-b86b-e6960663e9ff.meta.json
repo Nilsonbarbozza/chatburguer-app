@@ -1,0 +1,16 @@
+{
+  "capture_id": "497cda4b-1822-447b-b86b-e6960663e9ff",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/duckdb-e-firecrawl-explorando-as-possibilidades-em-analise-de-dados-e-web-scraping/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:50.041733",
+  "content_hash": "2747185b2948d8e67550f5fd14ddec43f4680bb2fbc5c232000603dcc6f70a31",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/497cda4b-1822-447b-b86b-e6960663e9ff.txt.gz"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "capture_id": "9197ce05-8ba9-4c42-a2d2-f245f9567a58",
+  "mission_id": "default",
+  "job_id": "single_target_v3",
+  "url": "https://blog.dsacademy.com.br/7-maneiras-que-os-cientistas-de-dados-usam-estatistica/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 13:55:31.838150",
+  "content_hash": "b988f4c48e0f4984ad2aa0eecfb4d6c7c97328dfc6e8aa9e5dba0576a8ebcdf1",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/default/9197ce05-8ba9-4c42-a2d2-f245f9567a58.txt.gz"
+  }
+}

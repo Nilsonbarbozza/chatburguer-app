@@ -1,0 +1,16 @@
+{
+  "capture_id": "2f1e8176-c6cb-4e8d-8b99-f5afd3abde64",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/microsoft-power-automate-para-automacao-robotica-de-processos-rpa/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:32.005666",
+  "content_hash": "e415b767c7a2a105feb47e257a5e4d6da90ff061d442f6fc008a002577319111",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/2f1e8176-c6cb-4e8d-8b99-f5afd3abde64.txt.gz"
+  }
+}

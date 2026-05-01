@@ -1,0 +1,16 @@
+{
+  "capture_id": "29407286-d90f-4ca4-b543-5a3763f8441e",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/15-pacotes-python-para_automacao/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:17:32.778442",
+  "content_hash": "b91b77fcc7cf04748539171a9e7639e0ca01febba45c4fcb99317f6fedb9b2fd",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/29407286-d90f-4ca4-b543-5a3763f8441e.txt.gz"
+  }
+}

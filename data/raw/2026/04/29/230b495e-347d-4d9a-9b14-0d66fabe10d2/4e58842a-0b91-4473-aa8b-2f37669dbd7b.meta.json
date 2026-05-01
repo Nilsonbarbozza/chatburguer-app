@@ -1,0 +1,16 @@
+{
+  "capture_id": "4e58842a-0b91-4473-aa8b-2f37669dbd7b",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/mapa-de-carreiras-na-area-de-dados-na-era-da-ia/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:34.254683",
+  "content_hash": "a76ae5de5027dac5eca22f45eb21c864b63e1a9c8c6636b252d455bbd1d2c427",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/4e58842a-0b91-4473-aa8b-2f37669dbd7b.txt.gz"
+  }
+}

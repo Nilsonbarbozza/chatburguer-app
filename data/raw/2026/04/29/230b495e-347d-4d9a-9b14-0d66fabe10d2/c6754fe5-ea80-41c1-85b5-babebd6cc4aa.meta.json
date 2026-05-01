@@ -1,0 +1,16 @@
+{
+  "capture_id": "c6754fe5-ea80-41c1-85b5-babebd6cc4aa",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/pos-graduacao-em-analise-e-inteligencia-de-negocios/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:10.253530",
+  "content_hash": "bbadb4b14e9e835174125fd35df8e621987e2a21fa66d8ad0574c19bbd0f02dd",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/c6754fe5-ea80-41c1-85b5-babebd6cc4aa.txt.gz"
+  }
+}

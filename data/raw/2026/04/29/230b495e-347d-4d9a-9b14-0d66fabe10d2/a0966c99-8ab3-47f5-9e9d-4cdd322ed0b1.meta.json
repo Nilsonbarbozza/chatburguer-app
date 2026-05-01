@@ -1,0 +1,16 @@
+{
+  "capture_id": "a0966c99-8ab3-47f5-9e9d-4cdd322ed0b1",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/governanca-de-dados-em-um-mundo-data-driven-parte-3/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:04.280491",
+  "content_hash": "2a789c68c51ba9be5ba5e2fd4b7cb2903902eb02f57230f3e7f8c0931f4559cb",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/a0966c99-8ab3-47f5-9e9d-4cdd322ed0b1.txt.gz"
+  }
+}

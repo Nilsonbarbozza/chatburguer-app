@@ -1,0 +1,16 @@
+{
+  "capture_id": "b19ebbca-fcef-42b2-929b-ce8565238e62",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/pos-graduacao-em-engenharia-de-cloud-computing/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:22.222851",
+  "content_hash": "b7dea307eb55afe78ec3731a16cba2b1b89bd032508e673fdde7a562987e9512",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/b19ebbca-fcef-42b2-929b-ce8565238e62.txt.gz"
+  }
+}

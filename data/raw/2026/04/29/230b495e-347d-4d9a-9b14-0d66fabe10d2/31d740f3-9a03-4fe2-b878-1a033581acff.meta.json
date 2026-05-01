@@ -1,0 +1,16 @@
+{
+  "capture_id": "31d740f3-9a03-4fe2-b878-1a033581acff",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/plataformas-no-code-e-low-code-para-construir-agentes-de-ia-e-automatizar-aplicacoes-parte-7-casos-de-uso-para-solucoes-de-ia-limitacoes-e-desafios-atuais/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:12.247255",
+  "content_hash": "ccdd082aca952101c551cf1fa126d1469b2570bdef4c3913323c0d6302d93e78",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/31d740f3-9a03-4fe2-b878-1a033581acff.txt.gz"
+  }
+}

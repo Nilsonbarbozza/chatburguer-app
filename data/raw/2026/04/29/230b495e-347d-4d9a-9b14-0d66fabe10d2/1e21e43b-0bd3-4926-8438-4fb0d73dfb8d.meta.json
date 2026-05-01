@@ -1,0 +1,16 @@
+{
+  "capture_id": "1e21e43b-0bd3-4926-8438-4fb0d73dfb8d",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/do-zero-ao-leaderboard-o-guia-passo-a-passo-para-submeter-seu-primeiro-projeto-no-kaggle/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:49.062683",
+  "content_hash": "2cdc1982994d24ac2d65ac539f4f1f99cd2665ee3d03f5616fddc81643908d34",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/1e21e43b-0bd3-4926-8438-4fb0d73dfb8d.txt.gz"
+  }
+}

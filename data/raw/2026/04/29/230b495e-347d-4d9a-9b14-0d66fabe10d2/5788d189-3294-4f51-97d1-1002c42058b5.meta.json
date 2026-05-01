@@ -1,0 +1,16 @@
+{
+  "capture_id": "5788d189-3294-4f51-97d1-1002c42058b5",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/data-mining-com-large-language-models-llms-em-documentos-juridicos/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:43.750349",
+  "content_hash": "8708f1cab906643e1d547aa0ee9a29181474a978e456a2905100d8189994e841",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/5788d189-3294-4f51-97d1-1002c42058b5.txt.gz"
+  }
+}

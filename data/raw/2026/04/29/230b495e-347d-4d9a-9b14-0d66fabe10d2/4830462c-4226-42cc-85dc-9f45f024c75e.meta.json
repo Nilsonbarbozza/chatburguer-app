@@ -1,0 +1,16 @@
+{
+  "capture_id": "4830462c-4226-42cc-85dc-9f45f024c75e",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/guia-de-criacao-de-apis-para-o-deploy-de-modelos-de-machine-learning-e-ia/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:09.115979",
+  "content_hash": "59ac4a41202244495b1c9e955c77c2594cc3184da39ff517223881725f17c500",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/4830462c-4226-42cc-85dc-9f45f024c75e.txt.gz"
+  }
+}

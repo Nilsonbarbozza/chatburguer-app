@@ -1,0 +1,16 @@
+{
+  "capture_id": "e8236692-9388-4786-bacf-a8d1f82764d6",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/llm-routing-orquestrando-modelos-de-linguagem-para-eficiencia-e-escala/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:31.280811",
+  "content_hash": "ddf20aa3612f3684ae86b3b7e358f0844fdb7ac556dc2c5250f6117796bb7b1d",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/e8236692-9388-4786-bacf-a8d1f82764d6.txt.gz"
+  }
+}

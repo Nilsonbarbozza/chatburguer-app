@@ -1,0 +1,16 @@
+{
+  "capture_id": "47b7e0bd-cbc4-4340-b802-dfa3be89acd2",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/trilha-de-aprendizagem-da-formacao-visao-computacional-4-0/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:21:12.627419",
+  "content_hash": "e1144396f9709551e78b1eb559af674b33dec5ad6ee378fde4b024af56e82628",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/47b7e0bd-cbc4-4340-b802-dfa3be89acd2.txt.gz"
+  }
+}

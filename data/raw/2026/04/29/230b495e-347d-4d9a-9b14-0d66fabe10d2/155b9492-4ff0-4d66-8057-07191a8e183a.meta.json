@@ -1,0 +1,16 @@
+{
+  "capture_id": "155b9492-4ff0-4d66-8057-07191a8e183a",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/o-impacto-dos-llms-large-language-models-na-area-de-saude/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:47.890516",
+  "content_hash": "3fd97ac002854a415a7f3174b98e9a0f956c09625ea00a9cf583d274471673a7",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/155b9492-4ff0-4d66-8057-07191a8e183a.txt.gz"
+  }
+}

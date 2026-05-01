@@ -1,0 +1,16 @@
+{
+  "capture_id": "12f925a6-bb23-4d9f-bfd9-276bc06db109",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/plataformas-no-code-e-low-code-para-construir-agentes-de-ia-e-automatizar-aplicacoes-parte-2-n8n-para-automacao-de-agentes-de-ia/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:06.877407",
+  "content_hash": "6a56afb14743d0a87385f2df94c1fbd091207b0b8e2c0f94cf07089188ac71be",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/12f925a6-bb23-4d9f-bfd9-276bc06db109.txt.gz"
+  }
+}

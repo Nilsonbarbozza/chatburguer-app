@@ -1,0 +1,16 @@
+{
+  "capture_id": "7eeff635-91af-482d-bee5-2915a01b57e0",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/data-as-a-service-daas-beneficios-e-tendencias/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:42.927422",
+  "content_hash": "0cdb154bd8320b079175bbf7cc7295a9c99099fb861fb0244b3f69d0be060a21",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/7eeff635-91af-482d-bee5-2915a01b57e0.txt.gz"
+  }
+}

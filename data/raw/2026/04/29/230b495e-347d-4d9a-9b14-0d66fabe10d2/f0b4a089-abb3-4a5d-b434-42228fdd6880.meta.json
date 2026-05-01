@@ -1,0 +1,16 @@
+{
+  "capture_id": "f0b4a089-abb3-4a5d-b434-42228fdd6880",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/engenharia-financeira-com-inteligencia-artificial/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:57.387963",
+  "content_hash": "9372f11a7b2ea8d44d77dc46dfad8fef2c56f6a12456903cd6cda190f0504a27",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/f0b4a089-abb3-4a5d-b434-42228fdd6880.txt.gz"
+  }
+}

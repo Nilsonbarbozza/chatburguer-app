@@ -1,0 +1,16 @@
+{
+  "capture_id": "ab21d085-b0d9-415b-a128-35bdff6ae5b3",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/llms-e-a-evolucao-da-ia-generativa/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:32.235759",
+  "content_hash": "39e1e08d1f7abf5a1e39bc51285e3ce970fa336aaf9ac72e5684e38fabe17224",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/ab21d085-b0d9-415b-a128-35bdff6ae5b3.txt.gz"
+  }
+}

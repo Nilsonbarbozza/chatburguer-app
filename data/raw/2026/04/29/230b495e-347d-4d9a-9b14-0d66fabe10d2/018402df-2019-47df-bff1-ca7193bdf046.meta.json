@@ -1,0 +1,16 @@
+{
+  "capture_id": "018402df-2019-47df-bff1-ca7193bdf046",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/por-que-os-modelos-de-machine-learning-falham-sem-business-analytics/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:15.190484",
+  "content_hash": "1fa5c76e6a5f841b9badc5109ca85953f273c158af8c7e71ae8bbed8fde6aa48",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/018402df-2019-47df-bff1-ca7193bdf046.txt.gz"
+  }
+}

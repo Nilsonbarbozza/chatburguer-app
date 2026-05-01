@@ -1,0 +1,16 @@
+{
+  "capture_id": "cdb8c3f2-11d1-4597-8cef-db83ac134501",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/fundamentos-do-duckdb-casos-de-uso/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:04.129445",
+  "content_hash": "fb0637496a626df46ff09641050ff5c780f7d62765a44dfba1ba3d1d6637133d",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/cdb8c3f2-11d1-4597-8cef-db83ac134501.txt.gz"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "capture_id": "7be22069-c88e-4e23-adb3-eab8595c747a",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/novo-modulo-gratuito-de-bonus-administracao-de-sistema-operacional-linux-com-docker-e-kubernetes/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:38.994319",
+  "content_hash": "969d05d9d6a1169e809bb0bab15cbd1008676152ed6018f5c0fe11a664ac0846",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/7be22069-c88e-4e23-adb3-eab8595c747a.txt.gz"
+  }
+}

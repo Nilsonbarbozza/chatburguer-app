@@ -1,0 +1,16 @@
+{
+  "capture_id": "ac744b21-f674-456a-89d2-504d7a36ed97",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/as-diferencas-entre-cientistas-de-dados-engenheiros-de-dados-estatisticos-e-engenheiros-de-software/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:19.047476",
+  "content_hash": "1bdc5769d2751d39794c7ad7f7cd82d8f0da18caf1bacdb8998dc8048f39c649",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/ac744b21-f674-456a-89d2-504d7a36ed97.txt.gz"
+  }
+}

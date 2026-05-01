@@ -1,0 +1,16 @@
+{
+  "capture_id": "90578184-f9f0-4ed0-a31a-89bb16ecadc9",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/guia-de-engenharia-de-confiabilidade-de-dados-data-reliability-engineering-dre/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:10.520291",
+  "content_hash": "829d4f672ada8bf03f651abf632330d51dd70646951d060b40111a99f2f83494",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/90578184-f9f0-4ed0-a31a-89bb16ecadc9.txt.gz"
+  }
+}

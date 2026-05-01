@@ -1,0 +1,16 @@
+{
+  "capture_id": "7746ebf9-27cc-4825-b601-fc68015681ea",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/re-ranking-em-rag-melhorando-a-relevancia-nas-respostas-geradas-por-ia/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:30.708345",
+  "content_hash": "85f5633abca9bd277603bcf81b5464a01170718d7c12dd4444c4f925368169eb",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/7746ebf9-27cc-4825-b601-fc68015681ea.txt.gz"
+  }
+}

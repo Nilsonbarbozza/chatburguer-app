@@ -1,0 +1,16 @@
+{
+  "capture_id": "4ca9265d-8068-43b6-a2a7-f5310b671633",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/analise-e-previsao-de-series-temporais-com-inteligencia_artificial/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:13.259509",
+  "content_hash": "d8d5116711484bd11b73fff69446d47fec81007ca5bbd718b700a7ceec6d0b0e",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/4ca9265d-8068-43b6-a2a7-f5310b671633.txt.gz"
+  }
+}

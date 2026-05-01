@@ -1,0 +1,16 @@
+{
+  "capture_id": "8cdbcf42-da50-4d1c-b381-e5178c8124c1",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/3-formas-de-obter-experiencia-em-ciencia-de-dados-mesmo-sem-trabalhar-com-ciencia-de-dados/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:17:36.571117",
+  "content_hash": "0738b70453872d161d76a451c2e443769845ea3986deeea5b3b27a3c68305fa9",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/8cdbcf42-da50-4d1c-b381-e5178c8124c1.txt.gz"
+  }
+}

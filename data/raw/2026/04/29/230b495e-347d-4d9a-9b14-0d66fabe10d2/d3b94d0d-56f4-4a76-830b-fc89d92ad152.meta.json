@@ -1,0 +1,16 @@
+{
+  "capture_id": "d3b94d0d-56f4-4a76-830b-fc89d92ad152",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/desvendando-a-profissao-como-e-o-dia-a-dia-de-um-cientista-de-dados/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:46.887554",
+  "content_hash": "86e2b3cfc05307f51ea25913d45971810397580955afa20b10e27c8e1904333c",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/d3b94d0d-56f4-4a76-830b-fc89d92ad152.txt.gz"
+  }
+}

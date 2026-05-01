@@ -1,0 +1,16 @@
+{
+  "capture_id": "7562b828-3d1b-447f-a20b-9157f228ea78",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/6-habilidades-especiais-de-cientistas-de-dados-de-alto_desempenho/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:17:55.763717",
+  "content_hash": "03f8f3fb694890bc9d1e9789c0a94bf9dc8f553fc89d814245357c98d84cfa2a",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/7562b828-3d1b-447f-a20b-9157f228ea78.txt.gz"
+  }
+}

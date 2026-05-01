@@ -1,0 +1,16 @@
+{
+  "capture_id": "e08dfc67-0251-4c27-b945-4a5a0649ce02",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/o-conhecimento-de-uma-pessoa-se-mede-pela-qualidade-das-perguntas-que-ela-faz-nao-pelas-respostas/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:44.348003",
+  "content_hash": "c94c18f62888920c797a10baec0816b8c9be78006ba3cee3f21536718d4090fa",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/e08dfc67-0251-4c27-b945-4a5a0649ce02.txt.gz"
+  }
+}

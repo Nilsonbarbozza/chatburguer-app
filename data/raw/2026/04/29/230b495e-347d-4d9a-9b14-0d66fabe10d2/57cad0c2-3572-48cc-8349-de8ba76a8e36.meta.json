@@ -1,0 +1,16 @@
+{
+  "capture_id": "57cad0c2-3572-48cc-8349-de8ba76a8e36",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/como-deixar-de-ser-apenas-usuario-de-ia-e-se-tornar-um-criador-de-solucoes-com-ia/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:29.426832",
+  "content_hash": "83ecd84857375d4539c99d73214c93341a380c83d3b345db22c039d157976029",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/57cad0c2-3572-48cc-8349-de8ba76a8e36.txt.gz"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "capture_id": "d80270a3-74b6-4adb-b5ed-b283adfdb33c",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/o-guia-definitivo-sobre-data-drift-data-drift-vs-concept-drift-vs-prediction-drift/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:42.192082",
+  "content_hash": "3f5a2fb17b2d236b95a7630e3492eb1f46bbd59ec0bb222a147fcadd29d5919e",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/d80270a3-74b6-4adb-b5ed-b283adfdb33c.txt.gz"
+  }
+}

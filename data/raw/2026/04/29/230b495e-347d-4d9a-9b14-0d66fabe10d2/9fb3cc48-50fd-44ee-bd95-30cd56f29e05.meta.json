@@ -1,0 +1,16 @@
+{
+  "capture_id": "9fb3cc48-50fd-44ee-bd95-30cd56f29e05",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/backpropagation-como-a-ia-aprende-com-os-proprios-erros/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:25.472153",
+  "content_hash": "cc05796f5a91faf060bd93d640b32c19ae35a1f2961b7341052613a35b713c2f",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/9fb3cc48-50fd-44ee-bd95-30cd56f29e05.txt.gz"
+  }
+}

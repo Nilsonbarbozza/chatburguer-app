@@ -1,0 +1,16 @@
+{
+  "capture_id": "120b94d6-b30e-468c-b361-90a86c0fc974",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/o-futuro-e-agora-day-trading-e-agentes-autonomos-de-investimentos-com-inteligencia-artificial-e-mcp/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:40.452440",
+  "content_hash": "95e35f042c277dd6d9a6f92d6067dce2915b30bc2f370a2db4e6918ca9f74a64",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/120b94d6-b30e-468c-b361-90a86c0fc974.txt.gz"
+  }
+}

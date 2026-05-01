@@ -1,0 +1,16 @@
+{
+  "capture_id": "2b2e1aa5-cf5d-434c-9a18-26ec3aa7d1e8",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/10-cenarios-de-como-entregar-um-projeto-de-machine_learning/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:17:38.414752",
+  "content_hash": "b56151d7a780f3860bb5c438df2f384707d466ff5334531fb4dfc81594723f06",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/2b2e1aa5-cf5d-434c-9a18-26ec3aa7d1e8.txt.gz"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "capture_id": "ad5dda19-ebef-485c-ab32-3a17e31d0bb3",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/framework-de-etica-governanca-e-responsabilidade-um-guia-para-profissionais-de-dados-e-ia/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:01.379931",
+  "content_hash": "d1742172cde8bcae270e87e9452a194a9b6b3a3c90edce9ca6366bc09287ae75",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/ad5dda19-ebef-485c-ab32-3a17e31d0bb3.txt.gz"
+  }
+}

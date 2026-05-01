@@ -1,0 +1,16 @@
+{
+  "capture_id": "aae8fb21-ba2e-490a-9f57-9ed674500bc9",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/guia-definitivo-para-o-tratamento-de-valores-ausentes-em-data-science-escolhendo-o-metodo-adequado-e-avaliando-o-impacto/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:13.615866",
+  "content_hash": "072d6856e1327010b01547673bf3e2897814725fa1e6b5b044abb60e959c27ab",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/aae8fb21-ba2e-490a-9f57-9ed674500bc9.txt.gz"
+  }
+}

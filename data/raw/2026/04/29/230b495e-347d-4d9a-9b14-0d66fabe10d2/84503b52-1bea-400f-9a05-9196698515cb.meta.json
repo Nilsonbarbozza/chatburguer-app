@@ -1,0 +1,16 @@
+{
+  "capture_id": "84503b52-1bea-400f-9a05-9196698515cb",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/a-importancia-da-analise-exploratoria-de-dados-eda-no-sucesso-de-projetos-de-data-science/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:03.577130",
+  "content_hash": "35b798264a102ed39e24940aee9aab84c5465a771508097de0ab7208c88dbed7",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/84503b52-1bea-400f-9a05-9196698515cb.txt.gz"
+  }
+}

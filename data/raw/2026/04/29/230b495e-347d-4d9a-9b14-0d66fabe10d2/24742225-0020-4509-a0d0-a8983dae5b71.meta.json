@@ -1,0 +1,16 @@
+{
+  "capture_id": "24742225-0020-4509-a0d0-a8983dae5b71",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/duckdb-e-firecrawl-para-database-e-web-scraping-analytics/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:50.964314",
+  "content_hash": "7655f885a60557013afa678c558681071d1493e90c92978b1dec355690e93c80",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/24742225-0020-4509-a0d0-a8983dae5b71.txt.gz"
+  }
+}

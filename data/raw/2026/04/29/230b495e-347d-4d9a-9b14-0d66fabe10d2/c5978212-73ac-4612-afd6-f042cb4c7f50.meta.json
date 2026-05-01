@@ -1,0 +1,16 @@
+{
+  "capture_id": "c5978212-73ac-4612-afd6-f042cb4c7f50",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/modelos-deterministicos-e-estocasticos-em-ia-entendendo-diferencas-e-riscos-dos-llms-parte-2/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:39.590093",
+  "content_hash": "4ab6672013486171e8acd417f49d3005ed45fd9f91c9924978a570e0d7292d29",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/c5978212-73ac-4612-afd6-f042cb4c7f50.txt.gz"
+  }
+}

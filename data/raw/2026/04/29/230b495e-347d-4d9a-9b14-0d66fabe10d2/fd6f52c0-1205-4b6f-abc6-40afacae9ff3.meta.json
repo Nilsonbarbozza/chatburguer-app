@@ -1,0 +1,16 @@
+{
+  "capture_id": "fd6f52c0-1205-4b6f-abc6-40afacae9ff3",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/engenharia-e-ciencia-de-dados-com-microsoft-fabric/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:56.353827",
+  "content_hash": "53fe4f5d58e290869a3aa39a1d392b6a25f2cb55e4aa01c0e3050b74a57b1a8c",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/fd6f52c0-1205-4b6f-abc6-40afacae9ff3.txt.gz"
+  }
+}

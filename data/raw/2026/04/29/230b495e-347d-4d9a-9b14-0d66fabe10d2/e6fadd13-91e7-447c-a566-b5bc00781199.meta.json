@@ -1,0 +1,16 @@
+{
+  "capture_id": "e6fadd13-91e7-447c-a566-b5bc00781199",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/opcoes-de-treinamento-oferecidas-pela-dsa/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:00.043049",
+  "content_hash": "1510372ddfd46f4bf1659ba655776d7ae4d2bd2dc16a99148bc348f990bec485",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/e6fadd13-91e7-447c-a566-b5bc00781199.txt.gz"
+  }
+}

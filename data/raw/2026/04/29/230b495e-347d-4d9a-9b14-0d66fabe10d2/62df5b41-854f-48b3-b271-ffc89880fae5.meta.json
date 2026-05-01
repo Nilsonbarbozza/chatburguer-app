@@ -1,0 +1,16 @@
+{
+  "capture_id": "62df5b41-854f-48b3-b271-ffc89880fae5",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/fundamentos-de-cloud-computing-para-cientistas-de_dados/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:02.336403",
+  "content_hash": "e9028ba0fed9b45d5e695838729d0c6fbb35397b3348917885e1fe8c95cba855",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/62df5b41-854f-48b3-b271-ffc89880fae5.txt.gz"
+  }
+}

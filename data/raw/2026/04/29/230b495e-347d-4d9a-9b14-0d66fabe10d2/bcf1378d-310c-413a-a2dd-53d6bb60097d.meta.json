@@ -1,0 +1,16 @@
+{
+  "capture_id": "bcf1378d-310c-413a-a2dd-53d6bb60097d",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/engenharia-de-dados-na-nuvem-com-amazon-emr/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:54.542700",
+  "content_hash": "b9318f8c8d6f4c7dc29a11843395763e74dd64da7651e7020c9911d9c3b92441",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/bcf1378d-310c-413a-a2dd-53d6bb60097d.txt.gz"
+  }
+}

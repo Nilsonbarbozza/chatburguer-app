@@ -1,0 +1,16 @@
+{
+  "capture_id": "e66dc92a-6b3b-4079-8ec3-f351e58548fe",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/o-que-e-mlops-e-por-que-isso-importa/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:51.074706",
+  "content_hash": "228f61a4e04141767d2bc738bfd5bd85b609c5e2e1909671564c071c257de529",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/e66dc92a-6b3b-4079-8ec3-f351e58548fe.txt.gz"
+  }
+}

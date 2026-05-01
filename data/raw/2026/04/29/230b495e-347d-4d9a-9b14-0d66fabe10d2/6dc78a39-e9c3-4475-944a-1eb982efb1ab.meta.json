@@ -1,0 +1,16 @@
+{
+  "capture_id": "6dc78a39-e9c3-4475-944a-1eb982efb1ab",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/guia-definitivo-sobre-protocolos-e-frameworks-de-agentes-de-ia-parte-v-infraestruturas-e-protocolos-langchain-a2a-mcp-temporal/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:19.831950",
+  "content_hash": "69ca74aab92fa88154f216daa43047040eb8d529867a95862fac0a0a2fd7bae4",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/6dc78a39-e9c3-4475-944a-1eb982efb1ab.txt.gz"
+  }
+}

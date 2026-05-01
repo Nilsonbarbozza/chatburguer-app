@@ -1,0 +1,16 @@
+{
+  "capture_id": "2a603728-0058-4038-b6c5-1dcf65b52f6f",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/um-dia-na-vida-de-carlos-desvendando-a-engenharia-de-dados-moderna/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:21:14.095023",
+  "content_hash": "b4c6c76fca06ed6a2840e5f6ed33a21d5a957594b57836ac126c0b6ee3a811e8",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/2a603728-0058-4038-b6c5-1dcf65b52f6f.txt.gz"
+  }
+}

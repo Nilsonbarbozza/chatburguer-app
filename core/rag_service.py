@@ -189,14 +189,3 @@ Pergunta Reescrita para Busca:"""
             "usage": response.usage
         }
 
-    def generate_response(self, messages: List[Dict[str, str]]) -> Dict[str, Any]:
-        """
-        Final generation step using the enriched message stack.
-        """
-        logger.info("🚀 NeuralRAG: Generating final response...")
-        response = self._call_llm(messages)
-        
-        return {
-            "content": response.choices[0].message.content,
-            "usage": response.usage
-        }

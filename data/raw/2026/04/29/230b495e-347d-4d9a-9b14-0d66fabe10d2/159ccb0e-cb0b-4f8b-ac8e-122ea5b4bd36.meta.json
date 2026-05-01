@@ -1,0 +1,16 @@
+{
+  "capture_id": "159ccb0e-cb0b-4f8b-ac8e-122ea5b4bd36",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/o-analytics-engineer-em-relacao-a-outras-funcoes-em-ciencia-de-dados/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:42.589683",
+  "content_hash": "4881159792b5d8bd17a6a0f1f679c2dcae41b5512e76209633be1592d84a6bb5",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/159ccb0e-cb0b-4f8b-ac8e-122ea5b4bd36.txt.gz"
+  }
+}

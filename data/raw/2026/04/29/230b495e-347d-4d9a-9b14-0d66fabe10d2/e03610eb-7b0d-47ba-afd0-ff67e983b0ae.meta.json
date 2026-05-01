@@ -1,0 +1,16 @@
+{
+  "capture_id": "e03610eb-7b0d-47ba-afd0-ff67e983b0ae",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/como-as-empresas-estao-usando-agentes-de-ia-vejamos-5-casos-de-uso/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:28.025145",
+  "content_hash": "68e8c50438e2a3dc54f8b8401ebd1ad6c046beba21b77bb9df0667859ae625e1",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/e03610eb-7b0d-47ba-afd0-ff67e983b0ae.txt.gz"
+  }
+}

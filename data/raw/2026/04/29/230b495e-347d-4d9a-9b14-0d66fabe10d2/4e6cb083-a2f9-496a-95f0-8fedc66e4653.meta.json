@@ -1,0 +1,16 @@
+{
+  "capture_id": "4e6cb083-a2f9-496a-95f0-8fedc66e4653",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/engenheiro-de-dados-por-onde-comecar-em-7_passos/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:58.411540",
+  "content_hash": "e12a085128b8e124057bb4ec99b705cf5a6f2c5b882602bd56ba89c78dd4ef3d",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/4e6cb083-a2f9-496a-95f0-8fedc66e4653.txt.gz"
+  }
+}

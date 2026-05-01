@@ -1,0 +1,16 @@
+{
+  "capture_id": "de2985fe-ac3e-45a3-9bf1-9664ac7c17ca",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/ia-generativa-e-agentes-de-ia-para-fluxos-de-automacao-com-langflow-e-n8n/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:24.901540",
+  "content_hash": "e8f2e36611026df3396ff110c6c202b2641e25c16e7bbbf9078052089fec40f1",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/de2985fe-ac3e-45a3-9bf1-9664ac7c17ca.txt.gz"
+  }
+}

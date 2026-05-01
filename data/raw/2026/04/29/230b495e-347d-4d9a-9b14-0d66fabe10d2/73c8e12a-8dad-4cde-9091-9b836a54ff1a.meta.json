@@ -1,0 +1,16 @@
+{
+  "capture_id": "73c8e12a-8dad-4cde-9091-9b836a54ff1a",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/7-bibliotecas-python-que-todo-engenheiro-de-ia-deve-conhecer/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:17:49.123959",
+  "content_hash": "25d9b20809b73a19bffaf3c2f4011104e3d3fc1e4dc905d36f9b2bc0b80da6c6",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/73c8e12a-8dad-4cde-9091-9b836a54ff1a.txt.gz"
+  }
+}

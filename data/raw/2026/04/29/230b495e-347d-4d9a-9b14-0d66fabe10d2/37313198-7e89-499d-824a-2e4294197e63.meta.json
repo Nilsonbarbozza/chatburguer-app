@@ -1,0 +1,16 @@
+{
+  "capture_id": "37313198-7e89-499d-824a-2e4294197e63",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/oracle-lanca-agentes-de-ia-para-profissionais-de-vendas/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:02.170212",
+  "content_hash": "dd3ed2129c620763506ab48927256f974205024d104f152647c143ce6666e8a2",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/37313198-7e89-499d-824a-2e4294197e63.txt.gz"
+  }
+}

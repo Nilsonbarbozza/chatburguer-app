@@ -1,0 +1,16 @@
+{
+  "capture_id": "13370c61-65f5-4f60-bad8-45a6cf045151",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/alem-do-prompt-um-guia-definitivo-sobre-context-engineering-engenharia-de-contexto/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:10.116675",
+  "content_hash": "3063a2efc9fef7c75a55e793d4ffc7bf0694015407fd99076449ee985e00c288",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/13370c61-65f5-4f60-bad8-45a6cf045151.txt.gz"
+  }
+}

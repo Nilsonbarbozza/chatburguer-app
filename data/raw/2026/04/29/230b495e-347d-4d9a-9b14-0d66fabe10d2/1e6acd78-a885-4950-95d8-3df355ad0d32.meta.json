@@ -1,0 +1,16 @@
+{
+  "capture_id": "1e6acd78-a885-4950-95d8-3df355ad0d32",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/databricks-potencializando-a-engenharia-e-analise-de-dados/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:44.666354",
+  "content_hash": "ff24fda1d62d4c7d412c2102e26ae81af8ce6a33667b3264094f0decc8e3325c",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/1e6acd78-a885-4950-95d8-3df355ad0d32.txt.gz"
+  }
+}

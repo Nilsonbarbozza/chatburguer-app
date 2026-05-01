@@ -1,0 +1,16 @@
+{
+  "capture_id": "18208cc5-d5ad-44f9-9176-67aa0c5210ca",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/a-importancia-da-arquitetura-na-governanca-de-dados/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:04.824134",
+  "content_hash": "f1913c721e9612ef128617797e0d8fb7710f86a29e5f5612f0c6908c84e7d38a",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/18208cc5-d5ad-44f9-9176-67aa0c5210ca.txt.gz"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "capture_id": "5f3cfc86-64d8-48db-a245-987a72fd4ec2",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/pos-graduacao-em-engenharia-de-dados/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:24.450271",
+  "content_hash": "85d25f3f7d3b190f5657d8b66e45c8ca74f5c994dc6c15fbd29728267d83e5ea",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/5f3cfc86-64d8-48db-a245-987a72fd4ec2.txt.gz"
+  }
+}

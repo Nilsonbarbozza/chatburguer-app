@@ -1,0 +1,16 @@
+{
+  "capture_id": "a8fd56f8-f405-4319-b3c8-f74ae4e1d97e",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/o-que-o-mercado-realmente-espera-de-quem-constroi-software-com-ia/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:51.078259",
+  "content_hash": "f34c43610dab0ee932f1a825a1c39119760a952ec5341fafe537c154b93b0e4a",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/a8fd56f8-f405-4319-b3c8-f74ae4e1d97e.txt.gz"
+  }
+}

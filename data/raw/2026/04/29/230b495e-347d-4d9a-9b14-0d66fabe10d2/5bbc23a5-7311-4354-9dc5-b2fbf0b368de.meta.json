@@ -1,0 +1,16 @@
+{
+  "capture_id": "5bbc23a5-7311-4354-9dc5-b2fbf0b368de",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/engenheiro-de-inteligencia-artificial-a-profissao-mais-buscada-pelo-mercado-em-2026/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:55.503465",
+  "content_hash": "4c75d469c8f6faee563440ce45799d05981eb053f481f0f5d4a97d9c69bec4c4",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/5bbc23a5-7311-4354-9dc5-b2fbf0b368de.txt.gz"
+  }
+}

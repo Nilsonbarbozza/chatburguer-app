@@ -1,0 +1,16 @@
+{
+  "capture_id": "32e3f697-c5a5-4c09-9e23-52eceb1c0442",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/pos-graduacao-em-engenharia-analitica/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:17.558294",
+  "content_hash": "5fb0af6182b85261422942d11ccf0a6b298177f7f1b80bd24daed7bfcd5a88b7",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/32e3f697-c5a5-4c09-9e23-52eceb1c0442.txt.gz"
+  }
+}

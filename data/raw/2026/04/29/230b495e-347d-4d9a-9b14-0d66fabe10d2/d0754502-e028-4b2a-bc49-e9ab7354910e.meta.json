@@ -1,0 +1,16 @@
+{
+  "capture_id": "d0754502-e028-4b2a-bc49-e9ab7354910e",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/ataques-adversariais-e-ciberseguranca-em-modelos-de-machine-learning-de-ia/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:21.254115",
+  "content_hash": "de088ff9c9b8c5b84c0a1319d2b2726c71bca6effce3cda1b4474e196c50be20",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/d0754502-e028-4b2a-bc49-e9ab7354910e.txt.gz"
+  }
+}

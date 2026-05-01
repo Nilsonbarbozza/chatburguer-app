@@ -1,0 +1,16 @@
+{
+  "capture_id": "3f6b6a21-d558-44a8-8320-c68a193be301",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/7-bibliotecas-python-que-todo-analytics-engineer-deve-conhecer/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:17:48.243784",
+  "content_hash": "f8e81d06930b57b6459582ed0086f74969ccbf12af1c60193ff8f299d0df907c",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/3f6b6a21-d558-44a8-8320-c68a193be301.txt.gz"
+  }
+}

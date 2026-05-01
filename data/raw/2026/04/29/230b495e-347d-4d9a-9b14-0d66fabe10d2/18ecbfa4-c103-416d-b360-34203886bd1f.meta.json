@@ -1,0 +1,16 @@
+{
+  "capture_id": "18ecbfa4-c103-416d-b360-34203886bd1f",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/pos-graduacao-em-data-science-e-inteligencia-artificial-aplicada-a-saude/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:16.556907",
+  "content_hash": "a8b29065ff657bc94d26c84c3daf3779e706b13c986f7a9a1f2b203073035632",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/18ecbfa4-c103-416d-b360-34203886bd1f.txt.gz"
+  }
+}

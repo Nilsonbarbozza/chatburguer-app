@@ -1,0 +1,16 @@
+{
+  "capture_id": "8a6ccfcd-8954-4664-aa12-9a55d61aae99",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/5-dicas-sobre-como-desenvolver-pensamento-critico-um-dos-mais-importantes-skills-em-data-science/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:17:46.089139",
+  "content_hash": "6168639263fa279102ed4ff40ca1de050d7fb4b24ed27623b7abad11d0531659",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/8a6ccfcd-8954-4664-aa12-9a55d61aae99.txt.gz"
+  }
+}

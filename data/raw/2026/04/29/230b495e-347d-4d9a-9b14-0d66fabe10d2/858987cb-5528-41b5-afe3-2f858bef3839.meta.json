@@ -1,0 +1,16 @@
+{
+  "capture_id": "858987cb-5528-41b5-afe3-2f858bef3839",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/5-apis-gratuitas-para-extracao-de-dados-em-tempo-real/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:17:42.947767",
+  "content_hash": "a61a5d15428e4c1471b76f45918a217c9d7ab30dd1b408b8302c5677f6b34b0a",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/858987cb-5528-41b5-afe3-2f858bef3839.txt.gz"
+  }
+}

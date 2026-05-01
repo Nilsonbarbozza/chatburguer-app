@@ -1,0 +1,16 @@
+{
+  "capture_id": "877ff505-764a-4366-8592-7864ac21deb4",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/trilha-de-aprendizagem-da-formacao-ai-software-engineer-4-0/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:53.453393",
+  "content_hash": "3ef29147eb2c21818b7fb02e9254116c3db50a6592a5292f79b6ff904c7c2dad",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/877ff505-764a-4366-8592-7864ac21deb4.txt.gz"
+  }
+}

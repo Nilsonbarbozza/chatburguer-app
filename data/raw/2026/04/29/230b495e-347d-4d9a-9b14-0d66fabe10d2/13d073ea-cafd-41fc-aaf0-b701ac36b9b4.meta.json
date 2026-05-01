@@ -1,0 +1,16 @@
+{
+  "capture_id": "13d073ea-cafd-41fc-aaf0-b701ac36b9b4",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/trilha-de-aprendizagem-da-formacao-ia-aplicada-a-financas-4-0/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:21:04.412199",
+  "content_hash": "ecc3e56090ae29526e7944dd490382a7b382ce6d741d403417fb2f53a84b060c",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/13d073ea-cafd-41fc-aaf0-b701ac36b9b4.txt.gz"
+  }
+}

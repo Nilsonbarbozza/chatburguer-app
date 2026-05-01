@@ -1,0 +1,16 @@
+{
+  "capture_id": "d564c425-21fb-4ff9-bc52-9f3e1551b93b",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/plataformas-no-code-e-low-code-para-construir-agentes-de-ia-e-automatizar-aplicacoes-parte-3-langflow-para-automacao-com-llms/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:08.065480",
+  "content_hash": "20fdec0e8e05088c86319cdeb8b1e63aaca4a532e4710986d606ce991d1c8aaa",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/d564c425-21fb-4ff9-bc52-9f3e1551b93b.txt.gz"
+  }
+}

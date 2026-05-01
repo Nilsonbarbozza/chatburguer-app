@@ -1,0 +1,16 @@
+{
+  "capture_id": "26d3dbca-f8f2-4eeb-8000-84eb25c49d9e",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/sql_analytics/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:48.719877",
+  "content_hash": "0b11b394f6b223d602e28bac6206c1a5e273f16a276f3ed23958dd17a9533a7f",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/26d3dbca-f8f2-4eeb-8000-84eb25c49d9e.txt.gz"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "capture_id": "c23a1e54-670a-47f5-8075-83c4c800b24c",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/a-importancia-da-pos-graduacao-em-ciencia-de-dados-como-diferencial-profissional/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:13.251563",
+  "content_hash": "26e63b8706dd3fb3d1265baad2eccb854759ff225061d8710e4502adc091a1b3",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/c23a1e54-670a-47f5-8075-83c4c800b24c.txt.gz"
+  }
+}

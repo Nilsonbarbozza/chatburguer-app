@@ -1,0 +1,16 @@
+{
+  "capture_id": "6711148a-0ed8-436d-9b58-15f376545e48",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/trilha-de-aprendizagem-da-formacao-machine-learning/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:21:10.043435",
+  "content_hash": "8c16bdb3bffb8c962974ef81dbda56f80d8ef4d091e640d9cfc6295b0b2bc9fe",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/6711148a-0ed8-436d-9b58-15f376545e48.txt.gz"
+  }
+}

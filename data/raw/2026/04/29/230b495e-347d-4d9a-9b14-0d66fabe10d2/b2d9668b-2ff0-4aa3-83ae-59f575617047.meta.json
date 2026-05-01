@@ -1,0 +1,16 @@
+{
+  "capture_id": "b2d9668b-2ff0-4aa3-83ae-59f575617047",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/inteligencia-artificial-salarios-em-direcao-ao-ceu/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:27.557324",
+  "content_hash": "a0c649ae12106a5cb0cc4a48b5ef454600174f47230694c56b8a644350bb4d48",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/b2d9668b-2ff0-4aa3-83ae-59f575617047.txt.gz"
+  }
+}

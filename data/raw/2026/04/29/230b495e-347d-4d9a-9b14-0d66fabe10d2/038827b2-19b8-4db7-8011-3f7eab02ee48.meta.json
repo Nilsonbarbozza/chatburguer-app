@@ -1,0 +1,16 @@
+{
+  "capture_id": "038827b2-19b8-4db7-8011-3f7eab02ee48",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/datasets-publicos-para-portfolio-de-projetos-em-data_science/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:45.762607",
+  "content_hash": "ea9722d7dd367e04e0944d48a240253095710087c1dd6757f513b741f7c1b56f",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/038827b2-19b8-4db7-8011-3f7eab02ee48.txt.gz"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "capture_id": "6e177a73-35f0-460a-b7be-d52165d1558a",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/trilha-de-aprendizagem-da-formacao-agentic-ai-engineer-4-0/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:49.967924",
+  "content_hash": "792688f0011ee1b9e6ca959a3986f41112f0f9156925b2454ad398a968d35bd1",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/6e177a73-35f0-460a-b7be-d52165d1558a.txt.gz"
+  }
+}

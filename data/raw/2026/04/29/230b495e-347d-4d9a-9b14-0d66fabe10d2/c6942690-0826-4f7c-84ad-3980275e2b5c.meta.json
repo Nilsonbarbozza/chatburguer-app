@@ -1,0 +1,16 @@
+{
+  "capture_id": "c6942690-0826-4f7c-84ad-3980275e2b5c",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/um-dia-na-vida-de-sofia-engenheira-de-machine-learning-mlops-pipelines-e-deploy-em-acao/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:21:15.495891",
+  "content_hash": "4b85910b99c41db3c4a8f4642fb4e0bbb2e92cb1c51ce2ddaf6ce30e66799d16",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/c6942690-0826-4f7c-84ad-3980275e2b5c.txt.gz"
+  }
+}

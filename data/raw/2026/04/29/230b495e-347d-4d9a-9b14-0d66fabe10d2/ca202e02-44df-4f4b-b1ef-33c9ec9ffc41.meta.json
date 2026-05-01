@@ -1,0 +1,16 @@
+{
+  "capture_id": "ca202e02-44df-4f4b-b1ef-33c9ec9ffc41",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/qual-a-importancia-de-um-dba-database-administrator-em-um-projeto-de-data-science/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:33.813995",
+  "content_hash": "f517e473a4b8b7c5dc9b32f171efc9784304802efd18c5177001f75848aae385",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/ca202e02-44df-4f4b-b1ef-33c9ec9ffc41.txt.gz"
+  }
+}

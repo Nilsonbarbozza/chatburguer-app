@@ -1,0 +1,16 @@
+{
+  "capture_id": "79c60290-50d1-4dbe-b7ad-f8931b90ea8a",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/gradiente-descendente-o-mecanismo-matematico-por-tras-do-aprendizado-dos-modelos-de-ia/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:05.232209",
+  "content_hash": "92e1ee4e01d4dc99c93fb38850a5bdfa8866268f68bbd62feaf841d6902860c5",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/79c60290-50d1-4dbe-b7ad-f8931b90ea8a.txt.gz"
+  }
+}

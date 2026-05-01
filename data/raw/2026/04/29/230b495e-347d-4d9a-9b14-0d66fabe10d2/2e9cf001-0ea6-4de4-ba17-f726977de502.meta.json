@@ -1,0 +1,16 @@
+{
+  "capture_id": "2e9cf001-0ea6-4de4-ba17-f726977de502",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/a-importancia-dos-profissionais-de-dados-compreenderem-a-lgpd/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:17:57.721286",
+  "content_hash": "f38d5b29f0d076e8cc08b1137c0339d251ee31bb1ceba1fbd1f15bdfca65ea90",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/2e9cf001-0ea6-4de4-ba17-f726977de502.txt.gz"
+  }
+}

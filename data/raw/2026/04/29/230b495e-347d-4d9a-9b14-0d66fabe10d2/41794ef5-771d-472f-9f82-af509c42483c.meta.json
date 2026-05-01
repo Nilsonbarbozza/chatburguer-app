@@ -1,0 +1,16 @@
+{
+  "capture_id": "41794ef5-771d-472f-9f82-af509c42483c",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/desvendando-a-profissao-como-e-o-dia-a-dia-de-um-analista-de-dados/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:45.916883",
+  "content_hash": "2cf75f2022aa5c58fd2261ef5cd7827b135e11cba328f1351b0863f9ce05a092",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/41794ef5-771d-472f-9f82-af509c42483c.txt.gz"
+  }
+}

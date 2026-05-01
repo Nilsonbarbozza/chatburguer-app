@@ -1,0 +1,16 @@
+{
+  "capture_id": "db243298-e0aa-4519-9b3c-33d6c403dc8e",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/top-7-bibliotecas-python-para-machine-learning-e-deep-learning-em-2025/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:47.705469",
+  "content_hash": "a8a6084ff6d2146a8ede93f58cb8b359d1095d0ff38049fffe61b897270fa69c",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/db243298-e0aa-4519-9b3c-33d6c403dc8e.txt.gz"
+  }
+}

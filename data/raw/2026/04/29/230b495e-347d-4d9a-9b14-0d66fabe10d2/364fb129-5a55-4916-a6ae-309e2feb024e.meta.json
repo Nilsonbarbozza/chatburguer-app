@@ -1,0 +1,16 @@
+{
+  "capture_id": "364fb129-5a55-4916-a6ae-309e2feb024e",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/10-llms-large-language-models-open-source-para-uso-comercial/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:17:44.976751",
+  "content_hash": "f8026488fd2bf2c20a2f5cc298134fac53933938bb013cb0ef1ee471e27e2778",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/364fb129-5a55-4916-a6ae-309e2feb024e.txt.gz"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "capture_id": "7cd5d7fe-145c-4668-85ff-de6bd12ffd9a",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/automacao-com-ia-e-agentops-em-ciberseguranca-e-protecao-de-dados/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:23.401323",
+  "content_hash": "74b43c1dbc274849e17c1ef0e43bd5ec0aa8fa07fc71f8fcd43abc89aef0da20",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/7cd5d7fe-145c-4668-85ff-de6bd12ffd9a.txt.gz"
+  }
+}

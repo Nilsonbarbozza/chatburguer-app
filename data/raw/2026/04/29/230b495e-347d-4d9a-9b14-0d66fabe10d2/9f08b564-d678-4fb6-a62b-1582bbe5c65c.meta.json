@@ -1,0 +1,16 @@
+{
+  "capture_id": "9f08b564-d678-4fb6-a62b-1582bbe5c65c",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/passando-o-dia-com-dados-as-primeiras-semanas-de-azevedo-como-engenheiro-analitico/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:59.876238",
+  "content_hash": "7ae5bcf94c05febff7aa9b96695aef47c3e64bc16cd6b995a4c78dbf510fff96",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/9f08b564-d678-4fb6-a62b-1582bbe5c65c.txt.gz"
+  }
+}

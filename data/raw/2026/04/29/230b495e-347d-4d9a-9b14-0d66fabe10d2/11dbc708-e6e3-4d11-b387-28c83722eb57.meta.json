@@ -1,0 +1,16 @@
+{
+  "capture_id": "11dbc708-e6e3-4d11-b387-28c83722eb57",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/no-aniversario-de-10-anos-da-dsa-10-presentes-para-voce/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:36.142823",
+  "content_hash": "a49eb0d71c34472362f279bb845f30adc66393776b0e985a4e370f66f16d29a9",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/11dbc708-e6e3-4d11-b387-28c83722eb57.txt.gz"
+  }
+}

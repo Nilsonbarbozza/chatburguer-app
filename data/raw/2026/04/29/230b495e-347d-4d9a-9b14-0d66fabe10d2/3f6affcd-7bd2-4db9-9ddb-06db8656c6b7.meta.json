@@ -1,0 +1,16 @@
+{
+  "capture_id": "3f6affcd-7bd2-4db9-9ddb-06db8656c6b7",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/model-context-protocol-mcp-para-sistemas-de-ia-generativa-conceito-aplicacoes-e-desafios/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:36.407019",
+  "content_hash": "e706713c5e9c7624c697abd75cd15737f22e37ddb6e9b723de600d98797f1d6d",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/3f6affcd-7bd2-4db9-9ddb-06db8656c6b7.txt.gz"
+  }
+}

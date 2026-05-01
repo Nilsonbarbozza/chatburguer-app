@@ -1,0 +1,16 @@
+{
+  "capture_id": "d714369f-2b5d-4070-b022-534ba565a0ed",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/dbt-data-build-tool-vantagens-limitacoes-e-casos-de-uso/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:48.058681",
+  "content_hash": "37aa47f320da5d8a5fa3a220dd03feff32598d3bf09f8412984ea9e68153a922",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/d714369f-2b5d-4070-b022-534ba565a0ed.txt.gz"
+  }
+}

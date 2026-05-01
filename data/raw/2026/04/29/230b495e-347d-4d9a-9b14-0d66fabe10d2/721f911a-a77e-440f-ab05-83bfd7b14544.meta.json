@@ -1,0 +1,16 @@
+{
+  "capture_id": "721f911a-a77e-440f-ab05-83bfd7b14544",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/ia-generativa-vs-ia-preditiva/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:19.735295",
+  "content_hash": "8e536232798fe50abf64db7f7939bb4cc4cac22b7a4c2ac7f73f62621c423d52",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/721f911a-a77e-440f-ab05-83bfd7b14544.txt.gz"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "capture_id": "34b1c7c8-f16c-4532-a4cc-9651ed679b3b",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/diploma-de-papel-deixa-de-existir/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:53.182600",
+  "content_hash": "487482b36b71046907bf97a8da3f90960079e7a9e10eed306778b9320d3e29cf",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/34b1c7c8-f16c-4532-a4cc-9651ed679b3b.txt.gz"
+  }
+}

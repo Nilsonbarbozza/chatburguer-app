@@ -1,0 +1,16 @@
+{
+  "capture_id": "fe3c8966-1b03-4187-9404-608b64ca9fa5",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/a-verdade-sobre-trabalhar-com-ia-e-nao-e-apenas-sobre-codigo/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:01.514173",
+  "content_hash": "3037d18aada6679974db8323123e2b33a69f90bcb703405d5d49d539126373af",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/fe3c8966-1b03-4187-9404-608b64ca9fa5.txt.gz"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "capture_id": "e91a8110-caac-4f54-bdf2-2230ecdad3be",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/dbt-data-build-tool-em-projetos-de-engenharia-analitica/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:46.883701",
+  "content_hash": "e05a966c05199c21411b3d08f95d381493c6473178c899f235e24686074f84ae",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/e91a8110-caac-4f54-bdf2-2230ecdad3be.txt.gz"
+  }
+}

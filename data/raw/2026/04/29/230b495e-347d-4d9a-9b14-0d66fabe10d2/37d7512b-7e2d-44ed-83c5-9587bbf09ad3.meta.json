@@ -1,0 +1,16 @@
+{
+  "capture_id": "37d7512b-7e2d-44ed-83c5-9587bbf09ad3",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/diferencas-entre-dba-e-engenheiro-de-dados-funcoes-habilidades-e-responsabilidades/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:49.949719",
+  "content_hash": "29aeb7c026d73031800960adbb182cc210d992751777d303ae06c3ddba484ced",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/37d7512b-7e2d-44ed-83c5-9587bbf09ad3.txt.gz"
+  }
+}

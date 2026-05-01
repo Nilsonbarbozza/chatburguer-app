@@ -1,0 +1,16 @@
+{
+  "capture_id": "4a0905b5-f72f-4d73-aa12-d84eff4b6022",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/guia-definitivo-sobre-protocolos-e-frameworks-de-agentes-de-ia-parte-iv-frameworks-guiados-por-paradigma/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:17.984445",
+  "content_hash": "c4fbbb19e9974d139013a76fc866910add06b224952e0cb83cd13251232e387f",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/4a0905b5-f72f-4d73-aa12-d84eff4b6022.txt.gz"
+  }
+}

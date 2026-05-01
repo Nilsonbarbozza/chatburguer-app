@@ -1,0 +1,16 @@
+{
+  "capture_id": "12609a39-90c3-4a34-8d00-dcdfb57f7449",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/mlops-essentials-para-portfolio-de-projetos-gestao-de-codigo-e-dados-com-git-e-dvc/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:34.179996",
+  "content_hash": "5b4609e03d953f6a1f5dcc3d7b76323d12dceb22d78c609b733b5172070369ef",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/12609a39-90c3-4a34-8d00-dcdfb57f7449.txt.gz"
+  }
+}

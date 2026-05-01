@@ -1,0 +1,16 @@
+{
+  "capture_id": "e3cf757b-b465-4a04-8b20-28b03a00d835",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/retrieval-augmented-generation-rag-melhores-praticas-e-casos-de-uso/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:32.945711",
+  "content_hash": "4c3a5ea0cf6a6cd4921fe890ef6ed744d681377062143ea52d7c97c2dc75a3d2",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/e3cf757b-b465-4a04-8b20-28b03a00d835.txt.gz"
+  }
+}

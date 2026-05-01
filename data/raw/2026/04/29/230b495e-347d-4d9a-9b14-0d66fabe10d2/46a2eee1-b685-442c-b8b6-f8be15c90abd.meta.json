@@ -1,0 +1,16 @@
+{
+  "capture_id": "46a2eee1-b685-442c-b8b6-f8be15c90abd",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/comparativo-tecnico-label-encoding-vs-one-hot-encoding-em-machine-learning/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:36.086929",
+  "content_hash": "ff29bc75aa0d213550bbd4e0c0218be8350b1b3a4ce7af713fc3edb8d6bc6e4b",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/46a2eee1-b685-442c-b8b6-f8be15c90abd.txt.gz"
+  }
+}

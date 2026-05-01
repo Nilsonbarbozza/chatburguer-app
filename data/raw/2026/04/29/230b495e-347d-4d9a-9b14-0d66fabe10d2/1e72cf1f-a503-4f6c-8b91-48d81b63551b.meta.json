@@ -1,0 +1,16 @@
+{
+  "capture_id": "1e72cf1f-a503-4f6c-8b91-48d81b63551b",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/5-bibliotecas-python-para-analise-de-series-temporais/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:17:44.931097",
+  "content_hash": "4bb01168093c17d230d05053515c1f558ac35ff20bdf224c249b0370e55448cd",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/1e72cf1f-a503-4f6c-8b91-48d81b63551b.txt.gz"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "capture_id": "3372011b-05f1-41d1-96ab-673b22407f33",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/inscricoes-para-a-pos-graduacao-e-presente-de-natal/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:23.668154",
+  "content_hash": "8afc5e9b8072f6af173009cccd8997953633c15e0d0ac808456ea7944d9cae74",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/3372011b-05f1-41d1-96ab-673b22407f33.txt.gz"
+  }
+}

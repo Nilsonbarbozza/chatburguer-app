@@ -1,0 +1,16 @@
+{
+  "capture_id": "4233b2f5-1063-4f8a-b363-08466c45e373",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/pos-graduacao-em-processamento-de-linguagem-natural-e-ia-generativa/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:18.718099",
+  "content_hash": "9644076984358df1b86338aaa32a27b39e0e4e04e7021ef7793eb95d04f46d28",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/4233b2f5-1063-4f8a-b363-08466c45e373.txt.gz"
+  }
+}

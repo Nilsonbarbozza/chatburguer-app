@@ -1,0 +1,16 @@
+{
+  "capture_id": "5579262b-b6c9-40bb-9549-0462717f1fd8",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/trilha-de-aprendizagem-da-formacao-apache-spark-databricks-4-0/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:56.592061",
+  "content_hash": "43a5b7d3c87d4dc2a7af3f5e7fd769f4d8cc434a20762a4d51ce6f03182d7b38",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/5579262b-b6c9-40bb-9549-0462717f1fd8.txt.gz"
+  }
+}

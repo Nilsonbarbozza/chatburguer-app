@@ -1,0 +1,16 @@
+{
+  "capture_id": "1cca7d79-73e6-469c-befb-d356e2c63f39",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/trilha-de-aprendizagem-da-formacao-ai-data-engineer-4-0/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:52.390005",
+  "content_hash": "427a898dcdaa48d5c27bb88b2539c3b76786b8fde3bfcb8deb558bf0ec5a4c92",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/1cca7d79-73e6-469c-befb-d356e2c63f39.txt.gz"
+  }
+}

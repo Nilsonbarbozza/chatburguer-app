@@ -1,0 +1,16 @@
+{
+  "capture_id": "ee1b8973-2b03-4257-9d22-ac897a34b1bd",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/principais-provedores-de-cloud-computing-e-plataformas-de-dados-do-mercado/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:27.181581",
+  "content_hash": "1f4a79986a27d453cf35bdc884e6c39a594c8d90a26fc74908a02533e492730a",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/ee1b8973-2b03-4257-9d22-ac897a34b1bd.txt.gz"
+  }
+}

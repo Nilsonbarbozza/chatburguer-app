@@ -1,0 +1,16 @@
+{
+  "capture_id": "ac781ae5-7a72-4838-93e8-22bf024be84c",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/trilha-de-aprendizagem-da-formacao-analytics-engineer-4-0/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:21:00.050451",
+  "content_hash": "b375d68375ae8101005794eb019a6e679505557abfbcabf280bad450b7e4a4ea",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/ac781ae5-7a72-4838-93e8-22bf024be84c.txt.gz"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "capture_id": "88c83b37-d8c7-47a6-864d-d9bf1e7f9c4a",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/o-guia-definitivo-sobre-data-drift-a-anatomia-do-drift/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:41.332756",
+  "content_hash": "ca561a2cd175830eb8118fc6d676865075203e479b9b4801a3e830940f52d975",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/88c83b37-d8c7-47a6-864d-d9bf1e7f9c4a.txt.gz"
+  }
+}

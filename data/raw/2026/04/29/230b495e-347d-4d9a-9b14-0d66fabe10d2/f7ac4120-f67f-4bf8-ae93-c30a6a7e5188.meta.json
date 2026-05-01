@@ -1,0 +1,16 @@
+{
+  "capture_id": "f7ac4120-f67f-4bf8-ae93-c30a6a7e5188",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/guia-de-transicao-de-carreira-para-a-area-de-dados/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:11.416731",
+  "content_hash": "ba60fcdb765ddbceb65ac60035fe50245b058dd6fb24eb41730f526b552b2ee9",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/f7ac4120-f67f-4bf8-ae93-c30a6a7e5188.txt.gz"
+  }
+}

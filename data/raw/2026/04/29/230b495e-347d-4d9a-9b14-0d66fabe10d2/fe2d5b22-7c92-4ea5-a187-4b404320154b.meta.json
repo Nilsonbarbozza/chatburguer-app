@@ -1,0 +1,16 @@
+{
+  "capture_id": "fe2d5b22-7c92-4ea5-a187-4b404320154b",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/o-impacto-da-inteligencia-artificial-no-futuro-da-area-de_seguros/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:46.918495",
+  "content_hash": "673099ea6d0965f81d7e8371e1f2371a1ca5fa886853a1e8c0a5240024fe6a5c",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/fe2d5b22-7c92-4ea5-a187-4b404320154b.txt.gz"
+  }
+}

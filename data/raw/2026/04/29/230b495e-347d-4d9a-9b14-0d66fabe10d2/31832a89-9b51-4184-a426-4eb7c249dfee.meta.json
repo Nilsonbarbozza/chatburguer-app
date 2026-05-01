@@ -1,0 +1,16 @@
+{
+  "capture_id": "31832a89-9b51-4184-a426-4eb7c249dfee",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/testes-a-b-em-projetos-de-data-science-uma-ferramenta-de-negocio-estrategica/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:54.483130",
+  "content_hash": "ef7a2eeca3776d6011fc0b9a34ffbb0a5495f30c7854ecdb8e42714b45d8a93f",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/31832a89-9b51-4184-a426-4eb7c249dfee.txt.gz"
+  }
+}

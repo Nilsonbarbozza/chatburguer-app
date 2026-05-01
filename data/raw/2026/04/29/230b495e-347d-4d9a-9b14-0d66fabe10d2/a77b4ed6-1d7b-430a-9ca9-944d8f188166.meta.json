@@ -1,0 +1,16 @@
+{
+  "capture_id": "a77b4ed6-1d7b-430a-9ca9-944d8f188166",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/arquitetura-medalhao-o-guia-definitivo-para-organizar-o-data-lakehouse-fundamentos/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:14.184145",
+  "content_hash": "7fc6f500a73f64ab3c4fd45a95e1a9fdc11271ff0c4940694688db3ef7f55d83",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/a77b4ed6-1d7b-430a-9ca9-944d8f188166.txt.gz"
+  }
+}

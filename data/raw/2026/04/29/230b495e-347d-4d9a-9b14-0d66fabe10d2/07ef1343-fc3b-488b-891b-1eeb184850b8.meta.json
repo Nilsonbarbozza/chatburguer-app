@@ -1,0 +1,16 @@
+{
+  "capture_id": "07ef1343-fc3b-488b-891b-1eeb184850b8",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/pos-graduacao-em-analise-financeira-com-inteligencia-artificial/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:11.178363",
+  "content_hash": "e9b7ebf16d9aca040b7f7bff5951f726cdc0f24fbcd41a9f4939d44372b35a9e",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/07ef1343-fc3b-488b-891b-1eeb184850b8.txt.gz"
+  }
+}

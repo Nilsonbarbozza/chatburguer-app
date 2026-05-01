@@ -1,0 +1,16 @@
+{
+  "capture_id": "a7bc56ba-1938-4304-b5b0-b4ca83451e76",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/pos-graduacao-em-data-science-e-inteligencia-artificial-aplicada-ao-direito/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:16.403396",
+  "content_hash": "e7c1b0ddf25517588f408a2ca168665cea8e7afa3088f22d268407ad7d152671",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/a7bc56ba-1938-4304-b5b0-b4ca83451e76.txt.gz"
+  }
+}

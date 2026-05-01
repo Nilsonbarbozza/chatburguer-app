@@ -1,0 +1,16 @@
+{
+  "capture_id": "b2e81425-f7a5-45cc-b105-879040edbde8",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/o-que-o-chatgpt-realmente-significa-para-as_empresas/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:49.989418",
+  "content_hash": "b4bf575bbb6a98f2ae929aead38b33c4805cd622ce45f114482e79ed4e66babc",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/b2e81425-f7a5-45cc-b105-879040edbde8.txt.gz"
+  }
+}

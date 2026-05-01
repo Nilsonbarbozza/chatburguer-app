@@ -1,0 +1,16 @@
+{
+  "capture_id": "0d33c41b-385b-430d-837e-5b96f83b48ea",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/comparativo-tecnico-e-casos-de-uso-fine-tuning-rag-e-engenharia-de-prompt-em-llms/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:35.075635",
+  "content_hash": "843d4e0412b3c88a9efbeb1b714cc23f3722a6a39ae2d6c1389c99b22c880655",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/0d33c41b-385b-430d-837e-5b96f83b48ea.txt.gz"
+  }
+}

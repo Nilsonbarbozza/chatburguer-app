@@ -1,0 +1,16 @@
+{
+  "capture_id": "1a7c3094-f170-442d-80f4-697b200551b6",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/10-aplicacoes-de-machine-learning-em-supply_chain/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:17:30.759539",
+  "content_hash": "1382caca885266221123bf4be0cd146206a1cdc1f333ecfb5719e05a41dab676",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/1a7c3094-f170-442d-80f4-697b200551b6.txt.gz"
+  }
+}

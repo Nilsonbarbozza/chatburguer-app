@@ -1,0 +1,16 @@
+{
+  "capture_id": "799d0a77-ab4e-4111-868d-8d8f3b8b3223",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/aceleracao-silenciosa-a-nova-geracao-de-profissionais-que-dominam-a-ia/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:02.403320",
+  "content_hash": "7a1cc77d4a99f09931f4cfa51b1ed3d5f543f71e6d4910ce6b58e4994b9c58bb",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/799d0a77-ab4e-4111-868d-8d8f3b8b3223.txt.gz"
+  }
+}

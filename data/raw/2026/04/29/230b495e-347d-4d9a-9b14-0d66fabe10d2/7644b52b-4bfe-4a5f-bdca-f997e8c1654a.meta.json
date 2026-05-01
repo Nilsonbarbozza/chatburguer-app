@@ -1,0 +1,16 @@
+{
+  "capture_id": "7644b52b-4bfe-4a5f-bdca-f997e8c1654a",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/ontologias-em-pln-e-agentes-de-ia-com-langgraph-fundamentos-aplicacoes-e-desafios/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:56.062855",
+  "content_hash": "3730d8b2b884203603f4275dfca6cf37f1f5fe9e6d9226ed2645a0a58a51cc88",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/7644b52b-4bfe-4a5f-bdca-f997e8c1654a.txt.gz"
+  }
+}

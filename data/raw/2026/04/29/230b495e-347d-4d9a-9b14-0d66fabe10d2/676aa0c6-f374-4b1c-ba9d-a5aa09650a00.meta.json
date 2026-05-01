@@ -1,0 +1,16 @@
+{
+  "capture_id": "676aa0c6-f374-4b1c-ba9d-a5aa09650a00",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/4-licoes-essenciais-que-todo-executivo-precisa-saber-sobre-inteligencia-artificial-e-data-science/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:17:40.898846",
+  "content_hash": "6fda90ac2ff591d248f664f491282ec82021f8ab231273c0f0f90ec354aa850c",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/676aa0c6-f374-4b1c-ba9d-a5aa09650a00.txt.gz"
+  }
+}

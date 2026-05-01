@@ -1,0 +1,16 @@
+{
+  "capture_id": "192f188d-6c6e-44b4-83d8-9dbd8d4ede82",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/langgraph-para-construcao-de-agentes-de-ia-arquitetura-orquestracao-e-casos-de-uso/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:28.236715",
+  "content_hash": "269c663d17148ff26fe7efb3f65183e5a322a0b76ac7d7c354fbf23ba9fe20ab",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/192f188d-6c6e-44b4-83d8-9dbd8d4ede82.txt.gz"
+  }
+}

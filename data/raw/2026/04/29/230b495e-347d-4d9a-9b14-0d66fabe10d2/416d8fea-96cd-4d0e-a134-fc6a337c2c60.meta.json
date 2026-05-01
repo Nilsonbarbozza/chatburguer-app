@@ -1,0 +1,16 @@
+{
+  "capture_id": "416d8fea-96cd-4d0e-a134-fc6a337c2c60",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/pos-graduacao-em-ciencia-de-dados/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:15.227811",
+  "content_hash": "bf2958005553d648b0aea21b89e1aa32e147b223a6376e3fc851401a12e13f6f",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/416d8fea-96cd-4d0e-a134-fc6a337c2c60.txt.gz"
+  }
+}

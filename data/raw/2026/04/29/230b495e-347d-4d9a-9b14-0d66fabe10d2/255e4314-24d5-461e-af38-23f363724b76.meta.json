@@ -1,0 +1,16 @@
+{
+  "capture_id": "255e4314-24d5-461e-af38-23f363724b76",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/reciprocal-rank-fusion-rrf-o-algoritmo-simples-que-esta-no-coracao-da-busca-hibrida-em-rag/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:31.886905",
+  "content_hash": "dcd9cfac0cc95d4f99ae495c6079c67f99e906403585d577b716f835c84f1e4f",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/255e4314-24d5-461e-af38-23f363724b76.txt.gz"
+  }
+}

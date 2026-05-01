@@ -1,0 +1,16 @@
+{
+  "capture_id": "7fd9fdd8-5131-4f79-a7d4-d4245689da77",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/diferencas-entre-rpa-ia-e-machine_learning/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:51.787541",
+  "content_hash": "c18516f815dbb249b77ea491ea7538a38a41e89dc743811933c3411a07e27fba",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/7fd9fdd8-5131-4f79-a7d4-d4245689da77.txt.gz"
+  }
+}

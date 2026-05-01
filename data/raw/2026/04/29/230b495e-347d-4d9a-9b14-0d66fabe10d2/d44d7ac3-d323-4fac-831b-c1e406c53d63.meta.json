@@ -1,0 +1,16 @@
+{
+  "capture_id": "d44d7ac3-d323-4fac-831b-c1e406c53d63",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/a-importancia-da-inferencia-estatistica-em-projetos-de-data-science/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:12.234760",
+  "content_hash": "e0c344a4e0789c0116c806c36aba23501039d25aae3328b8ddde6c8c82605d45",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/d44d7ac3-d323-4fac-831b-c1e406c53d63.txt.gz"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "capture_id": "c9ab46a8-6d9e-4691-ae69-980baaa2b62e",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/raciocinio-planejamento-e-uso-de-ferramentas-o-padrao-react-reason-act-de-agentes-de-ia/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:39.438077",
+  "content_hash": "3e93d83083a23dc8785a5b9a3015b63a0c1f3ecce7a9a5420e7bacdf60fa5911",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/c9ab46a8-6d9e-4691-ae69-980baaa2b62e.txt.gz"
+  }
+}

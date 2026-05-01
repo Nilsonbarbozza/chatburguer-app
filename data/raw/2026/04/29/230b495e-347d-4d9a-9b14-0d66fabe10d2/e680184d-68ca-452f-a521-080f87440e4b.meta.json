@@ -1,0 +1,16 @@
+{
+  "capture_id": "e680184d-68ca-452f-a521-080f87440e4b",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/como-analistas-cientistas-e-engenheiros-de-dados-podem-usar-o-google-bigquery/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:26.774287",
+  "content_hash": "16caf25c82be2fb5d45076f4780ed6763da86f67947f1fdb8d433c2a1d004ff7",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/e680184d-68ca-452f-a521-080f87440e4b.txt.gz"
+  }
+}

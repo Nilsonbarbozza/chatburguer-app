@@ -1,0 +1,16 @@
+{
+  "capture_id": "3ae59705-98f6-447f-9ca6-fe24c35dd531",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/guardrails-em-ia-generativa-seguranca-e-qualidade-em-modelos-de-linguagem/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:06.086695",
+  "content_hash": "c92f549825f79bc3e72290b7342b64838b27a0c6ced690a79fbba07935c24c74",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/3ae59705-98f6-447f-9ca6-fe24c35dd531.txt.gz"
+  }
+}

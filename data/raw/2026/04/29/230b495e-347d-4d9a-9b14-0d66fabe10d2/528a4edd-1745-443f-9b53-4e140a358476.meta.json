@@ -1,0 +1,16 @@
+{
+  "capture_id": "528a4edd-1745-443f-9b53-4e140a358476",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/5-livros-de-matematica-para-machine-learning/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:17:48.863260",
+  "content_hash": "0e9f26bf093d77d6bf18444b91161057839062af673935ff15222eb6efc16e19",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/528a4edd-1745-443f-9b53-4e140a358476.txt.gz"
+  }
+}

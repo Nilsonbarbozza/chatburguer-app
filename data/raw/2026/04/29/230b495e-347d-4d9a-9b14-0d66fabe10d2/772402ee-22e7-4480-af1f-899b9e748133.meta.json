@@ -1,0 +1,16 @@
+{
+  "capture_id": "772402ee-22e7-4480-af1f-899b9e748133",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/pos-graduacao-em-analise-de-dados/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:09.027181",
+  "content_hash": "f01a36111ae2117b091d7708b779f6c1a7a1eedcd576ff694fef9dbc997c9296",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/772402ee-22e7-4480-af1f-899b9e748133.txt.gz"
+  }
+}

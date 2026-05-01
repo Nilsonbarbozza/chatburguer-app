@@ -1,0 +1,16 @@
+{
+  "capture_id": "c7c912e8-826a-4d2a-aee7-cc6155f96209",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/guia-de-carreira-cientista-de_dados/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:08.095109",
+  "content_hash": "dea9f2189964af0afb47f42b05d0f5b839febfb80357dc123f6e9070c3be5261",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/c7c912e8-826a-4d2a-aee7-cc6155f96209.txt.gz"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "capture_id": "1c589dca-eb12-464d-82e2-2827b8197f91",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/6-dicas-sobre-como-passar-da-teoria-para-a-pratica-em-ciencia-de-dados/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:17:54.748142",
+  "content_hash": "bb463b4a2739af7daac9bf9dce1cda76ce53a737cad924edf7edad1cceea6c3d",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/1c589dca-eb12-464d-82e2-2827b8197f91.txt.gz"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "capture_id": "45079f8a-8f4f-4c80-aa27-1c0a0d68c802",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/10-beneficios-de-ter-uma-pos-graduacao-lato-sensu-reconhecida-pelo-mec/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:17:31.646727",
+  "content_hash": "105d886c35021adac83aeb283b710b63bb79fe5e8e24343950f3a4160540e7a3",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/45079f8a-8f4f-4c80-aa27-1c0a0d68c802.txt.gz"
+  }
+}

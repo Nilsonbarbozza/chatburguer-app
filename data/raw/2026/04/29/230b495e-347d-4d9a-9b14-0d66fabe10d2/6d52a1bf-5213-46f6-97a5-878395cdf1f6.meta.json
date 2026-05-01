@@ -1,0 +1,16 @@
+{
+  "capture_id": "6d52a1bf-5213-46f6-97a5-878395cdf1f6",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/o-que-e-etl-reverso/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:48.889817",
+  "content_hash": "082ef27a90647b367cf0c7ea4adf63cf1115a8b9b3a7b7be205e22c9ce95af56",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/6d52a1bf-5213-46f6-97a5-878395cdf1f6.txt.gz"
+  }
+}

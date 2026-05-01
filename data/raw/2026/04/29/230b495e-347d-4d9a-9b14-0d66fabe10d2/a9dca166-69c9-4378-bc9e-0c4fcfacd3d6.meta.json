@@ -1,0 +1,16 @@
+{
+  "capture_id": "a9dca166-69c9-4378-bc9e-0c4fcfacd3d6",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/qual-trilha-de-aprendizagem-devo-escolher-na-data-science-academy/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:36.831638",
+  "content_hash": "d84cb4f2d19d2ee9d65e3e162e977849a85db62aa652326b86661d7025180577",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/a9dca166-69c9-4378-bc9e-0c4fcfacd3d6.txt.gz"
+  }
+}

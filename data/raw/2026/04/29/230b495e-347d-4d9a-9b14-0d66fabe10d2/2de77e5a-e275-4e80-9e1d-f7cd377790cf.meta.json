@@ -1,0 +1,16 @@
+{
+  "capture_id": "2de77e5a-e275-4e80-9e1d-f7cd377790cf",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/pos-graduacao-em-processamento-distribuido-com-plataformas-modernas-de-dados/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:19.824203",
+  "content_hash": "85a5a2c81b96904b5f1b3ca937252f5501b7d4c0ca5fd26b8cc20e196ac6aebd",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/2de77e5a-e275-4e80-9e1d-f7cd377790cf.txt.gz"
+  }
+}

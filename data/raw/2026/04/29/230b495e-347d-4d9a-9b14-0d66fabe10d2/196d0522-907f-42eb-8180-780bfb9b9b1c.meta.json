@@ -1,0 +1,16 @@
+{
+  "capture_id": "196d0522-907f-42eb-8180-780bfb9b9b1c",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/ia-e-fluxos-cognitivos-para-automacao-de-processos-de-negocios-bpa-com-n8n/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:19:23.956744",
+  "content_hash": "608e333d5f9e3b8d86e83c28c38e7f5d4cbdd73f6d6f746dfdadb8a7971f7628",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/196d0522-907f-42eb-8180-780bfb9b9b1c.txt.gz"
+  }
+}

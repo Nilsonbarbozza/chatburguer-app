@@ -1,0 +1,16 @@
+{
+  "capture_id": "2f4887e2-a0ac-46bf-b68e-67d252aaa998",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/power-bi-avancado-para-analise-de-dados-com-dax/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:24.227585",
+  "content_hash": "5c738cea779bb374f41897968167723c64a84417a05606ee922978d31eac95d9",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/2f4887e2-a0ac-46bf-b68e-67d252aaa998.txt.gz"
+  }
+}

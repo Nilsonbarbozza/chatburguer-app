@@ -1,0 +1,16 @@
+{
+  "capture_id": "82e4d15a-9c19-420e-b2f6-d38838264f67",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/testes-a-b-em-projetos-de-data-science-principais-desafios-e-limitacoes/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:20:53.423802",
+  "content_hash": "e991f59d0ce5e0b375eb10dfe58f46231d66657ce4028a1d773a30e59ae5c2c5",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/82e4d15a-9c19-420e-b2f6-d38838264f67.txt.gz"
+  }
+}

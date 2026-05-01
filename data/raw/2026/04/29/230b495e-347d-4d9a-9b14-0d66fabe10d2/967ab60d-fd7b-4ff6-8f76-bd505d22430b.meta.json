@@ -1,0 +1,16 @@
+{
+  "capture_id": "967ab60d-fd7b-4ff6-8f76-bd505d22430b",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/a-inteligencia-artificial-pode-ser-mais-eficiente-que-os-humanos-no-sistema-judiciario/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:17:58.596033",
+  "content_hash": "9e701472f2ee087fe2c2b0a51a9b39d0152b74ddd203e2836eca86836054096c",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/967ab60d-fd7b-4ff6-8f76-bd505d22430b.txt.gz"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "capture_id": "e18ec3ee-078b-485b-bb5a-0cda755d8de0",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/atestado-de-capacidade-tecnica/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:22.362053",
+  "content_hash": "c3308704336e77c45a605dc5fb1bc63da9be5a688975f2fbb03f42b19c26134d",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/e18ec3ee-078b-485b-bb5a-0cda755d8de0.txt.gz"
+  }
+}

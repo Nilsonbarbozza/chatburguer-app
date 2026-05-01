@@ -1,0 +1,16 @@
+{
+  "capture_id": "ce3177e0-799f-4dd0-b79b-4202ce228f09",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/estrategias-de-chunking-em-aplicacoes-de-ia-generativa/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:56.472672",
+  "content_hash": "9e4cbf54c4e1a9caa8641443293b46138a6ec2e343bcc38c6113da21fb638b79",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/ce3177e0-799f-4dd0-b79b-4202ce228f09.txt.gz"
+  }
+}

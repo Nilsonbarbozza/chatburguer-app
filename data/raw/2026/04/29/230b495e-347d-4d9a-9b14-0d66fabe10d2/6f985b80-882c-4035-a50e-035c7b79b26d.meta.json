@@ -1,0 +1,16 @@
+{
+  "capture_id": "6f985b80-882c-4035-a50e-035c7b79b26d",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/curso-online-governanca-de-dados/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:18:38.896857",
+  "content_hash": "afcad48193ab5cd5fbd93644aeb1c7bb4caa312c1163fa3b26869c533f7ebfe2",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/6f985b80-882c-4035-a50e-035c7b79b26d.txt.gz"
+  }
+}

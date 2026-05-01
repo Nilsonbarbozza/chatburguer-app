@@ -1,0 +1,16 @@
+{
+  "capture_id": "bf6b6eaf-cae4-4569-a7ad-7b31a131beea",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/a-janela-de-contexto-dos-llms-o-que-e-por-que-importa-e-quais-sao-seus-limites/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:17:59.612827",
+  "content_hash": "55625374108ed22fab877bf6f6f120bd320c14641f659634aecc5edf88381a73",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/bf6b6eaf-cae4-4569-a7ad-7b31a131beea.txt.gz"
+  }
+}

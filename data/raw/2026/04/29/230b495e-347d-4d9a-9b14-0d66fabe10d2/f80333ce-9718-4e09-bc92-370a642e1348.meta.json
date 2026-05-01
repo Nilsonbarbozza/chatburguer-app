@@ -1,0 +1,16 @@
+{
+  "capture_id": "f80333ce-9718-4e09-bc92-370a642e1348",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/a-ascensao-do-engenheiro-dataops-no-universo-da-ciencia-de-dados/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:17:59.132356",
+  "content_hash": "87abe3d1e6ff59902c9b886931b7a7199d1ae1e67d1be387219226b056795409",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/f80333ce-9718-4e09-bc92-370a642e1348.txt.gz"
+  }
+}

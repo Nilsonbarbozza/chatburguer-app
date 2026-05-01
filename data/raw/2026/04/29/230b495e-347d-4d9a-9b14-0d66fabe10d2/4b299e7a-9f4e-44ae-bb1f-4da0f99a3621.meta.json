@@ -1,0 +1,16 @@
+{
+  "capture_id": "4b299e7a-9f4e-44ae-bb1f-4da0f99a3621",
+  "mission_id": "230b495e-347d-4d9a-9b14-0d66fabe10d2",
+  "job_id": "missao_ia_375_ds_academy",
+  "url": "https://blog.dsacademy.com.br/trilha-de-aprendizagem-da-formacao-inteligencia-artificial-para-medicina-4-0/",
+  "executor_level": "L0-aiohttp",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "captured_at": "2026-04-29 14:21:08.641962",
+  "content_hash": "433a8d407b400e23a301eac552c2bb0425ec6bd45eba7a9ad2c1a3690ace42d3",
+  "storage": {
+    "compressed": true,
+    "format": "gzip",
+    "path": "data/raw/2026/04/29/230b495e-347d-4d9a-9b14-0d66fabe10d2/4b299e7a-9f4e-44ae-bb1f-4da0f99a3621.txt.gz"
+  }
+}
