@@ -6,6 +6,7 @@ import os
 load_dotenv()
 
 from agentic_api.routes import router
+from core.database import db
 
 app = FastAPI(
     title="NeuralSafety Agentic WebFetch API",
@@ -14,6 +15,14 @@ app = FastAPI(
     docs_url="/docs",
     redoc_url="/redoc"
 )
+
+@app.on_event("startup")
+async def startup():
+    await db.connect()
+
+@app.on_event("shutdown")
+async def shutdown():
+    await db.close()
 
 # Conectando as rotas de extração ao aplicativo principal
 app.include_router(router, prefix="/api/v1")

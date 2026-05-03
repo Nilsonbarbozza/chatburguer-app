@@ -2,13 +2,15 @@ import time
 import asyncio
 import aiohttp
 import os
+import urllib.parse
 from curl_cffi.requests import AsyncSession as CurlCffiSession
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from concurrent.futures import ProcessPoolExecutor
 
 from agentic_api.schemas import FetchRequest, FetchResponse, SearchFetchRequest, SearchFetchResponse
 from agentic_api.auth import validate_api_key_and_rate_limit
 from core.stages.dataclear import run_dataclear_job
+from core.database import db
 import logging
 
 # Setup logging
@@ -64,10 +66,15 @@ async def _fetch_playwright(url: str, timeout: int) -> str:
 @router.post("/fetch", response_model=FetchResponse)
 async def fetch_url(
     request: FetchRequest,
+    background_tasks: BackgroundTasks,
     customer_id: str = Depends(validate_api_key_and_rate_limit)
 ):
     start_time = time.time()
     url_str = str(request.url)
+    
+    # [RADAR DE FEEDBACK] Coleta de inteligência comercial
+    domain = urllib.parse.urlparse(url_str).netloc
+    logger.info(f"[RADAR COMERCIAL] Cliente {customer_id} está raspando o domínio principal: {domain}")
     
     # 1. Regra de Negócio: Definição de Timeout e Armamento
     timeout_seconds = 45 if request.render_js else 15
@@ -105,8 +112,10 @@ async def fetch_url(
         )
         
         if clear_result.get("waf_blocked"):
+            background_tasks.add_task(db.save_radar_log, customer_id, domain, "/fetch", 403)
             raise HTTPException(status_code=403, detail="Honeypot WAF Detectado pela Engenharia Reversa HTML.")
             
+        background_tasks.add_task(db.save_radar_log, customer_id, domain, "/fetch", 200)
         entries = clear_result.get("dataset_entries", [])
         
         if not entries:
@@ -139,6 +148,7 @@ async def fetch_url(
 @router.post("/search_and_fetch", response_model=SearchFetchResponse)
 async def search_and_fetch(
     request: SearchFetchRequest,
+    background_tasks: BackgroundTasks,
     customer_id: str = Depends(validate_api_key_and_rate_limit)
 ):
     try:
@@ -162,6 +172,12 @@ async def search_and_fetch(
                 
         if not urls:
             raise HTTPException(status_code=404, detail="O Radar não encontrou nenhuma URL relevante para esta busca.")
+            
+        # [RADAR DE FEEDBACK] Coleta de inteligência comercial
+        for u in urls:
+            domain = urllib.parse.urlparse(u).netloc
+            logger.info(f"[RADAR COMERCIAL] Cliente {customer_id} descobriu o alvo: {domain} via Tavily Radar.")
+            background_tasks.add_task(db.save_radar_log, customer_id, domain, "/search_and_fetch", 200)
     
         async def fetch_safe(u):
             try:
