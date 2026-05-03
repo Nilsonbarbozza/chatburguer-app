@@ -95,16 +95,34 @@ async def fetch_url(
     domain = urllib.parse.urlparse(url_str).netloc
     logger.info(f"[RADAR COMERCIAL] Cliente {customer_id} está raspando o domínio principal: {domain}")
     
+    # 2. O Escudo Anti-Manada (Mutex Síncrono)
     import hashlib
     import json
     url_hash = hashlib.md5(url_str.encode()).hexdigest()
     lock_key = f"lock:capture:{url_hash}"
     cache_key = f"cache:capture:{url_hash}"
     
-    # O Escudo Anti-Manada (Mutex Síncrono)
     from core.mq.redis_manager import RedisManager
     rm = RedisManager(tenant_db_index=0)
     
+    # [NOVO] Checagem preemptiva de Cache (Sucesso ou Erro Negativo)
+    cached_data = await rm.client.get(cache_key)
+    if cached_data:
+        resp_dict = json.loads(cached_data)
+        if resp_dict.get("status") == "error":
+            await refund_credits(api_key, cost)
+            raise HTTPException(
+                status_code=resp_dict.get("status_code", 500), 
+                detail=f"[NEGATIVE CACHE] {resp_dict.get('detail')}"
+            )
+        
+        background_tasks.add_task(db.save_radar_log, customer_id, domain, "/fetch", 200)
+        processing_ms = int((time.time() - start_time) * 1000)
+        resp_dict["processing_ms"] = processing_ms
+        resp_dict["executor_used"] = executor_used + " (cached)"
+        return FetchResponse(**resp_dict)
+
+    # 3. Tentativa de Lock (Apenas se o cache estiver vazio)
     locked = await rm.client.set(lock_key, "1", nx=True, ex=30)
     
     if locked:
@@ -167,12 +185,19 @@ async def fetch_url(
             await rm.client.delete(lock_key)
             return final_response
             
-        except HTTPException:
-            # Falha de bloqueio/WAF. Não é erro interno miserável. Crédito é consumido pela tentativa de evasão.
+        except HTTPException as e:
+            # Erro de WAF ou bloqueio conhecido. 
+            # Registramos como erro negativo no cache por 60s para evitar que clones tentem a mesma missão suicida.
+            error_data = {"status": "error", "detail": e.detail, "status_code": e.status_code}
+            await rm.client.set(cache_key, json.dumps(error_data), ex=60)
             await rm.client.delete(lock_key)
+            # Reembolsa créditos pois o scraper não entregou o valor prometido
+            await refund_credits(api_key, cost)
             raise
         except Exception as e:
             # Reembolso por falha interna miserável
+            error_data = {"status": "error", "detail": str(e), "status_code": 500}
+            await rm.client.set(cache_key, json.dumps(error_data), ex=60)
             await refund_credits(api_key, cost)
             await rm.client.delete(lock_key)
             if isinstance(e, asyncio.TimeoutError):
@@ -187,9 +212,18 @@ async def fetch_url(
             await asyncio.sleep(0.5)
             cached_data = await rm.client.get(cache_key)
             if cached_data:
+                resp_dict = json.loads(cached_data)
+                
+                # Checa se é um Negative Cache (Erro registrado pelo Vencedor)
+                if resp_dict.get("status") == "error":
+                    await refund_credits(api_key, cost)
+                    raise HTTPException(
+                        status_code=resp_dict.get("status_code", 500), 
+                        detail=f"[NEGATIVE CACHE] {resp_dict.get('detail')}"
+                    )
+
                 background_tasks.add_task(db.save_radar_log, customer_id, domain, "/fetch", 200)
                 processing_ms = int((time.time() - start_time) * 1000)
-                resp_dict = json.loads(cached_data)
                 resp_dict["processing_ms"] = processing_ms
                 resp_dict["executor_used"] = executor_used + " (cached)"
                 return FetchResponse(**resp_dict)
