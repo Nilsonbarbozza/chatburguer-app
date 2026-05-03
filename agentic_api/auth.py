@@ -13,15 +13,49 @@ rm = RedisManager(tenant_db_index=0)
 RATE_LIMIT_MAX_REQUESTS = 60
 RATE_LIMIT_WINDOW_MS = 60000
 
+async def atomic_debit(api_key: str, cost: int) -> int:
+    """
+    Tenta debitar o custo especificado. 
+    Retorna o saldo remanescente.
+    Se a cota estourar, lança HTTP 402.
+    """
+    redis_key = f"auth:key:{api_key}"
+    lua_script = """
+    local limit = tonumber(redis.call('HGET', KEYS[1], 'quota_limit') or '0')
+    local used = tonumber(redis.call('HGET', KEYS[1], 'quota_used') or '0')
+    local cost = tonumber(ARGV[1])
+    
+    if (used + cost) > limit then
+        return -1
+    else
+        redis.call('HINCRBY', KEYS[1], 'quota_used', cost)
+        return limit - (used + cost)
+    end
+    """
+    remaining = await rm.client.eval(lua_script, 1, redis_key, cost)
+    
+    if remaining == -1:
+        raise HTTPException(
+            status_code=402, 
+            detail="Limites do Trial NeuralSafety atingidos. Entre em contato diretamente com nosso CEO para liberação e upgrade para a licença Enterprise."
+        )
+    return remaining
+
+async def refund_credits(api_key: str, cost: int):
+    """
+    Devolve os créditos em caso de falha do nosso sistema (Timeout/Erro).
+    """
+    redis_key = f"auth:key:{api_key}"
+    await rm.client.hincrby(redis_key, "quota_used", -cost)
+
 async def validate_api_key_and_rate_limit(
     response: Response,
     api_key: str = Security(API_KEY_HEADER)
-) -> str:
+) -> dict:
     """
     1. Valida a Chave de API via Redis Hash. (HTTP 401 se falso ou revogado)
-    2. Valida o limite comercial (HTTP 402 se quota estourada)
-    3. Realiza débito atômico na quota.
-    4. Aplica Rate Limiting Anti-Spam (HTTP 429).
+    2. Aplica Rate Limiting Anti-Spam (HTTP 429).
+    Retorna um dicionário com os dados do cliente para que a rota aplique o faturamento dinâmico.
     """
     redis_key = f"auth:key:{api_key}"
     
@@ -41,7 +75,7 @@ async def validate_api_key_and_rate_limit(
             detail="Unauthorized: API Key is revoked or inactive."
         )
         
-    # 2. Validação Comercial (A Catraca)
+    # 2. Verificação básica se não está estourado
     quota_limit = int(key_data.get("quota_limit", 0))
     quota_used = int(key_data.get("quota_used", 0))
     client_name = key_data.get("client_name", "Unknown")
@@ -51,15 +85,8 @@ async def validate_api_key_and_rate_limit(
             status_code=402, 
             detail="Limites do Trial NeuralSafety atingidos. Entre em contato diretamente com nosso CEO para liberação e upgrade para a licença Enterprise."
         )
-        
-    # 3. Débito Atômico
-    new_quota_used = await rm.client.hincrby(redis_key, "quota_used", 1)
     
-    # Adicionando o header de Remaining
-    remaining = max(0, quota_limit - new_quota_used)
-    response.headers["X-RateLimit-Remaining"] = str(remaining)
-    
-    # 4. Rate Limiting (Sliding Window Algorithm Atômico) contra SPAM
+    # 3. Rate Limiting (Sliding Window Algorithm Atômico) contra SPAM
     import uuid
     current_time = int(time.time() * 1000)
     window_start = current_time - RATE_LIMIT_WINDOW_MS
@@ -78,8 +105,6 @@ async def validate_api_key_and_rate_limit(
         request_count = results[2]
         
         if request_count > RATE_LIMIT_MAX_REQUESTS:
-            # Reverte o débito comercial se bateu no limite de spam
-            await rm.client.hincrby(redis_key, "quota_used", -1)
             raise HTTPException(
                 status_code=429, 
                 detail=f"Too Many Requests: Enterprise spam limit is {RATE_LIMIT_MAX_REQUESTS} requests per minute."
@@ -90,5 +115,5 @@ async def validate_api_key_and_rate_limit(
         import logging
         logging.error(f"⚠️ Redis Rate Limiter Offline: {e}. Permitindo requisição em modo degradado.")
         
-    return client_name
+    return {"api_key": api_key, "client_name": client_name}
 

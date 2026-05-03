@@ -4,11 +4,11 @@ import aiohttp
 import os
 import urllib.parse
 from curl_cffi.requests import AsyncSession as CurlCffiSession
-from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks, Response
 from concurrent.futures import ProcessPoolExecutor
 
 from agentic_api.schemas import FetchRequest, FetchResponse, SearchFetchRequest, SearchFetchResponse
-from agentic_api.auth import validate_api_key_and_rate_limit
+from agentic_api.auth import validate_api_key_and_rate_limit, atomic_debit, refund_credits
 from core.stages.dataclear import run_dataclear_job
 from core.database import db
 import logging
@@ -66,94 +66,160 @@ async def _fetch_playwright(url: str, timeout: int) -> str:
 @router.post("/fetch", response_model=FetchResponse)
 async def fetch_url(
     request: FetchRequest,
+    response: Response,
     background_tasks: BackgroundTasks,
-    customer_id: str = Depends(validate_api_key_and_rate_limit)
+    customer_data: dict = Depends(validate_api_key_and_rate_limit)
 ):
     start_time = time.time()
     url_str = str(request.url)
+    customer_id = customer_data["client_name"]
+    api_key = customer_data["api_key"]
+    
+    # 1. Regra de Negócio: Definição de Timeout, Armamento e Custo
+    timeout_seconds = 45 if request.render_js else 15
+    if request.render_js:
+        executor_used = "L34-playwright"
+        cost = 10
+    elif request.force_stealth:
+        executor_used = "L12-curlcffi"
+        cost = 3
+    else:
+        executor_used = "L0-aiohttp"
+        cost = 1
+        
+    # Faturamento Dinâmico (Debita antes de acionar)
+    remaining = await atomic_debit(api_key, cost)
+    response.headers["X-RateLimit-Remaining"] = str(remaining)
     
     # [RADAR DE FEEDBACK] Coleta de inteligência comercial
     domain = urllib.parse.urlparse(url_str).netloc
     logger.info(f"[RADAR COMERCIAL] Cliente {customer_id} está raspando o domínio principal: {domain}")
     
-    # 1. Regra de Negócio: Definição de Timeout e Armamento
-    timeout_seconds = 45 if request.render_js else 15
-    executor_used = "L0-aiohttp"
+    import hashlib
+    import json
+    url_hash = hashlib.md5(url_str.encode()).hexdigest()
+    lock_key = f"lock:capture:{url_hash}"
+    cache_key = f"cache:capture:{url_hash}"
     
-    try:
-        html_content = ""
-        
-        async def fetch_strategy():
-            nonlocal executor_used
-            if request.render_js:
-                executor_used = "L34-playwright"
-                return await _fetch_playwright(url_str, timeout_seconds)
-            elif request.force_stealth:
-                executor_used = "L12-curlcffi"
-                return await _fetch_curlcffi(url_str, timeout_seconds)
-            else:
-                return await _fetch_aiohttp(url_str, timeout_seconds)
+    # O Escudo Anti-Manada (Mutex Síncrono)
+    from core.mq.redis_manager import RedisManager
+    rm = RedisManager(tenant_db_index=0)
+    
+    locked = await rm.client.set(lock_key, "1", nx=True, ex=30)
+    
+    if locked:
+        # ==========================================
+        # Fluxo do Vencedor (Dono do Lock)
+        # ==========================================
+        try:
+            async def fetch_strategy():
+                if request.render_js:
+                    return await _fetch_playwright(url_str, timeout_seconds)
+                elif request.force_stealth:
+                    return await _fetch_curlcffi(url_str, timeout_seconds)
+                else:
+                    return await _fetch_aiohttp(url_str, timeout_seconds)
+                    
+            html_content = await asyncio.wait_for(fetch_strategy(), timeout=timeout_seconds)
+            
+            config = {
+                "archetype": request.archetype,
+                "fidelity_threshold": request.fidelity_threshold,
+                "allowed_domains": "*"
+            }
+            
+            loop = asyncio.get_running_loop()
+            clear_result = await loop.run_in_executor(
+                process_pool, 
+                run_dataclear_job,
+                html_content, url_str, executor_used, config, "agentic-api-sync", "agentic-mission"
+            )
+            
+            if clear_result.get("waf_blocked"):
+                background_tasks.add_task(db.save_radar_log, customer_id, domain, "/fetch", 403)
+                raise HTTPException(status_code=403, detail="Honeypot WAF Detectado pela Engenharia Reversa HTML.")
                 
-        # Proteção global com asyncio.wait_for
-        html_content = await asyncio.wait_for(fetch_strategy(), timeout=timeout_seconds)
-        
-        # 2. Despacho de Processamento Pesado (CPU-Bound)
-        config = {
-            "archetype": request.archetype,
-            "fidelity_threshold": request.fidelity_threshold,
-            "allowed_domains": "*"
-        }
-        
-        loop = asyncio.get_running_loop()
-        clear_result = await loop.run_in_executor(
-            process_pool, 
-            run_dataclear_job,
-            html_content, url_str, executor_used, config, "agentic-api-sync", "agentic-mission"
-        )
-        
-        if clear_result.get("waf_blocked"):
-            background_tasks.add_task(db.save_radar_log, customer_id, domain, "/fetch", 403)
-            raise HTTPException(status_code=403, detail="Honeypot WAF Detectado pela Engenharia Reversa HTML.")
+            background_tasks.add_task(db.save_radar_log, customer_id, domain, "/fetch", 200)
+            entries = clear_result.get("dataset_entries", [])
             
-        background_tasks.add_task(db.save_radar_log, customer_id, domain, "/fetch", 200)
-        entries = clear_result.get("dataset_entries", [])
-        
-        if not entries:
-            markdown_body = ""
-            semantic_chunks = []
-        else:
-            entry = entries[0]
-            data = entry.get("data", {})
-            markdown_body = data.get("markdown_body", "")
-            semantic_chunks = data.get("semantic_chunks", [])
+            if not entries:
+                markdown_body = ""
+                semantic_chunks = []
+            else:
+                entry = entries[0]
+                data = entry.get("data", {})
+                markdown_body = data.get("markdown_body", "")
+                semantic_chunks = data.get("semantic_chunks", [])
+                
+            processing_ms = int((time.time() - start_time) * 1000)
             
-        processing_ms = int((time.time() - start_time) * 1000)
-        
-        return FetchResponse(
-            status="success",
-            url=url_str,
-            markdown_body=markdown_body,
-            semantic_chunks=semantic_chunks,
-            processing_ms=processing_ms,
-            executor_used=executor_used
-        )
-        
-    except asyncio.TimeoutError:
-        raise HTTPException(status_code=504, detail="Gateway Timeout")
-    except HTTPException:
-        raise
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+            final_response = FetchResponse(
+                status="success",
+                url=url_str,
+                markdown_body=markdown_body,
+                semantic_chunks=semantic_chunks,
+                processing_ms=processing_ms,
+                executor_used=executor_used
+            )
+            
+            # Salvar no cache e liberar lock
+            await rm.client.set(cache_key, final_response.model_dump_json(), ex=300)
+            await rm.client.delete(lock_key)
+            return final_response
+            
+        except HTTPException:
+            # Falha de bloqueio/WAF. Não é erro interno miserável. Crédito é consumido pela tentativa de evasão.
+            await rm.client.delete(lock_key)
+            raise
+        except Exception as e:
+            # Reembolso por falha interna miserável
+            await refund_credits(api_key, cost)
+            await rm.client.delete(lock_key)
+            if isinstance(e, asyncio.TimeoutError):
+                raise HTTPException(status_code=504, detail="Gateway Timeout")
+            raise HTTPException(status_code=500, detail=str(e))
+    else:
+        # ==========================================
+        # Fluxo do Clone (Esperando no Cache)
+        # ==========================================
+        logger.info(f"[ANTI-MANADA] Cliente {customer_id} em aguardo (Clone) para: {url_str}")
+        for _ in range(60): # Espera máxima de 30 segundos
+            await asyncio.sleep(0.5)
+            cached_data = await rm.client.get(cache_key)
+            if cached_data:
+                background_tasks.add_task(db.save_radar_log, customer_id, domain, "/fetch", 200)
+                processing_ms = int((time.time() - start_time) * 1000)
+                resp_dict = json.loads(cached_data)
+                resp_dict["processing_ms"] = processing_ms
+                resp_dict["executor_used"] = executor_used + " (cached)"
+                return FetchResponse(**resp_dict)
+                
+        # Se expirou o tempo e o Vencedor não entregou nada
+        await refund_credits(api_key, cost)
+        raise HTTPException(status_code=504, detail="Timeout aguardando execução primária do Batalhão.")
 
 @router.post("/search_and_fetch", response_model=SearchFetchResponse)
 async def search_and_fetch(
     request: SearchFetchRequest,
+    response: Response,
     background_tasks: BackgroundTasks,
-    customer_id: str = Depends(validate_api_key_and_rate_limit)
+    customer_data: dict = Depends(validate_api_key_and_rate_limit)
 ):
-    try:
-        start_time = time.time()
+    start_time = time.time()
+    customer_id = customer_data["client_name"]
+    api_key = customer_data["api_key"]
+    
+    # 1. Regra de Negócio: Faturamento
+    if request.force_stealth:
+        cost = 3
+    else:
+        cost = 1
         
+    # Debita antes de acionar o Batalhão
+    remaining = await atomic_debit(api_key, cost)
+    response.headers["X-RateLimit-Remaining"] = str(remaining)
+    
+    try:
         # Recarga forçada do ENV para garantir que a chave esteja lá (Resiliência)
         from dotenv import load_dotenv
         load_dotenv()
@@ -224,7 +290,10 @@ async def search_and_fetch(
             consolidated_markdown="\n\n---\n\n".join(markdown_parts)
         )
     except HTTPException:
+        # Se for WAF, o cliente consome
         raise
     except Exception as e:
         logger.error(f"CRITICAL ERROR IN RADAR: {e}")
+        # Estorno em caso de falha sistêmica
+        await refund_credits(api_key, cost)
         raise HTTPException(status_code=500, detail=f"Erro Crítico no Radar: {str(e)}")
