@@ -77,7 +77,19 @@ CREATE TABLE IF NOT EXISTS dead_letters (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+-- 7. Radar Comercial: Telemetria de consumo e auditoria de alvos
+CREATE TABLE IF NOT EXISTS commercial_radar (
+    id SERIAL PRIMARY KEY,
+    client_name VARCHAR(255) NOT NULL,
+    target_domain VARCHAR(255) NOT NULL,
+    endpoint_used VARCHAR(100) NOT NULL,
+    status_code INTEGER NOT NULL,
+    timestamp TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Índices para performance
+CREATE INDEX IF NOT EXISTS idx_radar_client ON commercial_radar(client_name);
+CREATE INDEX IF NOT EXISTS idx_radar_domain ON commercial_radar(target_domain);
 CREATE INDEX IF NOT EXISTS idx_captures_mission ON captures(mission_id);
 CREATE INDEX IF NOT EXISTS idx_captures_url ON captures(url);
 CREATE INDEX IF NOT EXISTS idx_curated_mission ON curated_artifacts(mission_id);

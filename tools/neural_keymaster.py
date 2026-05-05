@@ -1,6 +1,7 @@
 import argparse
 import os
-import uuid
+import secrets
+import hashlib
 import datetime
 import asyncio
 from dotenv import load_dotenv
@@ -26,14 +27,19 @@ async def get_db_conn():
     return await asyncpg.connect(POSTGRES_URL)
 
 def generate_key():
-    return f"sk-neuralsafety-{uuid.uuid4().hex[:16]}"
+    return f"sk_ns_live_{secrets.token_urlsafe(32)}"
+
+def hash_key(api_key):
+    return hashlib.sha256(api_key.encode()).hexdigest()
 
 def get_redis_key(api_key):
-    return f"auth:key:{api_key}"
+    # Now expects a raw key, hashes it, then returns the Redis key
+    return f"auth:key:{hash_key(api_key)}"
 
 def create_key(name, limit, tier):
-    api_key = generate_key()
-    r_key = get_redis_key(api_key)
+    raw_key = generate_key()
+    hashed_key = hash_key(raw_key)
+    r_key = f"auth:key:{hashed_key}"
     
     r.hset(r_key, mapping={
         "client_name": name,
@@ -46,7 +52,8 @@ def create_key(name, limit, tier):
     
     console.print(f"[bold green]Chave Forjada com Sucesso![/bold green]")
     console.print(f"Cliente: [bold]{name}[/bold]")
-    console.print(f"API Key: [bold cyan]{api_key}[/bold cyan]")
+    console.print(f"API Key: [bold bright_red]{raw_key}[/bold bright_red]")
+    console.print("\n[bold red]ATENÇÃO: Copie esta chave agora. Por segurança (Zero-Trust), ela NUNCA mais será exibida.[/bold red]")
 
 def add_credits(api_key, amount):
     r_key = get_redis_key(api_key)
@@ -93,16 +100,16 @@ def list_keys():
         console.print("[yellow]Nenhuma chave encontrada na base.[/yellow]")
         return
     
-    table = Table(title="Mapa da Base de Clientes")
+    table = Table(title="Mapa da Base de Clientes (Zero-Trust)")
     table.add_column("Cliente", style="cyan")
-    table.add_column("API Key", style="green", no_wrap=True)
+    table.add_column("Key Hash (SHA-256)", style="dim", no_wrap=True)
     table.add_column("Tier")
     table.add_column("Uso/Limite")
     table.add_column("Status")
     
     for k in keys:
         data = r.hgetall(k)
-        api_key = k.replace("auth:key:", "")
+        key_hash = k.replace("auth:key:", "")
         limit = data.get("quota_limit", "0")
         used = data.get("quota_used", "0")
         status = data.get("status")
@@ -110,7 +117,7 @@ def list_keys():
         
         table.add_row(
             data.get("client_name", "N/A"),
-            api_key,
+            f"{key_hash[:12]}...",
             data.get("tier", "N/A"),
             f"{used}/{limit}",
             f"[{color}]{status}[/{color}]"

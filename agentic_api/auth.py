@@ -1,4 +1,5 @@
 import time
+import hashlib
 from fastapi import HTTPException, Security, Response
 from fastapi.security.api_key import APIKeyHeader
 from core.mq.redis_manager import RedisManager
@@ -13,13 +14,17 @@ rm = RedisManager(tenant_db_index=0)
 RATE_LIMIT_MAX_REQUESTS = 60
 RATE_LIMIT_WINDOW_MS = 60000
 
+def hash_key(api_key: str) -> str:
+    """Calcula o hash SHA-256 da chave para busca no Redis."""
+    return hashlib.sha256(api_key.encode()).hexdigest()
+
 async def atomic_debit(api_key: str, cost: int) -> int:
     """
     Tenta debitar o custo especificado. 
     Retorna o saldo remanescente.
     Se a cota estourar, lança HTTP 402.
     """
-    redis_key = f"auth:key:{api_key}"
+    redis_key = f"auth:key:{hash_key(api_key)}"
     lua_script = """
     local limit = tonumber(redis.call('HGET', KEYS[1], 'quota_limit') or '0')
     local used = tonumber(redis.call('HGET', KEYS[1], 'quota_used') or '0')
@@ -45,7 +50,7 @@ async def refund_credits(api_key: str, cost: int):
     """
     Devolve os créditos em caso de falha do nosso sistema (Timeout/Erro).
     """
-    redis_key = f"auth:key:{api_key}"
+    redis_key = f"auth:key:{hash_key(api_key)}"
     await rm.client.hincrby(redis_key, "quota_used", -cost)
 
 async def validate_api_key_and_rate_limit(
@@ -57,7 +62,7 @@ async def validate_api_key_and_rate_limit(
     2. Aplica Rate Limiting Anti-Spam (HTTP 429).
     Retorna um dicionário com os dados do cliente para que a rota aplique o faturamento dinâmico.
     """
-    redis_key = f"auth:key:{api_key}"
+    redis_key = f"auth:key:{hash_key(api_key)}"
     
     # 1. Validação de Existência e Status no Cofre
     key_data = await rm.client.hgetall(redis_key)
