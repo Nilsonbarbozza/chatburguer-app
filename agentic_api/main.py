@@ -16,6 +16,11 @@ app = FastAPI(
     redoc_url="/redoc"
 )
 
+@app.get("/")
+def health_check():
+    return {"status": "online", "message": "NeuralSafety Agentic API is running"}
+   
+
 @app.on_event("startup")
 async def startup():
     await db.connect()
