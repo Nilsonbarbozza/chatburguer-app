@@ -57,6 +57,14 @@ class SearchFetchRequest(BaseModel):
     force_stealth: bool = Field(default=False, description="Ativa evasão pesada nas URLs descobertas.")
     fidelity_threshold: float = Field(default=0.6, description="Limiar de fidelidade para o DataClear.")
 
+class SearchResultItem(BaseModel):
+    url: str = Field(..., description="A URL de origem do conteúdo.")
+    markdown_body: str = Field(..., description="Conteúdo purificado e estruturado em Markdown.")
+    semantic_chunks: List[Dict[str, Any]] = Field(
+        default_factory=list,
+        description="Fragmentos semânticos destilados com seus metadados preservados."
+    )
+
 class SearchFetchResponse(BaseModel):
     """
     Contrato de Saída para o tiro duplo consolidado.
@@ -64,5 +72,5 @@ class SearchFetchResponse(BaseModel):
     query: str = Field(..., description="A query que originou a busca.")
     urls_processed: List[str] = Field(..., description="As URLs que foram extraídas com sucesso.")
     processing_ms: int = Field(..., description="Tempo total desde a busca até a limpeza final.")
-    consolidated_markdown: str = Field(..., description="Markdown consolidado de todas as fontes válidas.")
+    results: List[SearchResultItem] = Field(..., description="Resultados detalhados com markdown e chunks semânticos por URL.")
     error_message: Optional[str] = Field(None, description="Avisos sobre fontes que falharam ou erros gerais.")

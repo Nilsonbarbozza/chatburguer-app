@@ -269,7 +269,7 @@ async def search_and_fetch(
                     raise HTTPException(status_code=502, detail=f"Tavily API Failed: {tavily_err}")
                 data = await resp.json()
                 urls = [r.get("url") for r in data.get("results", []) if r.get("url")]
-                
+        
         if not urls:
             raise HTTPException(status_code=404, detail="O Radar não encontrou nenhuma URL relevante para esta busca.")
             
@@ -296,7 +296,7 @@ async def search_and_fetch(
             raise HTTPException(status_code=502, detail="As fontes encontradas estão inacessíveis no momento.")
     
         loop = asyncio.get_running_loop()
-        markdown_parts = []
+        results = []
         urls_processed = []
         # Restaurando a régua de elite (0.6) conforme solicitado
         config = {"archetype": "blog", "fidelity_threshold": 0.6, "allowed_domains": "*"}
@@ -306,22 +306,29 @@ async def search_and_fetch(
                 res = await loop.run_in_executor(process_pool, run_dataclear_job, f["html"], f["url"], "L0", config, "radar", "mission")
                 entries = res.get("dataset_entries", [])
                 if entries:
-                    md = entries[0].get("data", {}).get("markdown_body", "")
-                    if md:
-                        markdown_parts.append(f"# Fonte: {f['url']}\n{md}")
+                    data = entries[0].get("data", {})
+                    md = data.get("markdown_body", "")
+                    chunks = data.get("semantic_chunks", [])
+                    
+                    if md or chunks:
+                        results.append({
+                            "url": f['url'],
+                            "markdown_body": md,
+                            "semantic_chunks": chunks
+                        })
                         urls_processed.append(f['url'])
             except Exception as e:
                 logger.error(f"Erro na limpeza da URL {f['url']}: {e}")
                 continue
     
-        if not markdown_parts:
-            raise HTTPException(status_code=404, detail="O conteúdo encontrado não passou no filtro de qualidade (Fidelidade < 0.2).")
+        if not results:
+            raise HTTPException(status_code=404, detail="O conteúdo encontrado não passou no filtro de qualidade (Fidelidade < 0.6).")
     
         return SearchFetchResponse(
             query=request.query,
             urls_processed=urls_processed,
             processing_ms=int((time.time() - start_time) * 1000),
-            consolidated_markdown="\n\n---\n\n".join(markdown_parts)
+            results=results
         )
     except HTTPException:
         # Se for WAF, o cliente consome
