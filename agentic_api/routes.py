@@ -23,11 +23,16 @@ router = APIRouter()
 # Limitado a 4 workers para um container de 2GB RAM
 process_pool = ProcessPoolExecutor(max_workers=4)
 
+GOOGLEBOT_HEADERS = {
+    "User-Agent": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+}
+
 async def _fetch_aiohttp(url: str, timeout: int) -> str:
     """L0: Rápido, mas vulnerável a WAF."""
     timeout_config = aiohttp.ClientTimeout(total=timeout)
     async with aiohttp.ClientSession(timeout=timeout_config) as session:
-        async with session.get(url, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}) as response:
+        async with session.get(url, headers=GOOGLEBOT_HEADERS) as response:
             if response.status in (401, 403, 429, 503):
                 raise HTTPException(status_code=403, detail="WAF Blocked. Use force_stealth=True.")
             response.raise_for_status()
@@ -36,7 +41,7 @@ async def _fetch_aiohttp(url: str, timeout: int) -> str:
 async def _fetch_curlcffi(url: str, timeout: int) -> str:
     """L12: Furtivo via TLS Spoofing."""
     async with CurlCffiSession() as session:
-        response = await session.get(url, impersonate="chrome120", timeout=timeout)
+        response = await session.get(url, impersonate="chrome120", headers=GOOGLEBOT_HEADERS, timeout=timeout)
         if response.status_code in (401, 403, 429, 503) or "Just a moment" in response.text:
             raise HTTPException(status_code=403, detail="Advanced WAF Blocked. TLS Spoofing failed.")
         if response.status_code != 200:
@@ -54,7 +59,7 @@ async def _fetch_playwright(url: str, timeout: int) -> str:
             )
             page = await context.new_page()
             # Timeout do Playwright é em milissegundos
-            await page.goto(url, wait_until="networkidle", timeout=timeout * 1000)
+            await page.goto(url, wait_until="load", timeout=timeout * 1000)
             
             content = await page.content()
             if "Just a moment" in content:
@@ -152,22 +157,45 @@ async def fetch_url(
                 run_dataclear_job,
                 html_content, url_str, executor_used, config, "agentic-api-sync", "agentic-mission"
             )
-            
             if clear_result.get("waf_blocked"):
                 background_tasks.add_task(db.save_radar_log, customer_id, domain, "/fetch", 403)
                 raise HTTPException(status_code=403, detail="Honeypot WAF Detectado pela Engenharia Reversa HTML.")
                 
             background_tasks.add_task(db.save_radar_log, customer_id, domain, "/fetch", 200)
-            entries = clear_result.get("dataset_entries", [])
             
-            if not entries:
-                markdown_body = ""
-                semantic_chunks = []
-            else:
+            entries = clear_result.get("dataset_entries", [])
+            markdown_body = ""
+            semantic_chunks = []
+            
+            if entries:
                 entry = entries[0]
                 data = entry.get("data", {})
                 markdown_body = data.get("markdown_body", "")
                 semantic_chunks = data.get("semantic_chunks", [])
+            
+            # --- O GATILHO FANTASMA (OS-014: Auto-Healing) ---
+            # Se não houver chunks ou o conteúdo for suspeitosamente curto (SPA vazio)
+            # E se NÃO tivermos usado Playwright ainda
+            if (not semantic_chunks or len(markdown_body) < 300) and executor_used != "L34-playwright":
+                logger.warning(f"⚠️ [OS-014] Fantasma SPA detectado em {url_str} ({len(markdown_body)} chars). Escalonando para L34 (Playwright)...")
+                
+                # Força a extração pesada via renderização JavaScript
+                html_content_pesado = await _fetch_playwright(url_str, timeout_seconds)
+                executor_used = "L34-playwright-auto_fallback"
+                
+                # Reprocessa o trabalho com o HTML real renderizado
+                clear_result = await loop.run_in_executor(
+                    process_pool, 
+                    run_dataclear_job,
+                    html_content_pesado, url_str, executor_used, config, "agentic-api-sync-fallback", "agentic-mission"
+                )
+                
+                entries = clear_result.get("dataset_entries", [])
+                if entries:
+                    entry = entries[0]
+                    data = entry.get("data", {})
+                    markdown_body = data.get("markdown_body", "")
+                    semantic_chunks = data.get("semantic_chunks", [])
                 
             processing_ms = int((time.time() - start_time) * 1000)
             
@@ -305,18 +333,36 @@ async def search_and_fetch(
             try:
                 res = await loop.run_in_executor(process_pool, run_dataclear_job, f["html"], f["url"], "L0", config, "radar", "mission")
                 entries = res.get("dataset_entries", [])
+                
+                md = ""
+                chunks = []
+                
                 if entries:
                     data = entries[0].get("data", {})
                     md = data.get("markdown_body", "")
                     chunks = data.get("semantic_chunks", [])
-                    
-                    if md or chunks:
-                        results.append({
-                            "url": f['url'],
-                            "markdown_body": md,
-                            "semantic_chunks": chunks
-                        })
-                        urls_processed.append(f['url'])
+
+                # --- O GATILHO FANTASMA (OS-014: Auto-Healing para Radar) ---
+                if (not chunks or len(md) < 300) and not request.force_stealth:
+                    logger.warning(f"⚠️ [OS-014-RADAR] Fantasma detectado em {f['url']}. Acionando Trator L34...")
+                    try:
+                        html_pesado = await _fetch_playwright(f["url"], 30)
+                        res = await loop.run_in_executor(process_pool, run_dataclear_job, html_pesado, f["url"], "L34-auto", config, "radar-fallback", "mission")
+                        entries = res.get("dataset_entries", [])
+                        if entries:
+                            data = entries[0].get("data", {})
+                            md = data.get("markdown_body", "")
+                            chunks = data.get("semantic_chunks", [])
+                    except Exception as e:
+                        logger.error(f"Falha no fallback Playwright para {f['url']}: {e}")
+
+                if md or chunks:
+                    results.append({
+                        "url": f['url'],
+                        "markdown_body": md,
+                        "semantic_chunks": chunks
+                    })
+                    urls_processed.append(f['url'])
             except Exception as e:
                 logger.error(f"Erro na limpeza da URL {f['url']}: {e}")
                 continue

@@ -12,6 +12,10 @@ from typing import Dict, Any
 from urllib.parse import urlparse, urljoin
 from core.pipeline import ProcessorStage
 from core.utils import setup_logging
+from core.stages.advanced_miner import (
+    extract_json_ld, extract_article_from_json_ld, 
+    extract_next_data, mine_text_from_json
+)
 
 try:
     from markdownify import markdownify as md_converter
@@ -30,25 +34,84 @@ def run_dataclear_job(html_content: str, url: str, executor_level: str,
     """
     from bs4 import BeautifulSoup
     
-    # Instancia o stage localmente no processo secundário
-    cleaner = DataClearStage(config=config)
+    # --- INJEÇÃO OS-014: AUTÓPSIA DE DADOS ---
+    texto_extraido = None
     
-    # Prepara o contexto com linhagem (Artifact-Oriented)
-    soup = BeautifulSoup(html_content, 'lxml')
-    context = {
-        "soup": soup,
-        "url": url,
-        "executor_level": executor_level,
-        "capture_id": capture_id,
-        "mission_id": mission_id
-    }
+    # TÁTICA 1: Tenta o Cofre de SEO (JSON-LD)
+    ld_blocks = extract_json_ld(html_content)
+    if ld_blocks:
+        article = extract_article_from_json_ld(ld_blocks)
+        if article and article.get("articleBody"):
+            logger.info(f"💎 [OS-014] Conteúdo extraído via JSON-LD para {url}")
+            texto_extraido = article["articleBody"]
+            # Converte para markdown se possível para manter compatibilidade
+            if md_converter:
+                texto_extraido = md_converter(texto_extraido)
+
+    # TÁTICA 2: Tenta Hidratação Next.js (Se a Tática 1 falhou)
+    if not texto_extraido:
+        next_data = extract_next_data(html_content)
+        if next_data:
+            logger.info(f"🚀 [OS-014] Minerando dados via Next.js hydration para {url}")
+            texto_extraido = mine_text_from_json(next_data)
+
+    # TÁTICA 3: O Tradicional (BeautifulSoup/Markdownify)
+    # Se falhou ou o texto é muito curto/suspeito
+    if not texto_extraido or len(texto_extraido) < 500:
+        if texto_extraido:
+            logger.warning(f"⚠️ [OS-014] Conteúdo minerado insuficiente ({len(texto_extraido)} chars). Usando fallback tradicional.")
+        
+        # Instancia o stage localmente no processo secundário
+        cleaner = DataClearStage(config=config)
+        soup = BeautifulSoup(html_content, 'lxml')
+        context = {
+            "soup": soup,
+            "url": url,
+            "executor_level": executor_level,
+            "capture_id": capture_id,
+            "mission_id": mission_id
+        }
+        processed_context = cleaner.process(context)
+        
+        # Extrai o texto do primeiro entry se houver
+        entries = processed_context.get("dataset_entries", [])
+        if entries:
+            texto_extraido = entries[0].get("data", {}).get("markdown_body", "")
     
-    # Executa a limpeza
-    processed_context = cleaner.process(context)
+    # Se ainda assim não temos texto, ou se o processamento acima não foi suficiente para chunks
+    # o Gatilho Fantasma no routes.py cuidará da escalada para Playwright.
+    
+    # Re-processamento final para garantir chunks se viemos das táticas 1 ou 2
+    if texto_extraido and (not 'processed_context' in locals()):
+        cleaner = DataClearStage(config=config)
+        # Mock de um soup básico para o scorer não quebrar se necessário, 
+        # embora o _create_chunks use apenas o texto.
+        metadata = {"title": url, "url": url}
+        chunks = cleaner._create_chunks(texto_extraido, metadata_snapshot=metadata)
+        
+        id_hash = hashlib.sha256(url.encode()).hexdigest()
+        dataset_entries = [{
+            "id_hash": id_hash,
+            "url": url,
+            "capture_id": capture_id,
+            "mission_id": mission_id,
+            "executor": executor_level,
+            "fidelity_score": 1.0, # Minerado diretamente costuma ser alta fidelidade
+            "data": {"title": url, "markdown_body": texto_extraido, "semantic_chunks": chunks}
+        }]
+        return {
+            "dataset_entries": dataset_entries,
+            "waf_blocked": False
+        }
+    elif 'processed_context' in locals():
+        return {
+            "dataset_entries": processed_context.get("dataset_entries", []),
+            "waf_blocked": processed_context.get("waf_blocked", False)
+        }
     
     return {
-        "dataset_entries": processed_context.get("dataset_entries", []),
-        "waf_blocked": processed_context.get("waf_blocked", False)
+        "dataset_entries": [],
+        "waf_blocked": False
     }
 
 class DataClearStage(ProcessorStage):
@@ -213,7 +276,7 @@ class DataClearStage(ProcessorStage):
         # 1. Identificação de Canonicidade
         raw_blocks = soup.find_all('article')
         if not raw_blocks:
-            raw_blocks = soup.find_all(['div', 'section'], class_=re.compile(r'post|entry|article', re.I))
+            raw_blocks = soup.find_all(['div', 'section', 'main'], class_=re.compile(r'post|entry|article|content|main|body|exm_|paragraph', re.I))
 
         content_blocks = []
         if raw_blocks:

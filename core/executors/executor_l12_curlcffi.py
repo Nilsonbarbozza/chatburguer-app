@@ -7,6 +7,11 @@ from urllib.parse import urlparse
 from curl_cffi.requests import AsyncSession
 from core.mq.worker_base import WorkerBase
 
+GOOGLEBOT_HEADERS = {
+    "User-Agent": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+}
+
 logger = logging.getLogger("ExecutorL12")
 
 class ExecutorL12(WorkerBase):
@@ -16,7 +21,7 @@ class ExecutorL12(WorkerBase):
     """
 
     def __init__(self, redis_manager, worker_id: str = None, proxy_manager=None, 
-                 concurrency: int = 15, raw_store=None, db_manager=None):
+                 concurrency: int = 15, raw_store=None, db_manager=None, custom_headers=None):
         super().__init__(
             redis_manager=redis_manager, 
             stream_name="stream:level_12", 
@@ -29,6 +34,7 @@ class ExecutorL12(WorkerBase):
         )
         self.impersonate_browser = "chrome120"
         self.tier = 2
+        self.custom_headers = custom_headers or GOOGLEBOT_HEADERS
 
     async def process_message(self, msg_id: str, data: Dict[str, Any]) -> bool:
         url = data.get("url")
@@ -51,6 +57,7 @@ class ExecutorL12(WorkerBase):
                 response = await session.get(
                     url,
                     impersonate=self.impersonate_browser,
+                    headers=self.custom_headers,
                     proxy=proxy_url,
                     timeout=15
                 )

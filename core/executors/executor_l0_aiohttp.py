@@ -4,6 +4,11 @@ from datetime import datetime
 from typing import Dict, Any
 from core.mq.worker_base import WorkerBase
 
+GOOGLEBOT_HEADERS = {
+    "User-Agent": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+}
+
 logger = logging.getLogger("ExecutorL0")
 
 class ExecutorL0(WorkerBase):
@@ -14,7 +19,7 @@ class ExecutorL0(WorkerBase):
     """
 
     def __init__(self, redis_manager, worker_id: str = None, proxy_manager=None, 
-                 concurrency: int = 20, db_manager=None, raw_store=None):
+                 concurrency: int = 20, db_manager=None, raw_store=None, custom_headers=None):
         super().__init__(
             redis_manager=redis_manager, 
             stream_name="stream:level_0", 
@@ -27,6 +32,7 @@ class ExecutorL0(WorkerBase):
         )
         self.session = None
         self.tier = 0
+        self.custom_headers = custom_headers or GOOGLEBOT_HEADERS
 
     async def _get_session(self):
         if self.session is None or self.session.closed:
@@ -34,7 +40,7 @@ class ExecutorL0(WorkerBase):
             timeout = aiohttp.ClientTimeout(total=15)
             self.session = aiohttp.ClientSession(
                 timeout=timeout,
-                headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"}
+                headers=self.custom_headers
             )
         return self.session
 
