@@ -166,12 +166,14 @@ async def fetch_url(
             entries = clear_result.get("dataset_entries", [])
             markdown_body = ""
             semantic_chunks = []
+            hub_items = None
             
             if entries:
                 entry = entries[0]
                 data = entry.get("data", {})
                 markdown_body = data.get("markdown_body", "")
                 semantic_chunks = data.get("semantic_chunks", [])
+                hub_items = data.get("hub_items", None)
             
             # --- O GATILHO FANTASMA (OS-014: Auto-Healing) ---
             # Se não houver chunks ou o conteúdo for suspeitosamente curto (SPA vazio)
@@ -196,6 +198,7 @@ async def fetch_url(
                     data = entry.get("data", {})
                     markdown_body = data.get("markdown_body", "")
                     semantic_chunks = data.get("semantic_chunks", [])
+                    hub_items = data.get("hub_items", None)
                 
             processing_ms = int((time.time() - start_time) * 1000)
             
@@ -204,6 +207,7 @@ async def fetch_url(
                 url=url_str,
                 markdown_body=markdown_body,
                 semantic_chunks=semantic_chunks,
+                hub_items=hub_items,
                 processing_ms=processing_ms,
                 executor_used=executor_used
             )

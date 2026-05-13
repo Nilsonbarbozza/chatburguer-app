@@ -12,6 +12,7 @@ from typing import Dict, Any
 from urllib.parse import urlparse, urljoin
 from core.pipeline import ProcessorStage
 from core.utils import setup_logging
+from agentic_api.schemas import Archetype
 from core.stages.advanced_miner import (
     extract_json_ld, extract_article_from_json_ld, 
     extract_next_data, mine_text_from_json
@@ -122,7 +123,7 @@ class DataClearStage(ProcessorStage):
     def __init__(self, config: Dict[str, Any] = None):
         super().__init__()
         self.config = config or {}
-        self.archetype = self.config.get("archetype", "blog")
+        self.archetype = self.config.get("archetype", Archetype.BLOG)
         self.fidelity_threshold = float(self.config.get("fidelity_threshold", 0.6)) # Calibragem Final Gold
         self.redact = self.config.get("redact_pii", "true").lower() == "true"
 
@@ -260,6 +261,35 @@ class DataClearStage(ProcessorStage):
         soup = context.get('soup')
         if not soup: return context
 
+        base_url = context.get('url', '')
+        self.config["base_url"] = base_url # Para urljoin no hub
+
+        # --- ROTA DE FUGA: ARQUÉTIPO HUB ---
+        if self.archetype == Archetype.HUB:
+            logger.info("🎯 [HUB-MODE] Acionando extrator de cards e bypass de filtros.")
+            hub_items = self._extract_hub_items(soup)
+            
+            capture_id = context.get('capture_id', 'unknown')
+            mission_id = context.get('mission_id', 'default')
+            executor = context.get('executor_level', 'unknown')
+            
+            id_hash = hashlib.sha256(base_url.encode()).hexdigest()
+            context['dataset_entries'] = [{
+                "id_hash": id_hash,
+                "url": base_url,
+                "capture_id": capture_id,
+                "mission_id": mission_id,
+                "executor": executor,
+                "fidelity_score": 1.0,
+                "data": {
+                    "title": soup.title.string if soup.title else base_url,
+                    "markdown_body": f"Hub extraído: {len(hub_items)} itens encontrados.",
+                    "semantic_chunks": [],
+                    "hub_items": hub_items
+                }
+            }]
+            return context
+
         # 0. Limpeza Química Prévia (Enfraquecendo o Inimigo)
         for noise in self.noise_selectors:
             for scrap in soup.select(noise):
@@ -394,3 +424,60 @@ class DataClearStage(ProcessorStage):
             })
             chunk_id += 1
         return raw_chunks
+
+    def _extract_hub_items(self, soup) -> list:
+        """
+        Extração de links de cards em páginas de hub/índice.
+        Retorna lista de {title, url, snippet}.
+        """
+        hub_items = []
+        links = soup.find_all('a', href=True)
+        base_url = self.config.get("base_url", "")
+        
+        for a in links:
+            title_text = ""
+            # Caso 1: <a> contém h1-h4
+            heading = a.find(['h1', 'h2', 'h3', 'h4'])
+            if heading:
+                title_text = heading.get_text(strip=True)
+            else:
+                # Caso 2: <a> tem classe de título ou é o próprio texto
+                classes = ' '.join(a.get('class', [])).lower()
+                if any(c in classes for c in ['title', 'headline', 'card', 'link-post']):
+                    title_text = a.get_text(strip=True)
+                elif len(a.get_text(strip=True)) > 20: # Texto longo no link costuma ser título
+                    title_text = a.get_text(strip=True)
+            
+            if not title_text or len(title_text) < 10:
+                continue
+                
+            href = a['href']
+            if not href.startswith('http'):
+                href = urljoin(base_url, href)
+                
+            # Snippet: busca em volta
+            snippet = ""
+            parent = a.parent
+            if parent:
+                desc = parent.find(['p', 'div', 'span'], class_=re.compile(r'summary|description|snippet|excerpt|text|content', re.I))
+                if desc and desc.get_text(strip=True) != title_text:
+                    snippet = desc.get_text(strip=True)
+            
+            title_text = self._sanitize_encoding(title_text)
+            snippet = self._sanitize_encoding(snippet[:300]) # Cap no snippet
+            
+            hub_items.append({
+                "title": title_text,
+                "url": href,
+                "snippet": snippet
+            })
+            
+        # Deduplicação e Limpeza Final
+        seen_urls = set()
+        unique_items = []
+        for item in hub_items:
+            if item['url'] not in seen_urls and not any(p in item['url'] for p in ['#', 'javascript:', 'mailto:']):
+                unique_items.append(item)
+                seen_urls.add(item['url'])
+                
+        return unique_items

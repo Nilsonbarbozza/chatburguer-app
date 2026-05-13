@@ -1,5 +1,14 @@
+from enum import Enum
 from pydantic import BaseModel, HttpUrl, Field
 from typing import List, Optional, Dict, Any
+
+class Archetype(str, Enum):
+    """
+    Arquétipos de estruturação suportados pelo motor.
+    """
+    BLOG = "blog"
+    ARTICLE = "article"
+    HUB = "hub"
 
 class FetchRequest(BaseModel):
     """
@@ -28,9 +37,9 @@ class FetchRequest(BaseModel):
         description="Limiar de fidelidade para descarte de lixo (0.0 a 1.0). Textos abaixo do limiar não geram semantic chunks."
     )
     
-    archetype: str = Field(
-        default="blog",
-        description="Arquétipo de estruturação esperado (ex: blog, doc, ecommerce)."
+    archetype: Archetype = Field(
+        default=Archetype.BLOG,
+        description="Arquétipo de estruturação esperado (ex: blog, doc, hub)."
     )
 
 class FetchResponse(BaseModel):
@@ -44,6 +53,10 @@ class FetchResponse(BaseModel):
     semantic_chunks: List[Dict[str, Any]] = Field(
         default_factory=list,
         description="Fragmentos semânticos destilados, prontos para vetorização (RAG)."
+    )
+    hub_items: Optional[List[Dict[str, Any]]] = Field(
+        None, 
+        description="Lista de cards/links extraídos de páginas de índice/hub."
     )
     processing_ms: int = Field(..., description="Tempo total de processamento em milissegundos.")
     executor_used: str = Field(..., description="O arsenal utilizado na extração (L0-aiohttp, L12-curlcffi, L34-playwright).")
