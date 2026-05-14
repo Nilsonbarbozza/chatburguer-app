@@ -13,7 +13,7 @@ rich>=13.7.0
 
 # Ferramentas de Dados
 markdownify>=0.11.6
-playwright>=1.40.0
+playwright==1.59.0
 playwright-stealth>=2.0.3
 
 # Opcional — verificação de tipo MIME
@@ -33,3 +33,4 @@ asyncpg>=0.29.0
 fastapi>=0.100.0
 uvicorn>=0.22.0
 pydantic>=2.0.0
+pydantic-settings>=2.0.0

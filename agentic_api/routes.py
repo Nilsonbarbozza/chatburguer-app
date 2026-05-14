@@ -7,9 +7,10 @@ from curl_cffi.requests import AsyncSession as CurlCffiSession
 from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks, Response
 from concurrent.futures import ProcessPoolExecutor
 
-from agentic_api.schemas import FetchRequest, FetchResponse, SearchFetchRequest, SearchFetchResponse
+from agentic_api.schemas import FetchRequest, FetchResponse, SearchFetchRequest, SearchFetchResponse, Archetype
 from agentic_api.auth import validate_api_key_and_rate_limit, atomic_debit, refund_credits
 from core.stages.dataclear import run_dataclear_job
+from core.executors.waterfall import WaterfallExtractor
 from core.database import db
 import logging
 
@@ -30,7 +31,14 @@ GOOGLEBOT_HEADERS = {
 
 async def _fetch_aiohttp(url: str, timeout: int) -> str:
     """L0: Rápido, mas vulnerável a WAF."""
-    timeout_config = aiohttp.ClientTimeout(total=timeout)
+    # Total protege contra tarpit; connect/sock_read reduzem travas silenciosas em rede/handshake.
+    connect_timeout = min(10, timeout)
+    sock_read_timeout = min(10, timeout)
+    timeout_config = aiohttp.ClientTimeout(
+        total=timeout,
+        connect=connect_timeout,
+        sock_read=sock_read_timeout,
+    )
     async with aiohttp.ClientSession(timeout=timeout_config) as session:
         async with session.get(url, headers=GOOGLEBOT_HEADERS) as response:
             if response.status in (401, 403, 429, 503):
@@ -51,22 +59,97 @@ async def _fetch_curlcffi(url: str, timeout: int) -> str:
 async def _fetch_playwright(url: str, timeout: int) -> str:
     """L34: Lento, pesado, mas renderiza JS completo."""
     from playwright.async_api import async_playwright
+    logger.info(f"🚀 [PLAYWRIGHT] Iniciando renderização JS para: {url}")
+    t0 = time.time()
     async with async_playwright() as p:
-        browser = await p.chromium.launch(headless=True)
+        browser = await p.chromium.launch(
+            headless=True,
+            args=["--no-sandbox", "--disable-dev-shm-usage"],
+        )
+        context = None
         try:
             context = await browser.new_context(
                 user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
             )
             page = await context.new_page()
-            # Timeout do Playwright é em milissegundos
-            await page.goto(url, wait_until="load", timeout=timeout * 1000)
+            page.set_default_navigation_timeout(timeout * 1000)
+            page.set_default_timeout(timeout * 1000)
+            
+            # Usamos 'commit' seguido de 'domcontentloaded' para evitar travas em scripts de rastreamento
+            await page.goto(url, wait_until="commit", timeout=timeout * 1000)
+            await page.wait_for_load_state("domcontentloaded", timeout=timeout * 1000)
+            
+            # Pequeno respiro para injeção de conteúdo via JS
+            await page.wait_for_timeout(1000)
             
             content = await page.content()
-            if "Just a moment" in content:
+            if "Just a moment" in content or "access denied" in content.lower():
+                logger.warning(f"⚠️ [PLAYWRIGHT] WAF Detectado em {url}")
                 raise HTTPException(status_code=403, detail="Advanced WAF Blocked. JS Render evasion failed.")
+            
+            logger.info(f"✅ [PLAYWRIGHT] Renderização concluída em {time.time()-t0:.2f}s")
             return content
+        except Exception as e:
+            logger.error(f"❌ [PLAYWRIGHT-ERROR]: {str(e)}")
+            raise
         finally:
+            if context:
+                try:
+                    await context.close()
+                except Exception:
+                    pass
             await browser.close()
+
+
+async def _run_dataclear_with_timeout(
+    loop: asyncio.AbstractEventLoop,
+    html_content: str,
+    url: str,
+    executor_level: str,
+    config: dict,
+    capture_id: str,
+    mission_id: str,
+    timeout_seconds: int,
+) -> dict:
+    """
+    Executa o DataClear no ProcessPool com timeout duro.
+
+    Motivação: Em produção pode ocorrer hang silencioso após o fetch (ex: HTML hostil,
+    parsing pesado, edge cases). Sem timeout aqui, a requisição pode ficar presa mesmo
+    quando o fetch já respeita `timeout_seconds`.
+    """
+    work = loop.run_in_executor(
+        process_pool,
+        run_dataclear_job,
+        html_content,
+        url,
+        executor_level,
+        config,
+        capture_id,
+        mission_id,
+    )
+    return await asyncio.wait_for(work, timeout=timeout_seconds)
+
+
+def _json_safe(obj: object, *, _depth: int = 0, _max_depth: int = 6):
+    """
+    Coerção defensiva para evitar travas de serialização (ex: objetos BeautifulSoup/Tag
+    escapando para o payload).
+
+    Mantém listas/dicts, converte o resto para tipos JSON-safe via `str()`.
+    """
+    if _depth >= _max_depth:
+        return str(obj)
+    if obj is None or isinstance(obj, (str, int, float, bool)):
+        return obj
+    if isinstance(obj, list):
+        return [_json_safe(x, _depth=_depth + 1) for x in obj]
+    if isinstance(obj, dict):
+        safe = {}
+        for k, v in obj.items():
+            safe[str(k)] = _json_safe(v, _depth=_depth + 1)
+        return safe
+    return str(obj)
 
 @router.post("/fetch", response_model=FetchResponse)
 async def fetch_url(
@@ -135,81 +218,28 @@ async def fetch_url(
         # Fluxo do Vencedor (Dono do Lock)
         # ==========================================
         try:
-            async def fetch_strategy():
-                if request.render_js:
-                    return await _fetch_playwright(url_str, timeout_seconds)
-                elif request.force_stealth:
-                    return await _fetch_curlcffi(url_str, timeout_seconds)
-                else:
-                    return await _fetch_aiohttp(url_str, timeout_seconds)
-                    
-            html_content = await asyncio.wait_for(fetch_strategy(), timeout=timeout_seconds)
-            
-            config = {
-                "archetype": request.archetype,
-                "fidelity_threshold": request.fidelity_threshold,
-                "allowed_domains": "*"
-            }
-            
-            loop = asyncio.get_running_loop()
-            clear_result = await loop.run_in_executor(
-                process_pool, 
-                run_dataclear_job,
-                html_content, url_str, executor_used, config, "agentic-api-sync", "agentic-mission"
+            extractor = WaterfallExtractor(process_pool)
+            result = await extractor.extract(
+                url=url_str,
+                render_js=request.render_js,
+                force_stealth=request.force_stealth,
+                archetype=request.archetype,
+                fidelity_threshold=request.fidelity_threshold,
+                capture_id="agentic-api-sync"
             )
-            if clear_result.get("waf_blocked"):
-                background_tasks.add_task(db.save_radar_log, customer_id, domain, "/fetch", 403)
-                raise HTTPException(status_code=403, detail="Honeypot WAF Detectado pela Engenharia Reversa HTML.")
-                
+            
             background_tasks.add_task(db.save_radar_log, customer_id, domain, "/fetch", 200)
             
-            entries = clear_result.get("dataset_entries", [])
-            markdown_body = ""
-            semantic_chunks = []
-            hub_items = None
-            
-            if entries:
-                entry = entries[0]
-                data = entry.get("data", {})
-                markdown_body = data.get("markdown_body", "")
-                semantic_chunks = data.get("semantic_chunks", [])
-                hub_items = data.get("hub_items", None)
-            
-            # --- O GATILHO FANTASMA (OS-014: Auto-Healing) ---
-            # Se não houver chunks ou o conteúdo for suspeitosamente curto (SPA vazio)
-            # E se NÃO tivermos usado Playwright ainda
-            if (not semantic_chunks or len(markdown_body) < 300) and executor_used != "L34-playwright":
-                logger.warning(f"⚠️ [OS-014] Fantasma SPA detectado em {url_str} ({len(markdown_body)} chars). Escalonando para L34 (Playwright)...")
-                
-                # Força a extração pesada via renderização JavaScript
-                html_content_pesado = await _fetch_playwright(url_str, timeout_seconds)
-                executor_used = "L34-playwright-auto_fallback"
-                
-                # Reprocessa o trabalho com o HTML real renderizado
-                clear_result = await loop.run_in_executor(
-                    process_pool, 
-                    run_dataclear_job,
-                    html_content_pesado, url_str, executor_used, config, "agentic-api-sync-fallback", "agentic-mission"
-                )
-                
-                entries = clear_result.get("dataset_entries", [])
-                if entries:
-                    entry = entries[0]
-                    data = entry.get("data", {})
-                    markdown_body = data.get("markdown_body", "")
-                    semantic_chunks = data.get("semantic_chunks", [])
-                    hub_items = data.get("hub_items", None)
-                
             processing_ms = int((time.time() - start_time) * 1000)
             
             final_response = FetchResponse(
                 status="success",
                 url=url_str,
-                markdown_body=markdown_body,
-                semantic_chunks=semantic_chunks,
-                hub_items=hub_items,
+                markdown_body=result["markdown_body"],
+                semantic_chunks=result["semantic_chunks"],
+                hub_items=result["hub_items"],
                 processing_ms=processing_ms,
-                executor_used=executor_used
+                executor_used=result["executor_used"]
             )
             
             # Salvar no cache e liberar lock
@@ -228,6 +258,10 @@ async def fetch_url(
             raise
         except Exception as e:
             # Reembolso por falha interna miserável
+            import traceback
+            error_trace = traceback.format_exc()
+            logger.error(f"❌ [CRITICAL-API-ERROR]: {str(e)}\n{error_trace}")
+            
             error_data = {"status": "error", "detail": str(e), "status_code": 500}
             await rm.client.set(cache_key, json.dumps(error_data), ex=60)
             await refund_credits(api_key, cost)
@@ -286,14 +320,9 @@ async def search_and_fetch(
     response.headers["X-RateLimit-Remaining"] = str(remaining)
     
     try:
-        # Recarga forçada do ENV para garantir que a chave esteja lá (Resiliência)
-        from dotenv import load_dotenv
-        load_dotenv()
+        from core.config import settings
+        tavily_api_key = settings.TAVILY_API_KEY
         
-        tavily_api_key = os.getenv("TAVILY_API_KEY")
-        if not tavily_api_key:
-            raise HTTPException(status_code=500, detail="TAVILY_API_KEY missing in .env")
-            
         async with aiohttp.ClientSession() as session:
             async with session.post("https://api.tavily.com/search", json={"api_key": tavily_api_key, "query": request.query, "max_results": 2}) as resp:
                 if resp.status != 200:
@@ -311,65 +340,35 @@ async def search_and_fetch(
             logger.info(f"[RADAR COMERCIAL] Cliente {customer_id} descobriu o alvo: {domain} via Tavily Radar.")
             background_tasks.add_task(db.save_radar_log, customer_id, domain, "/search_and_fetch", 200)
     
-        async def fetch_safe(u):
-            try:
-                if request.force_stealth:
-                    return {"url": u, "html": await _fetch_curlcffi(u, 15)}
-                else:
-                    return {"url": u, "html": await _fetch_aiohttp(u, 15)}
-            except Exception as e:
-                logger.error(f"Falha ao baixar {u}: {e}")
-                return None
-    
-        fetch_results = await asyncio.gather(*(fetch_safe(u) for u in urls))
-        valid_fetches = [f for f in fetch_results if f]
-        
-        if not valid_fetches:
-            raise HTTPException(status_code=502, detail="As fontes encontradas estão inacessíveis no momento.")
-    
-        loop = asyncio.get_running_loop()
+        extractor = WaterfallExtractor(process_pool)
         results = []
         urls_processed = []
-        # Restaurando a régua de elite (0.6) conforme solicitado
-        config = {"archetype": "blog", "fidelity_threshold": 0.6, "allowed_domains": "*"}
         
-        for f in valid_fetches:
+        async def process_url(u):
             try:
-                res = await loop.run_in_executor(process_pool, run_dataclear_job, f["html"], f["url"], "L0", config, "radar", "mission")
-                entries = res.get("dataset_entries", [])
-                
-                md = ""
-                chunks = []
-                
-                if entries:
-                    data = entries[0].get("data", {})
-                    md = data.get("markdown_body", "")
-                    chunks = data.get("semantic_chunks", [])
-
-                # --- O GATILHO FANTASMA (OS-014: Auto-Healing para Radar) ---
-                if (not chunks or len(md) < 300) and not request.force_stealth:
-                    logger.warning(f"⚠️ [OS-014-RADAR] Fantasma detectado em {f['url']}. Acionando Trator L34...")
-                    try:
-                        html_pesado = await _fetch_playwright(f["url"], 30)
-                        res = await loop.run_in_executor(process_pool, run_dataclear_job, html_pesado, f["url"], "L34-auto", config, "radar-fallback", "mission")
-                        entries = res.get("dataset_entries", [])
-                        if entries:
-                            data = entries[0].get("data", {})
-                            md = data.get("markdown_body", "")
-                            chunks = data.get("semantic_chunks", [])
-                    except Exception as e:
-                        logger.error(f"Falha no fallback Playwright para {f['url']}: {e}")
-
-                if md or chunks:
+                # O Radar não força render_js inicialmente, o WaterfallExtractor cuidará do fallback fantasma (L34)
+                result = await extractor.extract(
+                    url=u,
+                    render_js=False,
+                    force_stealth=request.force_stealth,
+                    archetype=Archetype.BLOG,
+                    fidelity_threshold=request.fidelity_threshold,
+                    capture_id="agentic-api-radar"
+                )
+                if result["markdown_body"] or result["semantic_chunks"]:
                     results.append({
-                        "url": f['url'],
-                        "markdown_body": md,
-                        "semantic_chunks": chunks
+                        "url": u,
+                        "markdown_body": result["markdown_body"],
+                        "semantic_chunks": result["semantic_chunks"]
                     })
-                    urls_processed.append(f['url'])
+                    urls_processed.append(u)
+            except HTTPException as e:
+                logger.error(f"🚨 [RADAR-WAF] WAF/Bloqueio detectado em {u}: {e.detail}")
             except Exception as e:
-                logger.error(f"Erro na limpeza da URL {f['url']}: {e}")
-                continue
+                logger.error(f"Erro na extração de {u}: {e}")
+                
+        # Executa extração em paralelo para todas as URLs
+        await asyncio.gather(*(process_url(u) for u in urls))
     
         if not results:
             raise HTTPException(status_code=404, detail="O conteúdo encontrado não passou no filtro de qualidade (Fidelidade < 0.6).")

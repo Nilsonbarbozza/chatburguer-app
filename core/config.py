@@ -4,8 +4,24 @@ Configuração centralizada — carrega .env e expõe CONFIG + paths dinâmicos
 """
 import os
 from pathlib import Path
-from dotenv import load_dotenv
+from functools import lru_cache
+from pydantic_settings import BaseSettings
 
+class Settings(BaseSettings):
+    TAVILY_API_KEY: str
+    # adicione aqui todas as outras chaves da aplicação
+
+    class Config:
+        env_file = None       # CRÍTICO: desliga leitura de .env em produção
+        case_sensitive = True # evita conflito de variáveis case-insensitive
+
+@lru_cache(maxsize=1)         # singleton preguiçoso — instanciado só quando chamado
+def get_settings() -> Settings:
+    return Settings()
+
+settings = get_settings()
+
+from dotenv import load_dotenv
 load_dotenv()
 
 CONFIG = {
