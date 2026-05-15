@@ -8,12 +8,23 @@ load_dotenv()
 from agentic_api.routes import router
 from core.database import db
 
+from fastapi.middleware.cors import CORSMiddleware
+
 app = FastAPI(
     title="NeuralSafety Agentic WebFetch API",
     description="High-performance synchronous extraction and purification engine for Autonomous AI Agents.",
     version="1.0.0",
     docs_url="/docs",
     redoc_url="/redoc"
+)
+
+# Configuração de CORS: Blindagem Liberada para o Radar
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 @app.get("/")

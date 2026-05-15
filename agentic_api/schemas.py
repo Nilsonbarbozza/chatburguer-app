@@ -49,7 +49,7 @@ class FetchResponse(BaseModel):
     """
     status: str = Field(..., description="Status da extração (success, error, blocked).")
     url: str = Field(..., description="A URL processada.")
-    markdown_body: str = Field(..., description="Conteúdo purificado e estruturado em Markdown.")
+    markdown_body: Optional[str] = Field(default="", description="Conteúdo purificado e estruturado em Markdown.", exclude=True)
     semantic_chunks: List[Dict[str, Any]] = Field(
         default_factory=list,
         description="Fragmentos semânticos destilados, prontos para vetorização (RAG)."
@@ -72,7 +72,7 @@ class SearchFetchRequest(BaseModel):
 
 class SearchResultItem(BaseModel):
     url: str = Field(..., description="A URL de origem do conteúdo.")
-    markdown_body: str = Field(..., description="Conteúdo purificado e estruturado em Markdown.")
+    markdown_body: Optional[str] = Field(default="", description="Conteúdo purificado e estruturado em Markdown.", exclude=True)
     semantic_chunks: List[Dict[str, Any]] = Field(
         default_factory=list,
         description="Fragmentos semânticos destilados com seus metadados preservados."

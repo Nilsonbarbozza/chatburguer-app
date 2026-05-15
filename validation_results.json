@@ -1,0 +1,113 @@
+[
+  {
+    "url": "https://exame.com/",
+    "type": "hub",
+    "time_ms": 760,
+    "items_count": 74,
+    "sample": [
+      {
+        "title": "EXAME - Neg\u00f3cios, Economia, Tecnologia e Carreira",
+        "url": "https://exame.com/",
+        "snippet": "",
+        "timestamp": ""
+      },
+      {
+        "title": "Intelig\u00eancia Artificial",
+        "url": "https://exame.com/inteligencia-artificial/",
+        "snippet": "",
+        "timestamp": ""
+      },
+      {
+        "title": "APRENDA IA EM 4 AULAS:",
+        "url": "https://lps.exame.com/slp-workshop-ai?utm_source=conteudo&utm_medium=gss&utm_campaign=workshop-ai-202605_venda_barra-de-aviso&utm_term=na&utm_content=na",
+        "snippet": "A EXAME convidou especialistas pra te ensinar IA em 4 aulas online com certificado",
+        "timestamp": ""
+      }
+    ]
+  },
+  {
+    "url": "https://exame.com/inteligencia-artificial/",
+    "type": "hub",
+    "time_ms": 351,
+    "items_count": 32,
+    "sample": [
+      {
+        "title": "EXAME - Neg\u00f3cios, Economia, Tecnologia e Carreira",
+        "url": "https://exame.com/",
+        "snippet": "",
+        "timestamp": ""
+      },
+      {
+        "title": "Intelig\u00eancia Artificial",
+        "url": "https://exame.com/inteligencia-artificial/",
+        "snippet": "",
+        "timestamp": ""
+      },
+      {
+        "title": "APRENDA IA EM 4 AULAS:",
+        "url": "https://lps.exame.com/slp-workshop-ai?utm_source=conteudo&utm_medium=gss&utm_campaign=workshop-ai-202605_venda_barra-de-aviso&utm_term=na&utm_content=na",
+        "snippet": "A EXAME convidou especialistas pra te ensinar IA em 4 aulas online com certificado",
+        "timestamp": ""
+      }
+    ]
+  },
+  {
+    "url": "https://exame.com/inteligencia-artificial/ao-vivo-no-youtube-robo-mostra-como-pode-substituir-20-milhoes-de-empregos-agora-mesmo/",
+    "type": "blog",
+    "time_ms": 220,
+    "md_length": 4552,
+    "links_found": 0
+  },
+  {
+    "url": "https://olhardigital.com.br/",
+    "type": "hub",
+    "time_ms": 684,
+    "items_count": 57,
+    "sample": [
+      {
+        "title": "Intelig\u00eancia Artificial",
+        "url": "https://olhardigital.com.br/editorias/inteligencia-artificial/",
+        "snippet": "",
+        "timestamp": ""
+      },
+      {
+        "title": "Ve\u00edculos e Tecnologia",
+        "url": "https://olhardigital.com.br/editorias/carros-e-tecnologia/",
+        "snippet": "",
+        "timestamp": ""
+      },
+      {
+        "title": "Internet e Redes Sociais",
+        "url": "https://olhardigital.com.br/editorias/internet-e-redes-sociais/",
+        "snippet": "",
+        "timestamp": ""
+      }
+    ]
+  },
+  {
+    "url": "https://olhardigital.com.br/noticias/",
+    "type": "hub",
+    "time_ms": 131,
+    "items_count": 12,
+    "sample": [
+      {
+        "title": "Intelig\u00eancia Artificial",
+        "url": "https://olhardigital.com.br/editorias/inteligencia-artificial/",
+        "snippet": "",
+        "timestamp": ""
+      },
+      {
+        "title": "Ve\u00edculos e Tecnologia",
+        "url": "https://olhardigital.com.br/editorias/carros-e-tecnologia/",
+        "snippet": "",
+        "timestamp": ""
+      },
+      {
+        "title": "Internet e Redes Sociais",
+        "url": "https://olhardigital.com.br/editorias/internet-e-redes-sociais/",
+        "snippet": "",
+        "timestamp": ""
+      }
+    ]
+  }
+]

@@ -1,0 +1,90 @@
+    def _extract_hub_items(self, soup) -> list:
+        """
+        Extração de links de cards em páginas de hub/índice.
+        Retorna lista de {title, url, snippet}.
+        """
+        import time
+        t0 = time.time()
+        hub_items = []
+        links = soup.find_all('a', href=True)
+        base_url = self.config.get("base_url", "")
+        
+        logger.info(f"🔍 [HUB-MINER] Analisando {len(links)} links potenciais para extração de cards.")
+        
+        for a in links:
+            try:
+                title_text = ""
+                # Caso 1: <a> contém h1-h4
+                heading = a.find(['h1', 'h2', 'h3', 'h4'])
+                if heading:
+                    title_text = heading.get_text(strip=True)
+                else:
+                    # Caso 2: <a> tem classe de título ou é o próprio texto
+                    classes = ' '.join(a.get('class', [])).lower()
+                    if any(c in classes for c in ['title', 'headline', 'card', 'link-post']):
+                        title_text = a.get_text(strip=True)
+                    elif len(a.get_text(strip=True)) > 20: # Texto longo no link costuma ser título
+                        title_text = a.get_text(strip=True)
+                
+                if not title_text or len(title_text) < 10:
+                    continue
+                    
+                href = a.get('href')
+                if not href:
+                    continue
+                    
+                if not href.startswith('http'):
+                    href = urljoin(base_url, href)
+                
+                # 1. Filtro de Ruído (Negative Keywords)
+                negative_keywords = ['privacidade', 'termos', 'assinatura', 'login', 'contato', 'newsletter', 'sobre', 'anuncie', 'expediente', 'cookies', 'vagas']
+                combined_str = (title_text + " " + href).lower()
+                if any(kw in combined_str for kw in negative_keywords):
+                    continue
+
+                # 2. Caçador de Snippets (Heurística de Elite)
+                snippet = ""
+                container = a.parent
+                if container:
+                    # Busca por parágrafos ou spans que não sejam o título e tenham conteúdo relevante
+                    potential_desc = container.find_all(['p', 'span', 'div'], recursive=True)
+                    for candidate in potential_desc:
+                        text = candidate.get_text(strip=True)
+                        if text and text != title_text and 15 < len(text) < 400 and "http" not in text:
+                            c_classes = ' '.join(candidate.get('class', [])).lower()
+                            if any(c in c_classes for c in ['description', 'summary', 'excerpt', 'resumo', 'subtitle', 'snippet']):
+                                snippet = text
+                                break
+                            if not snippet and candidate.name == 'p':
+                                snippet = text
+                    
+                    if not snippet and container.parent:
+                        grand_parent = container.parent
+                        desc_block = grand_parent.find(['p', 'div', 'span'], class_=re.compile(r'description|summary|excerpt|resumo|subtitle', re.I))
+                        if desc_block:
+                            text = desc_block.get_text(strip=True)
+                            if text != title_text:
+                                snippet = text
+                
+                title_text = self._sanitize_encoding(title_text)
+                snippet = self._sanitize_encoding(snippet[:400])
+                
+                hub_items.append({
+                    "title": title_text,
+                    "url": href,
+                    "snippet": snippet
+                })
+            except Exception as e:
+                logger.warning(f"Erro ao processar item do hub: {e}")
+                continue
+            
+        # Deduplicação e Limpeza Final
+        seen_urls = set()
+        final_items = []
+        for item in hub_items:
+            if item['url'] not in seen_urls:
+                seen_urls.add(item['url'])
+                final_items.append(item)
+        
+        logger.info(f"✅ [HUB-MINER] Extração concluída: {len(final_items)} cards em {time.time()-t0:.2f}s")
+        return final_items

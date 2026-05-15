@@ -1,6 +1,6 @@
 # 1. Imagem Oficial do Playwright (Garante estabilidade do Scraper)
 # Esta base já contém todas as dependências de sistema para o Chromium
-FROM mcr.microsoft.com/playwright/python:v1.58.0-jammy
+FROM mcr.microsoft.com/playwright/python:v1.59.0-jammy
 
 # 2. Configurações de Ambiente
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -16,8 +16,12 @@ RUN groupadd -r appgroup && useradd -r -g appgroup -d $APP_HOME -s /sbin/nologin
 
 # 5. Instalação de dependências Python
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-# RUN playwright install chromium  # Desativado temporariamente por instabilidade de rede
+RUN python3 -m pip install --no-cache-dir -r requirements.txt
+
+# Verificação de Integridade: Garante que o Pydantic está no caminho e acessível
+RUN python3 -c "import pydantic; print('Fase de Verificação: Pydantic v' + pydantic.__version__ + ' detectado com sucesso.')"
+
+RUN python3 -m playwright install chromium
 
 # 6. Copia TODO o código-fonte do projeto
 COPY . .
@@ -26,12 +30,14 @@ COPY . .
 RUN mkdir -p data/output data/redis vector_db missoes && \
     chown -R appuser:appgroup $APP_HOME
 
-# 8. Troca para o usuário seguro
+# 8. Configuração de Caminhos de Execução
+ENV PYTHONPATH="/app:/usr/local/lib/python3.10/site-packages:/usr/lib/python3/dist-packages"
+
+# 9. Troca para o usuário seguro
 USER appuser
 
-# 9. Exposição de Porta (para o serviço RAG/FastAPI, ignorado pelo Batalhão)
+# 10. Exposição de Porta
 EXPOSE 8000
 
-# 10. Ponto de Entrada Dinâmico
-# O CMD padrão roda o Batalhão. Para rodar o RAG, sobrescreva no docker-compose.
-CMD ["python", "-m", "core.main_batalhao"]
+# 11. Ponto de Entrada Dinâmico
+CMD ["python3", "-m", "core.main_batalhao"]
