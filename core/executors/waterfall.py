@@ -1,20 +1,87 @@
+import os
 import time
 import asyncio
+import random
 import aiohttp
 import logging
+import requests as sync_requests
 from curl_cffi.requests import AsyncSession as CurlCffiSession
 from fastapi import HTTPException
 
-# Usaremos o process_pool global do routes.py? É melhor injetar o loop e o pool, 
-# ou usar importações locais. Para evitar acoplamento circular, vamos aceitar o pool como argumento.
 from core.stages.dataclear import run_dataclear_job
 from agentic_api.schemas import Archetype
 
 logger = logging.getLogger("WaterfallExtractor")
 
+# === WEBSHARE PROXY POOL ===
+def _load_webshare_proxies() -> list:
+    """Carrega a lista de proxies da Webshare API no startup."""
+    api_key = os.getenv("PROXIES_SX_API_KEY", "")
+    if not api_key:
+        logger.warning("[PROXY] PROXIES_SX_API_KEY vazio. Operando sem proxy.")
+        return []
+    try:
+        r = sync_requests.get(
+            "https://proxy.webshare.io/api/v2/proxy/list/?mode=direct&page=1&page_size=25",
+            headers={"Authorization": f"Token {api_key}"},
+            timeout=10
+        )
+        if r.status_code == 200:
+            proxies = []
+            for px in r.json().get('results', []):
+                user = px.get('username', '')
+                pwd = px.get('password', '')
+                host = px.get('proxy_address', '')
+                port = px.get('port', '')
+                if user and host:
+                    proxies.append(f"http://{user}:{pwd}@{host}:{port}")
+            logger.info(f"[PROXY] Webshare: {len(proxies)} proxies carregados.")
+            return proxies
+        else:
+            logger.warning(f"[PROXY] Webshare API retornou {r.status_code}")
+            return []
+    except Exception as e:
+        logger.warning(f"[PROXY] Falha ao carregar Webshare: {e}")
+        return []
+
+WEBSHARE_PROXIES = _load_webshare_proxies()
+
+def _get_proxy() -> str | None:
+    """Retorna um proxy aleatório do pool, ou None se vazio."""
+    return random.choice(WEBSHARE_PROXIES) if WEBSHARE_PROXIES else None
+
+# === HEADERS POR NÍVEL DE EVASÃO ===
+
+# L0: Headers legítimos de crawler (sem pretensão de ser navegador)
 GOOGLEBOT_HEADERS = {
     "User-Agent": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+}
+
+# L12: Headers sincronizados com impersonate="chrome120"
+# Elimina a "Assinatura Quimera" (TLS de Chrome + headers de Bot)
+CHROME_120_HEADERS = {
+    "accept": (
+        "text/html,application/xhtml+xml,application/xml;"
+        "q=0.9,image/avif,image/webp,image/apng,*/*;"
+        "q=0.8,application/signed-exchange;v=b3;q=0.7"
+    ),
+    "accept-language": "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7",
+    "sec-ch-ua": '"Not_A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"',
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": '"Windows"',
+    "sec-fetch-dest": "document",
+    "sec-fetch-mode": "navigate",
+    "sec-fetch-site": "none",
+    "sec-fetch-user": "?1",
+    "upgrade-insecure-requests": "1",
+    "dnt": "1",
+    "cache-control": "max-age=0",
+    "user-agent": (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/120.0.0.0 Safari/537.36"
+    ),
 }
 
 async def _fetch_aiohttp(url: str, timeout: int) -> str:
@@ -30,9 +97,21 @@ async def _fetch_aiohttp(url: str, timeout: int) -> str:
             return await response.text()
 
 async def _fetch_curlcffi(url: str, timeout: int) -> str:
-    """L12: Furtivo via TLS Spoofing."""
+    """L12: Furtivo via TLS Spoofing + Headers Chrome 120 + Webshare Proxy."""
+    from urllib.parse import urlparse
+    domain = urlparse(url).netloc
+    
+    headers = {**CHROME_120_HEADERS, "referer": f"https://www.google.com/search?q={domain}"}
+    proxy = _get_proxy()
+    
+    if proxy:
+        logger.info(f"[L12] Usando proxy: {proxy.split('@')[-1] if '@' in proxy else 'direct'}")
+    
     async with CurlCffiSession() as session:
-        response = await session.get(url, impersonate="chrome120", headers=GOOGLEBOT_HEADERS, timeout=timeout)
+        response = await session.get(
+            url, impersonate="chrome120", headers=headers,
+            proxy=proxy, timeout=timeout
+        )
         if response.status_code in (401, 403, 429, 503) or "Just a moment" in response.text:
             raise HTTPException(status_code=403, detail="Advanced WAF Blocked. TLS Spoofing failed.")
         if response.status_code != 200:
@@ -71,7 +150,20 @@ async def _fetch_playwright(url: str, timeout: int, archetype: str = None) -> st
     logger.info(f"🚀 [PLAYWRIGHT] Iniciando renderização JS para: {url}")
     t0 = time.time()
     async with async_playwright() as p:
-        browser = await p.chromium.launch(headless=True, args=["--no-sandbox", "--disable-dev-shm-usage"])
+        # Proxy Webshare para L34
+        proxy_url = _get_proxy()
+        launch_opts = {"headless": True, "args": ["--no-sandbox", "--disable-dev-shm-usage"]}
+        if proxy_url:
+            from urllib.parse import urlparse as _urlparse
+            _p = _urlparse(proxy_url)
+            launch_opts["proxy"] = {
+                "server": f"http://{_p.hostname}:{_p.port}",
+                "username": _p.username,
+                "password": _p.password,
+            }
+            logger.info(f"[L34] Usando proxy: {_p.hostname}:{_p.port}")
+        
+        browser = await p.chromium.launch(**launch_opts)
         context = None
         try:
             context = await browser.new_context(
@@ -81,20 +173,20 @@ async def _fetch_playwright(url: str, timeout: int, archetype: str = None) -> st
             page.set_default_navigation_timeout(timeout * 1000)
             page.set_default_timeout(timeout * 1000)
             # Ajustamos a espera conforme a complexidade do alvo
-            wait_state = "domcontentloaded" if str(archetype) == "auction_grid" else "load"
+            # Para Grids de Leilão (MegaLeiloes), precisamos de carga total da rede (networkidle)
+            wait_state = "networkidle" if str(archetype) == "auction_grid" else "load"
             
             await page.goto(url, wait_until=wait_state, timeout=timeout * 1000)
-            await page.wait_for_timeout(1500) # Hidratação mínima
+            await page.wait_for_timeout(3000) # Hidratação estendida
             
             if str(archetype) == "auction_grid":
-                logger.info(f"⚡ [QUANTUM-SCROLL] Expandindo viewport para captura instantânea em {url}")
+                logger.info(f"⚡ [QUANTUM-SCROLL] Expandindo viewport para captura profunda em {url}")
                 await page.evaluate('''async () => {
                     const height = document.body.scrollHeight;
-                    window.scrollTo(0, height); // Um único salto para o fundo
+                    window.scrollTo(0, height); 
                 }''')
-                # Ajusta o viewport para caber tudo (evita recortes de renderização)
-                await page.set_viewport_size({"width": 1280, "height": 8000}) 
-                await asyncio.sleep(1.5) # Tempo mínimo para disparo do JS de imagem
+                await page.set_viewport_size({"width": 1280, "height": 10000}) 
+                await asyncio.sleep(3.0) # Tempo para lazy load de imagens e cards dinâmicos
 
             content = await page.content()
             if "Just a moment" in content or "access denied" in content.lower():
@@ -152,22 +244,46 @@ class WaterfallExtractor:
     async def extract(self, url: str, render_js: bool, force_stealth: bool, archetype: str, fidelity_threshold: float, capture_id: str = "agentic-api-sync"):
         timeout_seconds = 45 if render_js else 15
         
+        # === CASCATA L0 → L12 → L34 ===
+        html_content = None
+        executor_used = None
+        
         if render_js:
+            # Pedido explícito de JS rendering → direto para L34
             executor_used = "L34-playwright"
+            html_content = await asyncio.wait_for(
+                _fetch_playwright(url, timeout_seconds, archetype), timeout=timeout_seconds
+            )
         elif force_stealth:
+            # Pedido explícito de stealth → direto para L12
             executor_used = "L12-curlcffi"
+            html_content = await asyncio.wait_for(
+                _fetch_curlcffi(url, timeout_seconds), timeout=timeout_seconds
+            )
         else:
-            executor_used = "L0-aiohttp"
+            # CASCATA AUTOMÁTICA: L0 → L12 → (L34 via Auto-Healing)
+            # Tentativa 1: L0 (aiohttp — rápido, leve)
+            try:
+                executor_used = "L0-aiohttp"
+                html_content = await asyncio.wait_for(
+                    _fetch_aiohttp(url, timeout_seconds), timeout=timeout_seconds
+                )
+            except Exception as e:
+                logger.warning(f"[CASCADE] L0 falhou para {url}: {type(e).__name__}. Escalando para L12...")
+                html_content = None
             
-        async def fetch_strategy():
-            if render_js:
-                return await _fetch_playwright(url, timeout_seconds, archetype)
-            elif force_stealth:
-                return await _fetch_curlcffi(url, timeout_seconds)
-            else:
-                return await _fetch_aiohttp(url, timeout_seconds)
-                
-        html_content = await asyncio.wait_for(fetch_strategy(), timeout=timeout_seconds)
+            # Tentativa 2: L12 (curlcffi — TLS Chrome + Headers sincronizados)
+            if html_content is None:
+                try:
+                    executor_used = "L12-curlcffi"
+                    html_content = await asyncio.wait_for(
+                        _fetch_curlcffi(url, timeout_seconds), timeout=timeout_seconds
+                    )
+                except Exception as e:
+                    logger.warning(f"[CASCADE] L12 falhou para {url}: {type(e).__name__}. L34 será acionado pelo Auto-Healing.")
+                    # Se L12 também falhou, precisamos de HTML mínimo para o dataclear detectar WAF
+                    html_content = "<html><body>WAF Challenge - Cascade Exhausted</body></html>"
+        
         
         if archetype != Archetype.HUB and archetype != Archetype.AUCTION_GRID:
             if self._is_auction_grid(html_content):
@@ -192,10 +308,52 @@ class WaterfallExtractor:
             mission_id="agentic-mission",
             timeout_seconds=timeout_seconds,
         )
-        if clear_result.get("waf_blocked"):
-            raise HTTPException(status_code=403, detail="Honeypot WAF Detectado pela Engenharia Reversa HTML.")
+        # === CASCATA DE AUTO-HEALING: WAF detectado → L12 → L34 ===
+        is_ghost = False
+        if clear_result.waf_detected:
+            if "L0" in executor_used:
+                # WAF no L0: tentar L12 (Chrome TLS) antes do pesado L34
+                logger.warning(f"[CASCADE] WAF detectado em {executor_used}. Escalando para L12 (Chrome TLS)...")
+                try:
+                    html_content = await asyncio.wait_for(
+                        _fetch_curlcffi(url, timeout_seconds), timeout=timeout_seconds
+                    )
+                    executor_used = "L12-curlcffi-cascade"
+                    
+                    # Reprocessar com o HTML do L12
+                    clear_result = await _run_dataclear_with_timeout(
+                        loop=loop, process_pool=self.process_pool,
+                        html_content=html_content, url=url,
+                        executor_level=executor_used, config=config,
+                        capture_id=f"{capture_id}-l12", mission_id="agentic-mission",
+                        timeout_seconds=timeout_seconds,
+                    )
+                    
+                    if clear_result.waf_detected:
+                        logger.warning(f"[CASCADE] WAF persiste em L12. Escalando para L34...")
+                        is_ghost = True
+                    else:
+                        logger.info(f"[CASCADE] L12 BYPASS SUCESSO para {url}")
+                        # Reextrair dados do novo resultado
+                        entries = clear_result.dataset_entries
+                        if entries:
+                            entry = entries[0]
+                            data = entry.get("data", {})
+                            markdown_body = data.get("markdown_body", "")
+                            semantic_chunks = _json_safe(data.get("semantic_chunks", []))
+                            hub_items = _json_safe(data.get("hub_items", None))
+                except Exception as e:
+                    logger.warning(f"[CASCADE] L12 falhou ({type(e).__name__}). Escalando para L34...")
+                    is_ghost = True
+                    
+            elif "L34" not in executor_used:
+                # WAF no L12: escalar para L34
+                logger.warning(f"[CASCADE] WAF detectado em {executor_used}. Escalando para L34...")
+                is_ghost = True
+            else:
+                raise HTTPException(status_code=403, detail="Honeypot WAF Detectado pela Engenharia Reversa HTML (Nivel Maximo Atingido).")
             
-        entries = clear_result.get("dataset_entries", [])
+        entries = clear_result.dataset_entries
         markdown_body = ""
         semantic_chunks = []
         hub_items = None
@@ -208,21 +366,20 @@ class WaterfallExtractor:
             hub_items = _json_safe(data.get("hub_items", None))
         
         # --- O GATILHO FANTASMA (OS-014: Auto-Healing) ---
-        is_ghost = False
-        
-        needs_l34 = (
-            (archetype == Archetype.AUCTION_GRID) and (
-                not hub_items 
-                or len(hub_items) == 0
-                or all(not (item.get('links_vital', {}) or {}).get('image') for item in (hub_items or []))
+        if not is_ghost:
+            needs_l34 = (
+                (archetype == Archetype.AUCTION_GRID) and (
+                    not hub_items 
+                    or len(hub_items) == 0
+                    or all(not (item.get('links_vital', {}) or {}).get('image') for item in (hub_items or []))
+                )
             )
-        )
 
-        if needs_l34 and executor_used != "L34-playwright":
-            logger.info(f"[ESCALATION] Condição L34 ativada para {url}: items={len(hub_items) if hub_items else 0}")
-            is_ghost = True
-        elif archetype != Archetype.HUB and archetype != Archetype.AUCTION_GRID:
-            is_ghost = not semantic_chunks or len(markdown_body) < 300
+            if needs_l34 and "L34" not in executor_used:
+                logger.info(f"[ESCALATION] Condição L34 ativada para {url}: items={len(hub_items) if hub_items else 0}")
+                is_ghost = True
+            elif archetype != Archetype.HUB and archetype != Archetype.AUCTION_GRID:
+                is_ghost = not semantic_chunks or len(markdown_body) < 300
 
         # Se WAF explícito retornou challenge page (que passou no fetch mas falhou no parser), o markdown_body será lixo ou waf detect.
         # No L0, o cloudflare challenge pode passar pelo aiohttp com 200/403. 
@@ -230,7 +387,7 @@ class WaterfallExtractor:
         if is_ghost and executor_used != "L34-playwright":
             logger.warning(f"⚠️ [OS-014] Fantasma SPA detectado em {url}. Escalonando para L34 (Playwright)...")
             try:
-                html_content_pesado = await asyncio.wait_for(_fetch_playwright(url, timeout_seconds, archetype), timeout=timeout_seconds + 5)
+                html_content_pesado = await asyncio.wait_for(_fetch_playwright(url, timeout_seconds + 15, archetype), timeout=timeout_seconds + 20)
                 executor_used = "L34-playwright-auto_fallback"
             except asyncio.TimeoutError:
                 logger.error(f"❌ [TIMEOUT-DEAD-SWITCH] Playwright travou em {url} e foi abatido.")
@@ -248,7 +405,7 @@ class WaterfallExtractor:
                 timeout_seconds=timeout_seconds,
             )
             
-            entries = clear_result.get("dataset_entries", [])
+            entries = clear_result.dataset_entries
             if entries:
                 entry = entries[0]
                 data = entry.get("data", {})

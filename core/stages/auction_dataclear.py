@@ -20,11 +20,25 @@ class AuctionDataClear:
         text_lower = text.lower()
         
         # 1. Identificador Único
+        from urllib.parse import urlparse
         href = raw_data.get("links_vital", {}).get("href", "")
+        path = urlparse(href).path.lower()
         id_lote = "N/A"
-        id_match = re.search(r'[j|x|l](\d+)', href.lower())
-        if id_match:
-            id_lote = id_match.group(1).upper()
+        
+        # Sniper: Extrai ID de caminhos como /lote/A9876 ou /item/123
+        path_parts = [p for p in path.split('/') if p]
+        if len(path_parts) >= 2 and any(kw in path_parts[-2] for kw in ['lote', 'item', 'anuncio', 'bem', 'produto']):
+            id_lote = path_parts[-1].upper()
+        else:
+            # Fallback para padrões legados ou IDs embutidos
+            id_match = re.search(r'[jxl](\d+)', path)
+            if id_match:
+                id_lote = id_match.group(1).upper()
+            elif path_parts:
+                # Se for o último segmento e tiver números, tentamos como ID
+                last = path_parts[-1]
+                if any(c.isdigit() for c in last) and len(last) >= 3:
+                    id_lote = last.upper()
 
         # 2. Localização (Deep Parser)
         cidade, estado, bairro = "Não informado", "NI", "Não informado"

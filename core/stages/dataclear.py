@@ -24,87 +24,259 @@ try:
 except ImportError:
     md_converter = None
 
+import time
+import signal
+import os
+from contextlib import contextmanager
+from core.schemas.extraction import ExtractionMethod, DataClearResult, ExtractionResult
+
 setup_logging()
 logger = logging.getLogger('html_processor')
 
+class ExtractionTimeout(Exception):
+    pass
+
+@contextmanager
+def extraction_timeout(seconds: int):
+    """
+    Context manager de timeout via SIGALRM.
+    Funciona apenas em Linux/Mac (ambiente de produção ECS).
+    Trata graciosamente o AttributeError se o sinal SIGALRM não existir (ex: Windows).
+    """
+    def _handler(signum, frame):
+        raise ExtractionTimeout(f"Extração excedeu {seconds}s")
+
+    try:
+        old_handler = signal.signal(signal.SIGALRM, _handler)
+        signal.alarm(seconds)
+    except (AttributeError, ValueError):
+        # Fallback para ambientes sem SIGALRM (Windows)
+        yield
+        return
+
+    try:
+        yield
+    finally:
+        signal.alarm(0)
+        signal.signal(signal.SIGALRM, old_handler)
+
+def _try_strategy(name: str, fn, *args) -> tuple[Optional[str], int]:
+    """
+    Executa uma estratégia de extração com isolamento completo.
+    Retorna: (texto_extraido, tempo_ms) ou (None, tempo_ms) se falhar.
+    """
+    t0 = time.monotonic()
+    try:
+        result = fn(*args)
+        elapsed = int((time.monotonic() - t0) * 1000)
+        if result:
+            logger.info(f"✅ [{name}] Sucesso em {elapsed}ms ({len(result)} chars)")
+        return result, elapsed
+    except Exception as e:
+        elapsed = int((time.monotonic() - t0) * 1000)
+        logger.warning(f"⚠️ [{name}] Falhou em {elapsed}ms: {type(e).__name__}: {e}")
+        return None, elapsed
+
+def _semantic_quality_score(text: str, html: str = "") -> float:
+    """
+    Score de qualidade semântica com 3 sinais rápidos.
+    Substitui len(text) < 500 como critério de validação.
+
+    Sinais:
+      1. Ratio texto/html       — detecta páginas ghost (shell JS vazio)
+      2. Link density           — detecta páginas de navegação pura
+      3. Paragraph density      — detecta conteúdo real vs. lixo estrutural
+    """
+    if not text or len(text) < 50:
+        return 0.0
+
+    score = 0.0
+
+    # Sinal 1: Ratio texto/html (0.0 → 0.40)
+    if html:
+        ratio = len(text) / max(len(html), 1)
+        if ratio >= 0.15:   score += 0.40
+        elif ratio >= 0.08: score += 0.25
+        elif ratio >= 0.03: score += 0.10
+
+    # Sinal 2: Link density — penaliza páginas de nav pura (0.0 → 0.30)
+    words       = text.split()
+    # Busca por padrões de URL ou links densos
+    link_words  = len(re.findall(r'https?://', text))
+    link_density = link_words / max(len(words), 1)
+    if link_density < 0.01:   score += 0.30
+    elif link_density < 0.05: score += 0.15
+    # link_density >= 0.05: não pontua
+
+    # Sinal 3: Paragraph density — conteúdo real tem parágrafos (0.0 → 0.30)
+    paragraphs = [p for p in text.split('\n\n') if len(p.strip()) > 70]
+    if len(paragraphs) >= 5:   score += 0.30
+    elif len(paragraphs) >= 2: score += 0.15
+    elif len(paragraphs) >= 1: score += 0.05
+
+    return round(min(score, 1.0), 3)
+
+# Singleton por processo — inicializado uma vez por worker
+_PROCESS_LOCAL_CLEANER: dict = {}
+
+def _get_or_create_cleaner(config: dict) -> 'DataClearStage':
+    """
+    Retorna instância cacheada de DataClearStage por processo.
+    Evita reinstanciação em cada job no ProcessPoolExecutor.
+    """
+    # Usamos o archetype como chave primária, se não houver config complexa
+    config_key = str(sorted(config.items()))
+    if config_key not in _PROCESS_LOCAL_CLEANER:
+        logger.debug(f"[SINGLETON] Inicializando DataClearStage no processo {os.getpid()}")
+        _PROCESS_LOCAL_CLEANER[config_key] = DataClearStage(config=config)
+    return _PROCESS_LOCAL_CLEANER[config_key]
+
 def run_dataclear_job(html_content: str, url: str, executor_level: str, 
                         config: Dict[str, Any], capture_id: str = None, 
-                        mission_id: str = None) -> Dict[str, Any]:
+                        mission_id: str = None) -> DataClearResult:
     """
     Função global Picklable para ser executada no ProcessPoolExecutor.
     Recebe os dados brutos e a configuração da missão com metadados de linhagem.
     """
-    # --- INJEÇÃO: AUTÓPSIA DE DADOS ---
-    texto_extraido = None
-    
-    # TÁTICA 1: Cofre de SEO (JSON-LD)
-    ld_blocks = extract_json_ld(html_content)
-    if ld_blocks:
-        article = extract_article_from_json_ld(ld_blocks)
-        if article and article.get("articleBody"):
-            logger.info(f"💎 [OS-014] Conteúdo extraído via JSON-LD para {url}")
-            texto_extraido = article["articleBody"]
-            if md_converter:
-                texto_extraido = md_converter(texto_extraido)
+    try:
+        with extraction_timeout(seconds=30):
+            fallback_count = 0
+            total_ms = 0
+            extraction_method = ExtractionMethod.FAILED
+            texto_extraido = None
+            
+            # Tática 1: JSON-LD
+            texto, ms = _try_strategy("JSON-LD", lambda c: md_converter(extract_article_from_json_ld(extract_json_ld(c))["articleBody"]) if md_converter and extract_article_from_json_ld(extract_json_ld(c)) and extract_article_from_json_ld(extract_json_ld(c)).get("articleBody") else None, html_content)
+            total_ms += ms
+            if texto:
+                texto_extraido = texto
+                extraction_method = ExtractionMethod.JSON_LD
+            else:
+                fallback_count += 1
+                
+                # Tática 2: NEXT-DATA
+                texto, ms = _try_strategy("NEXT-DATA", lambda c: mine_text_from_json(extract_next_data(c)), html_content)
+                total_ms += ms
+                if texto:
+                    texto_extraido = texto
+                    extraction_method = ExtractionMethod.NEXT_DATA
+                else:
+                    fallback_count += 1
+                    
+                    # Tática 3: DOM (BeautifulSoup/Markdownify)
+                    # Note: We still use the DataClearStage for the DOM strategy as it handles complex archetypes
+                    t0_dom = time.monotonic()
+                    cleaner = _get_or_create_cleaner(config)
+                    
+                    # Check quality of existing text before DOM fallback
+                    quality = _semantic_quality_score(texto_extraido, html_content) if texto_extraido else 0.0
+                    
+                    if quality < 0.35:
+                        if texto_extraido:
+                            logger.warning(f"⚠️ [QUALITY] Score {quality} abaixo do threshold. Fallback para DOM.")
+                        
+                        soup = BeautifulSoup(html_content, 'lxml')
+                        context = {
+                            "soup": soup,
+                            "url": url,
+                            "executor_level": executor_level,
+                            "capture_id": capture_id,
+                            "mission_id": mission_id
+                        }
+                        processed_context = cleaner.process(context)
+                        total_ms += int((time.monotonic() - t0_dom) * 1000)
+                        
+                        extraction_method = ExtractionMethod.DOM
+                        dataset_entries = processed_context.get("dataset_entries", [])
+                        waf_blocked = processed_context.get("waf_blocked", False)
+                        hub_items = processed_context.get("hub_items", [])
+                        
+                        # Recalculate quality for the DOM result
+                        texto_final = ""
+                        if dataset_entries:
+                            texto_final = dataset_entries[0].get("data", {}).get("markdown_body", "")
+                        
+                        final_quality = _semantic_quality_score(texto_final, html_content)
+                        
+                        # Metrics logging
+                        logger.info(
+                            f"📊 [METRICS] url={url} "
+                            f"method={extraction_method.value} "
+                            f"quality={final_quality} "
+                            f"fallbacks={fallback_count} "
+                            f"time={total_ms}ms "
+                            f"chars={len(texto_final)}"
+                        )
+                        
+                        return DataClearResult(
+                            dataset_entries=dataset_entries,
+                            extraction_method=extraction_method,
+                            quality_score=final_quality,
+                            extraction_time_ms=total_ms,
+                            waf_detected=waf_blocked,
+                            fallback_count=fallback_count,
+                            hub_items=hub_items
+                        )
+                    else:
+                        # Success via Tática 1 or 2 with high quality
+                        # We still need to create chunks and structure the result
+                        metadata = {"title": url, "url": url}
+                        chunks = cleaner._create_chunks(texto_extraido, metadata_snapshot=metadata)
+                        id_hash = hashlib.sha256(url.encode()).hexdigest()
+                        dataset_entries = [{
+                            "id_hash": id_hash,
+                            "url": url,
+                            "capture_id": capture_id,
+                            "mission_id": mission_id,
+                            "executor": executor_level,
+                            "fidelity_score": 1.0,
+                            "data": {"title": url, "markdown_body": texto_extraido, "semantic_chunks": chunks}
+                        }]
+                        
+                        logger.info(
+                            f"📊 [METRICS] url={url} "
+                            f"method={extraction_method.value} "
+                            f"quality={quality} "
+                            f"fallbacks={fallback_count} "
+                            f"time={total_ms}ms "
+                            f"chars={len(texto_extraido)}"
+                        )
+                        
+                        return DataClearResult(
+                            dataset_entries=dataset_entries,
+                            extraction_method=extraction_method,
+                            quality_score=quality,
+                            extraction_time_ms=total_ms,
+                            fallback_count=fallback_count
+                        )
 
-    # TÁTICA 2: Tenta Hidratação Next.js
-    if not texto_extraido:
-        next_data = extract_next_data(html_content)
-        if next_data:
-            logger.info(f"🚀 [OS-014] Minerando dados via Next.js hydration para {url}")
-            texto_extraido = mine_text_from_json(next_data)
+            # If we reached here without a result, it failed
+            return DataClearResult(
+                dataset_entries=[],
+                extraction_method=ExtractionMethod.FAILED,
+                quality_score=0.0,
+                extraction_time_ms=total_ms,
+                fallback_count=fallback_count
+            )
 
-    used_traditional_pipeline = False
-    processed_context = None
-
-    # TÁTICA 3: O Tradicional (BeautifulSoup/Markdownify)
-    if not texto_extraido or len(texto_extraido) < 500:
-        if texto_extraido:
-            logger.warning(f"⚠️ [OS-014] Conteúdo minerado insuficiente ({len(texto_extraido)} chars). Usando fallback tradicional.")
-        
-        cleaner = DataClearStage(config=config)
-        soup = BeautifulSoup(html_content, 'lxml')
-        context = {
-            "soup": soup,
-            "url": url,
-            "executor_level": executor_level,
-            "capture_id": capture_id,
-            "mission_id": mission_id
-        }
-        processed_context = cleaner.process(context)
-        used_traditional_pipeline = True
-        
-        entries = processed_context.get("dataset_entries", [])
-        if entries:
-            texto_extraido = entries[0].get("data", {}).get("markdown_body", "")
-    
-    if texto_extraido and not used_traditional_pipeline:
-        cleaner = DataClearStage(config=config)
-        metadata = {"title": url, "url": url}
-        chunks = cleaner._create_chunks(texto_extraido, metadata_snapshot=metadata)
-        
-        id_hash = hashlib.sha256(url.encode()).hexdigest()
-        dataset_entries = [{
-            "id_hash": id_hash,
-            "url": url,
-            "capture_id": capture_id,
-            "mission_id": mission_id,
-            "executor": executor_level,
-            "fidelity_score": 1.0,
-            "data": {"title": url, "markdown_body": texto_extraido, "semantic_chunks": chunks}
-        }]
-        return {
-            "dataset_entries": dataset_entries,
-            "waf_blocked": False
-        }
-    elif used_traditional_pipeline:
-        return {
-            "dataset_entries": processed_context.get("dataset_entries", []),
-            "waf_blocked": processed_context.get("waf_blocked", False),
-            "hub_items": processed_context.get("hub_items", []) # PASS-THROUGH CRÍTICO
-        }
-    
-    return {"dataset_entries": [], "waf_blocked": False}
+    except ExtractionTimeout:
+        logger.error(f"⏱️ [TIMEOUT] Job abortado após 30s para {url}")
+        return DataClearResult(
+            dataset_entries=[],
+            extraction_method=ExtractionMethod.FAILED,
+            quality_score=0.0,
+            extraction_time_ms=30000,
+            error="extraction_timeout"
+        )
+    except Exception as e:
+        logger.error(f"❌ [CRITICAL-ERROR] Falha catastrófica no job para {url}: {e}")
+        return DataClearResult(
+            dataset_entries=[],
+            extraction_method=ExtractionMethod.FAILED,
+            quality_score=0.0,
+            extraction_time_ms=0,
+            error=str(e)
+        )
 
 class DataClearStage(ProcessorStage):
     """
@@ -119,14 +291,17 @@ class DataClearStage(ProcessorStage):
         self.redact = str(self.config.get("redact_pii", "true")).lower() == "true"
 
         self.AUCTION_SELECTORS = {
-            # ── PADRÃO SEMÂNTICO (fallback universal) ──
+            'megaleiloes.com.br': ['.card.open', '.card-leilao', '.card'],
+            'leilaovip.com.br':   ['.card-leilao', '.item-leilao'],
+            'superbid.net':       ['.app-auction-card', '.card'],
+            # --- PADRÃO SEMÂNTICO (fallback universal) ---
             'default': [
+                '.card', '.card-leilao', '.lote-item', '.auction-item',
                 'a[href*="/imovel/"]', 'a[href*="/lote/"]',
                 'a[href*="/anuncio/"]', 'a[href*="/bem/"]',
                 'a[href*="/produto/"]', 'a[href*="/item/"]',
                 '[class*="card"]', '[class*="lote"]',
                 '[class*="imovel"]', '[class*="auction"]',
-                '[class*="property"]', '[class*="produto"]',
                 'article', 'li.item',
             ],
 
@@ -419,11 +594,32 @@ class DataClearStage(ProcessorStage):
 
         return items
 
-    def _detect_waf_honeypot(self, soup) -> bool:
-        """Detector de Assinaturas de Bloqueio e Evasão."""
-        waf_signatures = ["cloudflare", "ddos-guard", "captcha", "hcaptcha", "access denied", "security challenge", "sucuri"]
+    def _detect_waf_honeypot(self, soup) -> tuple[bool, Optional[str]]:
+        """
+        Detecta assinaturas de WAF conhecidos.
+        Retorna: (bloqueado: bool, vendor: str | None)
+        """
+        html_lower = str(soup).lower()
         text_lower = soup.get_text().lower()
-        return any(sig in text_lower for sig in waf_signatures)
+
+        waf_signatures = {
+            "cloudflare":   ["cloudflare", "cf-ray", "just a moment", "__cf_bm"],
+            "datadome":     ["datadome", "dd_referrer", "datadome.co"],
+            "perimeterx":   ["perimeterx", "_pxhd", "px-captcha"],
+            "akamai":       ["akamai", "_abck", "bm_sz"],
+            "imperva":      ["incapsula", "visid_incap", "imperva"],
+            "sucuri":       ["sucuri", "sucuri-cloudproxy"],
+            "generic":      ["access denied", "403 forbidden", "security challenge",
+                             "captcha", "hcaptcha", "recaptcha", "robot check"],
+        }
+
+        for vendor, signatures in waf_signatures.items():
+            # Checa no HTML completo (headers injetados) e no texto visível
+            if any(sig in html_lower or sig in text_lower for sig in signatures):
+                logger.warning(f"🚨 [WAF-{vendor.upper()}] Bloqueio detectado.")
+                return True, vendor
+
+        return False, None
 
     def _calculate_fidelity_score(self, text: str, item_soup) -> float:
         """Enterprise Fidelity Scorer v4.4."""
@@ -462,9 +658,11 @@ class DataClearStage(ProcessorStage):
         base_url = context.get('url', '')
 
         # DETECÇÃO DE WAF (CRÍTICO PARA PRODUÇÃO)
-        if self._detect_waf_honeypot(soup):
-            logger.warning(f"🚨 [WAF-DETECT] Honeypot/Bloqueio detectado em {base_url}")
+        waf_blocked, waf_vendor = self._detect_waf_honeypot(soup)
+        if waf_blocked:
+            logger.warning(f"🚨 [WAF-DETECT] Honeypot/Bloqueio {waf_vendor} detectado em {base_url}")
             context['waf_blocked'] = True
+            context['waf_vendor']  = waf_vendor
             context['dataset_entries'] = []
             return context
         
