@@ -39,7 +39,33 @@ async def _fetch_curlcffi(url: str, timeout: int) -> str:
             raise HTTPException(status_code=response.status_code, detail=f"HTTP Error {response.status_code}")
         return response.text
 
-async def _fetch_playwright(url: str, timeout: int) -> str:
+async def _scroll_and_wait(page, max_scrolls: int = 5) -> int:
+    """
+    Scroll progressivo com duplo critério de parada:
+    1. Fundo da página atingido (altura não cresceu)
+    2. Limite de scrolls atingido (teto de segurança)
+    Retorna: número de scrolls executados
+    """
+    previous_height = 0
+    scrolls_done = 0
+
+    for i in range(max_scrolls):
+        await page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+        await page.wait_for_timeout(1500)  # aguarda lazy load disparar
+
+        current_height = await page.evaluate("document.body.scrollHeight")
+        scrolls_done += 1
+
+        if current_height == previous_height:
+            logger.info(f"[SCROLL-WAIT] Fundo atingido após {scrolls_done} scroll(s).")
+            break
+
+        previous_height = current_height
+        logger.debug(f"[SCROLL-WAIT] Scroll {scrolls_done}: altura {previous_height} → {current_height}")
+
+    return scrolls_done
+
+async def _fetch_playwright(url: str, timeout: int, archetype: str = None) -> str:
     """L34: Lento, pesado, mas renderiza JS completo."""
     from playwright.async_api import async_playwright
     logger.info(f"🚀 [PLAYWRIGHT] Iniciando renderização JS para: {url}")
@@ -54,9 +80,22 @@ async def _fetch_playwright(url: str, timeout: int) -> str:
             page = await context.new_page()
             page.set_default_navigation_timeout(timeout * 1000)
             page.set_default_timeout(timeout * 1000)
-            await page.goto(url, wait_until="commit", timeout=timeout * 1000)
-            await page.wait_for_load_state("domcontentloaded", timeout=timeout * 1000)
-            await page.wait_for_timeout(1000)
+            # Ajustamos a espera conforme a complexidade do alvo
+            wait_state = "domcontentloaded" if str(archetype) == "auction_grid" else "load"
+            
+            await page.goto(url, wait_until=wait_state, timeout=timeout * 1000)
+            await page.wait_for_timeout(1500) # Hidratação mínima
+            
+            if str(archetype) == "auction_grid":
+                logger.info(f"⚡ [QUANTUM-SCROLL] Expandindo viewport para captura instantânea em {url}")
+                await page.evaluate('''async () => {
+                    const height = document.body.scrollHeight;
+                    window.scrollTo(0, height); // Um único salto para o fundo
+                }''')
+                # Ajusta o viewport para caber tudo (evita recortes de renderização)
+                await page.set_viewport_size({"width": 1280, "height": 8000}) 
+                await asyncio.sleep(1.5) # Tempo mínimo para disparo do JS de imagem
+
             content = await page.content()
             if "Just a moment" in content or "access denied" in content.lower():
                 logger.warning(f"⚠️ [PLAYWRIGHT] WAF Detectado em {url}")
@@ -96,6 +135,20 @@ class WaterfallExtractor:
     def __init__(self, process_pool):
         self.process_pool = process_pool
 
+    def _is_auction_grid(self, html: str) -> bool:
+        """
+        Detecta automaticamente se o HTML é de um site de leilão.
+        Threshold calibrado para evitar falsos positivos em e-commerce.
+        """
+        import re
+        monetary_hits = len(re.findall(r'R\$\s*[\d.,]+', html))
+        date_hits     = len(re.findall(r'\d{2}/\d{2}/\d{4}', html))
+        auction_hits  = len(re.findall(
+            r'(?:leil[ãa]o|lote|arrema[tc]|lance|judicial|extrajudicial)',
+            html, re.I
+        ))
+        return monetary_hits >= 8 and date_hits >= 3 and auction_hits >= 3
+
     async def extract(self, url: str, render_js: bool, force_stealth: bool, archetype: str, fidelity_threshold: float, capture_id: str = "agentic-api-sync"):
         timeout_seconds = 45 if render_js else 15
         
@@ -108,7 +161,7 @@ class WaterfallExtractor:
             
         async def fetch_strategy():
             if render_js:
-                return await _fetch_playwright(url, timeout_seconds)
+                return await _fetch_playwright(url, timeout_seconds, archetype)
             elif force_stealth:
                 return await _fetch_curlcffi(url, timeout_seconds)
             else:
@@ -116,6 +169,11 @@ class WaterfallExtractor:
                 
         html_content = await asyncio.wait_for(fetch_strategy(), timeout=timeout_seconds)
         
+        if archetype != Archetype.HUB and archetype != Archetype.AUCTION_GRID:
+            if self._is_auction_grid(html_content):
+                logger.info(f"🕵️ [HEURÍSTICA] Grid de leilão detectado automaticamente. Mudando arquétipo para AUCTION_GRID.")
+                archetype = Archetype.AUCTION_GRID
+
         config = {
             "archetype": archetype,
             "fidelity_threshold": fidelity_threshold,
@@ -151,7 +209,19 @@ class WaterfallExtractor:
         
         # --- O GATILHO FANTASMA (OS-014: Auto-Healing) ---
         is_ghost = False
-        if archetype != Archetype.HUB:
+        
+        needs_l34 = (
+            (archetype == Archetype.AUCTION_GRID) and (
+                not hub_items 
+                or len(hub_items) == 0
+                or all(not (item.get('links_vital', {}) or {}).get('image') for item in (hub_items or []))
+            )
+        )
+
+        if needs_l34 and executor_used != "L34-playwright":
+            logger.info(f"[ESCALATION] Condição L34 ativada para {url}: items={len(hub_items) if hub_items else 0}")
+            is_ghost = True
+        elif archetype != Archetype.HUB and archetype != Archetype.AUCTION_GRID:
             is_ghost = not semantic_chunks or len(markdown_body) < 300
 
         # Se WAF explícito retornou challenge page (que passou no fetch mas falhou no parser), o markdown_body será lixo ou waf detect.
@@ -160,7 +230,7 @@ class WaterfallExtractor:
         if is_ghost and executor_used != "L34-playwright":
             logger.warning(f"⚠️ [OS-014] Fantasma SPA detectado em {url}. Escalonando para L34 (Playwright)...")
             try:
-                html_content_pesado = await asyncio.wait_for(_fetch_playwright(url, timeout_seconds), timeout=timeout_seconds + 5)
+                html_content_pesado = await asyncio.wait_for(_fetch_playwright(url, timeout_seconds, archetype), timeout=timeout_seconds + 5)
                 executor_used = "L34-playwright-auto_fallback"
             except asyncio.TimeoutError:
                 logger.error(f"❌ [TIMEOUT-DEAD-SWITCH] Playwright travou em {url} e foi abatido.")

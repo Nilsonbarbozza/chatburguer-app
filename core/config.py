@@ -1,68 +1,60 @@
-"""
-core/config.py
-Configuração centralizada — carrega .env e expõe CONFIG + paths dinâmicos
-"""
 import os
-from pathlib import Path
 from functools import lru_cache
 from pydantic_settings import BaseSettings
+from typing import Optional
 
 class Settings(BaseSettings):
-    TAVILY_API_KEY: str
-    # adicione aqui todas as outras chaves da aplicação
+    # API Keys
+    TAVILY_API_KEY: str = ""
+    OPENAI_API_KEY: str = ""
+    
+    # Infrastructure
+    REDIS_URL: str = "redis://localhost:6379"
+    POSTGRES_URL: str = ""
+    
+    # Limits & Timeouts
+    MAX_FILE_SIZE_MB: int = 30
+    MAX_IMAGE_SIZE_MB: int = 5
+    REQUEST_TIMEOUT: int = 20
+    PLAYWRIGHT_TIMEOUT: int = 30000
+    
+    # Directories
+    OUTPUT_DIR: str = "data/output"
+    
+    # Binaries
+    PRETTIER_BIN: str = "prettier"
+    LIGHTNINGCSS_BIN: str = "lightningcss"
+    PURGECSS_BIN: str = "purgecss"
+    NODE_BIN: str = "node"
+    
+    # Pipeline Behavior
+    BUNDLE_SCRIPTS: bool = True
+    USE_PRETTIER: bool = True
+    USE_LIGHTNINGCSS: bool = True
+    USE_PURGECSS: bool = True
+    USE_TAILWIND: bool = False
+    MINIFY_CSS: bool = False
+    LIGHTNINGCSS_TARGETS: str = ">= 0.5%"
+    
+    # Concurrency
+    BATALHAO_CONCURRENCY_L0: int = 20
+    BATALHAO_CONCURRENCY_L12: int = 15
+    BATALHAO_CONCURRENCY_L34: int = 5
 
     class Config:
-        env_file = None       # CRÍTICO: desliga leitura de .env em produção
-        case_sensitive = True # evita conflito de variáveis case-insensitive
+        env_file = None       # CRÍTICO: desliga .env em produção (ECS/Fargate)
+        case_sensitive = True
 
-@lru_cache(maxsize=1)         # singleton preguiçoso — instanciado só quando chamado
+@lru_cache(maxsize=1)
 def get_settings() -> Settings:
+    """Lazy loader para as configurações."""
     return Settings()
 
 settings = get_settings()
 
-from dotenv import load_dotenv
-load_dotenv()
-
-CONFIG = {
-    'MAX_FILE_SIZE_MB':  int(os.getenv('MAX_FILE_SIZE_MB', 30)),
-    'MAX_IMAGE_SIZE_MB': int(os.getenv('MAX_IMAGE_SIZE_MB', 5)),
-    'REQUEST_TIMEOUT':   int(os.getenv('REQUEST_TIMEOUT', 30)),
-    'OUTPUT_DIR':        os.getenv('OUTPUT_DIR', 'data/output'),
-    'INDENT_SIZE':       int(os.getenv('INDENT_SIZE', 2)),
-
-    # Ferramentas externas
-    'PRETTIER_BIN':      os.getenv('PRETTIER_BIN', 'prettier'),
-    'LIGHTNINGCSS_BIN':  os.getenv('LIGHTNINGCSS_BIN', 'lightningcss'),
-    'PURGECSS_BIN':      os.getenv('PURGECSS_BIN', 'purgecss'),
-    'NODE_BIN':          os.getenv('NODE_BIN', 'node'),
-
-    # Comportamento
-    'BUNDLE_SCRIPTS':       os.getenv('BUNDLE_SCRIPTS',    'true').lower()  == 'true',
-    'USE_PRETTIER':         os.getenv('USE_PRETTIER',      'true').lower()  == 'true',
-    'USE_LIGHTNINGCSS':     os.getenv('USE_LIGHTNINGCSS',  'true').lower()  == 'true',
-    'USE_PURGECSS':         os.getenv('USE_PURGECSS',      'true').lower()  == 'true',
-    'USE_TAILWIND':         os.getenv('USE_TAILWIND',      'false').lower() == 'true',
-    'LIGHTNINGCSS_TARGETS': os.getenv('LIGHTNINGCSS_TARGETS', '>= 0.5%'),
-    'MINIFY_CSS':           os.getenv('MINIFY_CSS',        'false').lower() == 'true',
-    'MINIFY_LEVEL':         os.getenv('MINIFY_LEVEL',      'extreme'),
-    'ALWAYS_GENERATE_TESTER': os.getenv('ALWAYS_GENERATE_TESTER', 'true').lower() == 'true',
-
-    # Validação Visual (Shadow Health Check)
-    'USE_VALIDATION':        os.getenv('USE_VALIDATION', 'true').lower() == 'true',
-    'VALIDATION_THRESHOLD':  float(os.getenv('VALIDATION_THRESHOLD', 0.05)), # Tolerância de 5% de pixels diferentes
-    'PLAYWRIGHT_TIMEOUT':    int(os.getenv('PLAYWRIGHT_TIMEOUT', 30000)),
-}
-
-
-def update_output_dir(path: str):
-    """Atualiza OUTPUT_DIR em runtime (usado pela CLI)."""
-    CONFIG['OUTPUT_DIR'] = path
-
-
 def get_paths() -> dict:
     """Retorna os caminhos derivados do OUTPUT_DIR atual."""
-    out     = CONFIG['OUTPUT_DIR']
+    out     = settings.OUTPUT_DIR
     styles  = os.path.join(out, 'styles')
     images  = os.path.join(out, 'images')
     videos  = os.path.join(out, 'videos')
@@ -81,4 +73,5 @@ def get_paths() -> dict:
         'TESTER_FILE':     os.path.join(out,     'tester.html'),
         'SKILL_FILE':      os.path.join(skills,  'frontend.md'),
     }
+
 

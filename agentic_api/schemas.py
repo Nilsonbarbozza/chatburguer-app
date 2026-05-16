@@ -9,6 +9,7 @@ class Archetype(str, Enum):
     BLOG = "blog"
     ARTICLE = "article"
     HUB = "hub"
+    AUCTION_GRID = "auction_grid"
 
 class FetchRequest(BaseModel):
     """
